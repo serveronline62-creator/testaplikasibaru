@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
-    <title>💬 Ja'O Chating</title>
+    <title>💬 Ja'O Chating + Call</title>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
@@ -44,6 +44,7 @@
             max-height: 100vh;
             border: none;
             border-radius: 0;
+            position: relative;
         }
         @media (min-width: 600px) {
             .chat-container {
@@ -65,6 +66,7 @@
             flex-shrink: 0;
             border-bottom: 1px solid rgba(0, 0, 0, 0.06);
             position: relative;
+            z-index: 10;
         }
         .chat-header .avatar {
             width: 40px;
@@ -117,14 +119,29 @@
         }
         .chat-header .actions {
             display: flex;
-            gap: 16px;
+            gap: 12px;
             color: #fff;
             font-size: 20px;
             align-items: center;
         }
-        .chat-header .actions span {
-            cursor: default;
-            opacity: 0.9;
+        .chat-header .actions button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 8px;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .chat-header .actions button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .chat-header .actions button:active {
+            transform: scale(0.9);
         }
         .chat-header .actions .menu-dots {
             font-size: 28px;
@@ -310,7 +327,6 @@
             max-width: 100%;
             cursor: pointer;
         }
-        /* Tanda centang di pojok kanan atas gambar (seperti WA) */
         .message .bubble-image-wrapper .image-check {
             position: absolute;
             top: 6px;
@@ -788,6 +804,210 @@
             margin: 3px 10px;
         }
 
+        /* ================================================================
+                   CALL UI (Overlay / Modal)
+                   ================================================================ */
+        .call-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            border-radius: inherit;
+            overflow: hidden;
+        }
+        .call-overlay.show {
+            display: flex;
+        }
+        .call-overlay .call-video-container {
+            position: relative;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1a1a1a;
+        }
+        .call-overlay .call-video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #000;
+        }
+        /* Remote video full, local video PIP */
+        .call-overlay .call-video-container #remoteVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .call-overlay .call-video-container #localVideo {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 120px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            background: #333;
+            z-index: 10;
+            transform: scaleX(-1);
+        }
+        @media (max-width: 480px) {
+            .call-overlay .call-video-container #localVideo {
+                width: 80px;
+                height: 110px;
+                bottom: 80px;
+                right: 10px;
+            }
+        }
+
+        .call-overlay .call-controls {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            backdrop-filter: blur(10px);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+        .call-overlay .call-controls button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            transition: transform 0.15s, opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #444;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        .call-overlay .call-controls button:hover {
+            transform: scale(1.05);
+        }
+        .call-overlay .call-controls button:active {
+            transform: scale(0.9);
+        }
+        .call-overlay .call-controls .btn-end-call {
+            background: #e74c3c;
+        }
+        .call-overlay .call-controls .btn-end-call:hover {
+            background: #c0392b;
+        }
+        .call-overlay .call-controls .btn-toggle-mic {
+            background: #2d7d46;
+        }
+        .call-overlay .call-controls .btn-toggle-mic.muted {
+            background: #e67e22;
+        }
+        .call-overlay .call-controls .btn-toggle-video {
+            background: #2d7d46;
+        }
+        .call-overlay .call-controls .btn-toggle-video.video-off {
+            background: #e67e22;
+        }
+        .call-overlay .call-info {
+            position: absolute;
+            top: 30px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 20;
+            pointer-events: none;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+        .call-overlay .call-info .caller-name {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .call-overlay .call-info .call-status {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        /* Incoming call popup */
+        .incoming-call {
+            position: absolute;
+            bottom: 100px;
+            left: 20px;
+            right: 20px;
+            background: #ffffff;
+            color: #1a1a1a;
+            border-radius: 20px;
+            padding: 20px;
+            z-index: 1500;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            text-align: center;
+            animation: slide-up 0.3s ease;
+        }
+        .incoming-call.show {
+            display: flex;
+        }
+        @keyframes slide-up {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .incoming-call .inc-caller {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .incoming-call .inc-type {
+            font-size: 14px;
+            color: #666;
+        }
+        .incoming-call .inc-actions {
+            display: flex;
+            gap: 30px;
+            margin-top: 6px;
+        }
+        .incoming-call .inc-actions button {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            font-size: 26px;
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+        .incoming-call .inc-actions .inc-accept {
+            background: #25d366;
+            color: #fff;
+        }
+        .incoming-call .inc-actions .inc-reject {
+            background: #e74c3c;
+            color: #fff;
+        }
+        .incoming-call .inc-actions button:hover {
+            transform: scale(1.08);
+        }
+        .incoming-call .inc-actions button:active {
+            transform: scale(0.9);
+        }
+
         /* ----- RESPONSIVE ----- */
         @media (max-width: 480px) {
             .chat-header .info h1 {
@@ -797,6 +1017,10 @@
                 width: 36px;
                 height: 36px;
                 font-size: 18px;
+            }
+            .chat-header .actions button {
+                font-size: 16px;
+                padding: 2px 4px;
             }
             .message .bubble {
                 font-size: 14px;
@@ -886,6 +1110,17 @@
                 top: 4px;
                 right: 4px;
             }
+            .call-overlay .call-controls button {
+                width: 50px;
+                height: 50px;
+                font-size: 22px;
+            }
+            .incoming-call {
+                bottom: 80px;
+                left: 16px;
+                right: 16px;
+                padding: 16px;
+            }
         }
         @media (max-width: 380px) {
             .input-row {
@@ -909,7 +1144,7 @@
 </head>
 <body>
 
-    <div class="chat-container">
+    <div class="chat-container" id="appContainer">
 
         <!-- HEADER -->
         <div class="chat-header">
@@ -919,8 +1154,10 @@
                 <div class="status">Online</div>
             </div>
             <div class="actions">
-                <span>📷</span>
-                <span>📞</span>
+                <!-- Tombol Voice Call -->
+                <button id="voiceCallBtn" title="Panggilan Suara">📞</button>
+                <!-- Tombol Video Call -->
+                <button id="videoCallBtn" title="Panggilan Video">📹</button>
                 <span class="menu-dots" id="headerMenuBtn">⋮</span>
             </div>
             <div class="header-dropdown" id="headerDropdown">
@@ -972,6 +1209,38 @@
                 <emoji-picker id="emojiPicker"></emoji-picker>
             </div>
         </div>
+
+        <!-- ============================================================= -->
+        <!-- CALL OVERLAY (Tampilan saat sedang telepon/video call)        -->
+        <!-- ============================================================= -->
+        <div class="call-overlay" id="callOverlay">
+            <div class="call-info">
+                <div class="caller-name" id="callerNameDisplay">Memanggil...</div>
+                <div class="call-status" id="callStatusDisplay">Menghubungkan...</div>
+            </div>
+            <div class="call-video-container">
+                <video id="remoteVideo" autoplay playsinline></video>
+                <video id="localVideo" autoplay playsinline muted></video>
+            </div>
+            <div class="call-controls">
+                <button class="btn-toggle-mic" id="toggleMicBtn" title="Mute/Unmute Mic">🎤</button>
+                <button class="btn-toggle-video" id="toggleVideoBtn" title="Matikan/Hidupkan Kamera">📷</button>
+                <button class="btn-end-call" id="endCallBtn">📴</button>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!-- INCOMING CALL POPUP (Notifikasi panggilan masuk)              -->
+        <!-- ============================================================= -->
+        <div class="incoming-call" id="incomingCallPopup">
+            <div class="inc-caller" id="incCallerName">User</div>
+            <div class="inc-type" id="incCallType">📹 Panggilan Video</div>
+            <div class="inc-actions">
+                <button class="inc-reject" id="incRejectBtn">❌</button>
+                <button class="inc-accept" id="incAcceptBtn">✅</button>
+            </div>
+        </div>
+
     </div>
 
     <!-- Context Menu -->
@@ -996,7 +1265,7 @@
 
     <script>
         // ============================================================
-        // 1. FIREBASE KONFIGURASI (ganti dengan milik Anda jika perlu)
+        // 1. FIREBASE KONFIGURASI
         // ============================================================
         const firebaseConfig = {
             apiKey: "AIzaSyDXAGqwKYZ0_CIqM_X4aqaQv1hZ0FL1_g0",
@@ -1010,15 +1279,38 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const messagesRef = database.ref('messages');
+        const callsRef = database.ref('calls'); // Node untuk signaling
 
         // ============================================================
-        // 2. GOFILE API TOKEN — WAJIB GANTI DENGAN TOKEN ANDA!
-        //    Dapatkan dari https://gofile.io/my-account
+        // 2. GOFILE API TOKEN
         // ============================================================
-        const GOFILE_API_TOKEN = 'YOUR_API_TOKEN'; // <-- GANTI DENGAN TOKEN ANDA
+        const GOFILE_API_TOKEN = 'YOUR_API_TOKEN'; // Ganti dengan token Anda
 
         // ============================================================
-        // 3. DOM ELEMEN
+        // 3. WEBRTC KONFIGURASI
+        // ============================================================
+        // STUN gratis dari Google. Untuk produksi, tambahkan TURN server.
+        const rtcConfig = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' },
+                // TURN gratis (rekomendasi untuk koneksi di jaringan ketat)
+                // Daftar gratis di https://www.metered.ca/tools/openrelay/
+                // {
+                //   urls: 'turn:openrelay.metered.ca:80',
+                //   username: 'openrelayproject',
+                //   credential: 'openrelayproject'
+                // },
+                // {
+                //   urls: 'turn:openrelay.metered.ca:443',
+                //   username: 'openrelayproject',
+                //   credential: 'openrelayproject'
+                // }
+            ]
+        };
+
+        // ============================================================
+        // 4. DOM ELEMEN (Chat + Call)
         // ============================================================
         const container = document.getElementById('messageContainer');
         const emptyState = document.getElementById('emptyState');
@@ -1048,8 +1340,38 @@
         const uploadProgress = document.getElementById('uploadProgress');
         const cancelFileBtn = document.getElementById('cancelFileBtn');
 
+        // Call DOM
+        const callOverlay = document.getElementById('callOverlay');
+        const localVideo = document.getElementById('localVideo');
+        const remoteVideo = document.getElementById('remoteVideo');
+        const callerNameDisplay = document.getElementById('callerNameDisplay');
+        const callStatusDisplay = document.getElementById('callStatusDisplay');
+        const toggleMicBtn = document.getElementById('toggleMicBtn');
+        const toggleVideoBtn = document.getElementById('toggleVideoBtn');
+        const endCallBtn = document.getElementById('endCallBtn');
+        const voiceCallBtn = document.getElementById('voiceCallBtn');
+        const videoCallBtn = document.getElementById('videoCallBtn');
+        const incomingCallPopup = document.getElementById('incomingCallPopup');
+        const incCallerName = document.getElementById('incCallerName');
+        const incCallType = document.getElementById('incCallType');
+        const incAcceptBtn = document.getElementById('incAcceptBtn');
+        const incRejectBtn = document.getElementById('incRejectBtn');
+
         // ============================================================
-        // 4. SUARA
+        // 5. VARIABEL CALL
+        // ============================================================
+        let localStream = null;
+        let remoteStream = null;
+        let peerConnection = null;
+        let currentCallId = null;
+        let isCaller = false;
+        let isVideoCall = false;
+        let isMuted = false;
+        let isVideoOff = false;
+        let incomingCallId = null;
+
+        // ============================================================
+        // 6. SUARA (Chat)
         // ============================================================
         let audioCtx = null;
 
@@ -1120,7 +1442,7 @@
         }
 
         // ============================================================
-        // 5. FUNGSI BANTU
+        // 7. FUNGSI BANTU (Chat)
         // ============================================================
         function formatTime(timestamp) {
             if (!timestamp) return '--:--';
@@ -1186,7 +1508,7 @@
         }
 
         // ============================================================
-        // 6. UPLOAD FILE (Imgur untuk gambar kecil, GoFile untuk lainnya)
+        // 8. UPLOAD FILE (Chat)
         // ============================================================
         const IMGUR_CLIENT_ID = '546c25a59c58ad7';
 
@@ -1214,40 +1536,32 @@
             if (!token || token === 'YOUR_API_TOKEN') {
                 throw new Error('GoFile API Token belum diatur. Silakan ganti GOFILE_API_TOKEN di kode.');
             }
-
             const formData = new FormData();
             formData.append('file', file);
-
             try {
                 const response = await fetch('https://upload.gofile.io/uploadfile', {
                     method: 'POST',
-                    headers: {
-                        'Authorization': 'Bearer ' + token
-                    },
+                    headers: { 'Authorization': 'Bearer ' + token },
                     body: formData
                 });
-
                 if (!response.ok) {
                     const errText = await response.text();
                     throw new Error('Upload gagal (HTTP ' + response.status + '): ' + errText);
                 }
-
                 const result = await response.json();
                 if (!result.status || result.status !== 'ok') {
                     throw new Error('Upload gagal: ' + JSON.stringify(result));
                 }
-
                 const data = result.data;
                 const downloadUrl = data.link || data.downloadUrl || `https://gofile.io/d/${data.fileId}`;
                 return downloadUrl;
-
             } catch (error) {
                 throw error;
             }
         }
 
         // ============================================================
-        // 7. HEADER DROPDOWN
+        // 9. HEADER DROPDOWN (Chat)
         // ============================================================
         headerMenuBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1274,7 +1588,7 @@
         });
 
         // ============================================================
-        // 8. REPLY
+        // 10. REPLY (Chat)
         // ============================================================
         let replyTo = null;
 
@@ -1293,7 +1607,7 @@
         cancelReplyBtn.addEventListener('click', clearReply);
 
         // ============================================================
-        // 9. CONTEXT MENU
+        // 11. CONTEXT MENU (Chat)
         // ============================================================
         let currentMessageKey = null;
         let currentMessageElement = null;
@@ -1364,7 +1678,6 @@
             }
         });
 
-        // Hapus (Delete for me) - hanya dari tampilan sendiri
         menuDelete.addEventListener('click', () => {
             if (currentMessageKey && currentMessageElement) {
                 const el = currentMessageElement;
@@ -1377,7 +1690,6 @@
             }
         });
 
-        // Batalkan (Unsend for everyone)
         menuUnsend.addEventListener('click', () => {
             if (currentMessageKey) {
                 if (confirm('Batalkan pesan ini untuk semua orang?')) {
@@ -1394,7 +1706,7 @@
         });
 
         // ============================================================
-        // 10. CLEANUP DATE SEPARATORS
+        // 12. CLEANUP DATE SEPARATORS (Chat)
         // ============================================================
         function cleanupDateSeparators() {
             document.querySelectorAll('.date-separator').forEach(sep => {
@@ -1411,7 +1723,7 @@
         }
 
         // ============================================================
-        // 11. LINK PREVIEW
+        // 13. LINK PREVIEW (Chat)
         // ============================================================
         const previewCache = new Map();
 
@@ -1489,7 +1801,7 @@
         }
 
         // ============================================================
-        // 12. RENDER MESSAGE
+        // 14. RENDER MESSAGE (Chat)
         // ============================================================
         let lastDisplayedDateKey = null;
 
@@ -1509,7 +1821,6 @@
 
             if (container.querySelector(`[data-key="${key}"]`)) return;
 
-            // Date separator
             const dateKey = getDateKey(time);
             if (lastDisplayedDateKey !== dateKey) {
                 const sep = document.createElement('div');
@@ -1534,7 +1845,6 @@
             const bubble = document.createElement('div');
             bubble.className = 'bubble';
 
-            // Reply quote
             if (replyData) {
                 const q = document.createElement('div');
                 q.className = 'reply-quote';
@@ -1550,7 +1860,6 @@
                 bubble.appendChild(q);
             }
 
-            // Image dengan tanda centang
             if (imageUrl) {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'bubble-image-wrapper';
@@ -1564,19 +1873,15 @@
                     window.open(imageUrl, '_blank');
                 };
                 wrapper.appendChild(img);
-
-                // Tanda centang di pojok kanan atas (hanya untuk pesan sendiri)
                 if (isOwn) {
                     const checkMark = document.createElement('div');
                     checkMark.className = 'image-check';
                     checkMark.textContent = '✓';
                     wrapper.appendChild(checkMark);
                 }
-
                 bubble.appendChild(wrapper);
             }
 
-            // File attachment (untuk file selain gambar yang diupload ke GoFile)
             if (fileUrl) {
                 const fileDiv = document.createElement('a');
                 fileDiv.className = 'file-attachment';
@@ -1612,7 +1917,6 @@
                 bubble.appendChild(fileDiv);
             }
 
-            // Text
             if (text) {
                 const textNode = document.createElement('div');
                 textNode.className = 'bubble-text';
@@ -1620,7 +1924,6 @@
                 bubble.appendChild(textNode);
             }
 
-            // Link preview (jika ada URL di teks dan tidak ada gambar/file)
             const urls = extractUrls(text);
             if (urls.length > 0 && !imageUrl && !fileUrl) {
                 const linkUrl = urls[0];
@@ -1683,7 +1986,6 @@
                     });
             }
 
-            // Jika tidak ada konten sama sekali
             if (!text && !imageUrl && !fileUrl) {
                 const placeholder = document.createElement('span');
                 placeholder.textContent = '📎';
@@ -1705,7 +2007,6 @@
             msgDiv.appendChild(bubble);
             msgDiv.appendChild(footer);
 
-            // Click events for context menu
             bubble.addEventListener('click', (e) => {
                 e.stopPropagation();
                 showContextMenu(e, key, msgDiv, { text, name: sender, imageUrl, fileUrl, fileName, fileSize,
@@ -1723,7 +2024,7 @@
         }
 
         // ============================================================
-        // 13. UPDATE CENTANG
+        // 15. UPDATE CENTANG (Chat)
         // ============================================================
         function updateCheckMark(key, read) {
             const el = container.querySelector(`[data-key="${key}"]`);
@@ -1733,7 +2034,7 @@
         }
 
         // ============================================================
-        // 14. REBUILD DATE SEPARATORS
+        // 16. REBUILD DATE SEPARATORS (Chat)
         // ============================================================
         function rebuildDateSeparators() {
             document.querySelectorAll('.date-separator').forEach(el => el.remove());
@@ -1763,7 +2064,7 @@
         }
 
         // ============================================================
-        // 15. LISTENER REALTIME
+        // 17. LISTENER REALTIME (Chat)
         // ============================================================
         let isInitialLoad = true;
         const notifiedKeys = new Set();
@@ -1803,7 +2104,7 @@
         });
 
         // ============================================================
-        // 16. KIRIM PESAN (dengan file)
+        // 18. KIRIM PESAN (Chat + File)
         // ============================================================
         let pendingFile = null;
         let isUploading = false;
@@ -1874,12 +2175,10 @@
 
                 try {
                     const file = pendingFile;
-                    // Jika gambar < 5MB, upload ke Imgur (lebih cepat dan stabil)
                     if (file.type && file.type.startsWith('image/') && file.size < 5 * 1024 * 1024) {
                         imageUrl = await uploadToImgur(file);
                         uploadProgress.textContent = '✅ Selesai (Imgur)';
                     } else {
-                        // File lain atau gambar besar → GoFile.io dengan Bearer Token
                         fileUrl = await uploadToGoFile(file);
                         fileName = file.name;
                         fileSize = file.size;
@@ -1942,7 +2241,7 @@
         }
 
         // ============================================================
-        // 17. EMOJI PICKER
+        // 19. EMOJI PICKER (Chat)
         // ============================================================
         let isEmojiPickerVisible = false;
         emojiToggle.addEventListener('click', (e) => {
@@ -1970,7 +2269,7 @@
         });
 
         // ============================================================
-        // 18. EVENT LISTENERS
+        // 20. EVENT LISTENERS (Chat)
         // ============================================================
         sendBtn.addEventListener('click', sendMessage);
         messageInput.addEventListener('keydown', (e) => {
@@ -1983,7 +2282,388 @@
         });
 
         // ============================================================
-        // 19. INISIALISASI
+        // 21. WEBRTC - CALL LOGIC (BARU!)
+        // ============================================================
+
+        // --- 21a. Utility untuk Call ---
+        function getCallerName() {
+            return getSenderName();
+        }
+
+        function showCallOverlay(name, status, video) {
+            callerNameDisplay.textContent = name;
+            callStatusDisplay.textContent = status || 'Menghubungkan...';
+            isVideoCall = video;
+            callOverlay.classList.add('show');
+            // Atur tampilan video (sembunyikan jika voice call)
+            if (!video) {
+                localVideo.style.display = 'none';
+                remoteVideo.style.display = 'none';
+                // Tapi kita tetap butuh audio track
+            } else {
+                localVideo.style.display = 'block';
+                remoteVideo.style.display = 'block';
+            }
+            // Reset tombol
+            toggleMicBtn.classList.remove('muted');
+            toggleMicBtn.textContent = '🎤';
+            toggleVideoBtn.classList.remove('video-off');
+            toggleVideoBtn.textContent = '📷';
+            isMuted = false;
+            isVideoOff = false;
+        }
+
+        function hideCallOverlay() {
+            callOverlay.classList.remove('show');
+            // Hentikan semua stream dan tutup peer
+            closeCall();
+        }
+
+        function closeCall() {
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+            if (remoteStream) {
+                remoteStream.getTracks().forEach(track => track.stop());
+                remoteStream = null;
+            }
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+            localVideo.srcObject = null;
+            remoteVideo.srcObject = null;
+            if (currentCallId) {
+                // Hapus data panggilan dari Firebase
+                callsRef.child(currentCallId).remove().catch(() => {});
+                currentCallId = null;
+            }
+            isCaller = false;
+            incomingCallId = null;
+            incomingCallPopup.classList.remove('show');
+            callOverlay.classList.remove('show');
+        }
+
+        // --- 21b. Membuat Peer Connection ---
+        function createPeerConnection(isCallerFlag, callId) {
+            const pc = new RTCPeerConnection(rtcConfig);
+
+            // Tambahkan stream lokal
+            if (localStream) {
+                localStream.getTracks().forEach(track => {
+                    pc.addTrack(track, localStream);
+                });
+            }
+
+            // Terima stream remote
+            pc.ontrack = (event) => {
+                if (!remoteStream) {
+                    remoteStream = new MediaStream();
+                }
+                event.streams[0].getTracks().forEach(track => {
+                    remoteStream.addTrack(track);
+                });
+                remoteVideo.srcObject = remoteStream;
+                callStatusDisplay.textContent = '📞 Tersambung';
+            };
+
+            // Kirim kandidat ICE
+            pc.onicecandidate = (event) => {
+                if (event.candidate) {
+                    callsRef.child(callId).child('candidates').push({
+                        candidate: event.candidate.toJSON(),
+                        from: isCallerFlag ? 'caller' : 'callee'
+                    });
+                }
+            };
+
+            // Status koneksi
+            pc.oniceconnectionstatechange = () => {
+                const state = pc.iceConnectionState;
+                if (state === 'disconnected' || state === 'failed' || state === 'closed') {
+                    callStatusDisplay.textContent = '❌ Panggilan terputus';
+                    setTimeout(() => hideCallOverlay(), 1500);
+                } else if (state === 'connected') {
+                    callStatusDisplay.textContent = '📞 Tersambung';
+                }
+            };
+
+            return pc;
+        }
+
+        // --- 21c. Memulai Panggilan (Caller) ---
+        async function startCall(video) {
+            if (currentCallId) {
+                alert('Panggilan sedang berlangsung.');
+                return;
+            }
+
+            const name = getCallerName();
+            if (!name || name === 'Anonim') {
+                alert('Isi nama Anda terlebih dahulu.');
+                return;
+            }
+
+            try {
+                // Dapatkan akses media
+                const constraints = {
+                    audio: true,
+                    video: video ? { facingMode: 'user' } : false
+                };
+                localStream = await navigator.mediaDevices.getUserMedia(constraints);
+                localVideo.srcObject = localStream;
+
+                // Buat ID panggilan unik
+                const callId = callsRef.push().key;
+                currentCallId = callId;
+                isCaller = true;
+                isVideoCall = video;
+
+                // Tampilkan overlay
+                showCallOverlay(name, 'Menelepon...', video);
+                if (!video) {
+                    // Sembunyikan video jika voice call
+                    localVideo.style.display = 'none';
+                    remoteVideo.style.display = 'none';
+                }
+
+                // Buat peer connection
+                peerConnection = createPeerConnection(true, callId);
+
+                // Buat offer
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+
+                // Simpan offer di Firebase
+                await callsRef.child(callId).set({
+                    type: 'offer',
+                    sdp: offer,
+                    from: name,
+                    isVideo: video,
+                    timestamp: Date.now()
+                });
+
+                callStatusDisplay.textContent = '⏳ Menunggu penerima...';
+
+                // Listen untuk answer
+                const answerListener = callsRef.child(callId).child('answer');
+                const onAnswer = (snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        if (data.sdp) {
+                            const answer = new RTCSessionDescription(data.sdp);
+                            peerConnection.setRemoteDescription(answer).catch(console.error);
+                            callStatusDisplay.textContent = '📞 Tersambung';
+                        }
+                        answerListener.off('value', onAnswer);
+                    }
+                };
+                answerListener.on('value', onAnswer);
+
+                // Listen untuk candidates dari callee
+                const candListener = callsRef.child(callId).child('candidates');
+                const onCandidate = (snapshot) => {
+                    const data = snapshot.val();
+                    if (data && data.from === 'callee' && data.candidate) {
+                        try {
+                            const candidate = new RTCIceCandidate(data.candidate);
+                            peerConnection.addIceCandidate(candidate).catch(console.error);
+                        } catch (e) { console.warn('Gagal add candidate', e); }
+                    }
+                };
+                candListener.on('child_added', onCandidate);
+
+                // Simpan referensi untuk cleanup
+                window._callListeners = { answerListener, candListener, onAnswer, onCandidate };
+
+            } catch (error) {
+                console.error('Gagal memulai panggilan:', error);
+                alert('Tidak dapat mengakses mikrofon/kamera: ' + error.message);
+                closeCall();
+            }
+        }
+
+        // --- 21d. Menerima Panggilan (Callee) ---
+        function acceptIncomingCall() {
+            if (!incomingCallId) return;
+            const callId = incomingCallId;
+
+            // Ambil data offer
+            callsRef.child(callId).once('value', async (snapshot) => {
+                const data = snapshot.val();
+                if (!data || !data.sdp) {
+                    alert('Panggilan sudah berakhir.');
+                    incomingCallPopup.classList.remove('show');
+                    return;
+                }
+
+                try {
+                    const video = data.isVideo || false;
+                    isVideoCall = video;
+                    currentCallId = callId;
+                    isCaller = false;
+
+                    // Akses media
+                    const constraints = {
+                        audio: true,
+                        video: video ? { facingMode: 'user' } : false
+                    };
+                    localStream = await navigator.mediaDevices.getUserMedia(constraints);
+                    localVideo.srcObject = localStream;
+
+                    // Tampilkan overlay
+                    showCallOverlay(data.from || 'Penelepon', 'Menerima...', video);
+                    if (!video) {
+                        localVideo.style.display = 'none';
+                        remoteVideo.style.display = 'none';
+                    }
+
+                    // Buat peer
+                    peerConnection = createPeerConnection(false, callId);
+
+                    // Set remote description (offer)
+                    const offer = new RTCSessionDescription(data.sdp);
+                    await peerConnection.setRemoteDescription(offer);
+
+                    // Buat answer
+                    const answer = await peerConnection.createAnswer();
+                    await peerConnection.setLocalDescription(answer);
+
+                    // Simpan answer
+                    await callsRef.child(callId).child('answer').set({
+                        sdp: answer,
+                        from: getCallerName()
+                    });
+
+                    callStatusDisplay.textContent = '📞 Tersambung';
+                    incomingCallPopup.classList.remove('show');
+                    incomingCallId = null;
+
+                    // Listen candidates dari caller
+                    const candListener = callsRef.child(callId).child('candidates');
+                    const onCandidate = (snapshot) => {
+                        const candData = snapshot.val();
+                        if (candData && candData.from === 'caller' && candData.candidate) {
+                            try {
+                                const candidate = new RTCIceCandidate(candData.candidate);
+                                peerConnection.addIceCandidate(candidate).catch(console.error);
+                            } catch (e) { console.warn('Gagal add candidate', e); }
+                        }
+                    };
+                    candListener.on('child_added', onCandidate);
+                    window._callListeners = { candListener, onCandidate };
+
+                } catch (error) {
+                    console.error('Gagal menerima panggilan:', error);
+                    alert('Tidak dapat mengakses mikrofon/kamera: ' + error.message);
+                    closeCall();
+                }
+            });
+        }
+
+        // --- 21e. Mendengarkan Panggilan Masuk ---
+        function listenForIncomingCalls() {
+            callsRef.on('child_added', (snapshot) => {
+                const data = snapshot.val();
+                const callId = snapshot.key;
+
+                // Hanya proses jika ini offer (panggilan baru) dan bukan dari diri sendiri
+                if (data.type === 'offer' && data.from !== getCallerName()) {
+                    // Jangan tampilkan jika sedang dalam panggilan
+                    if (currentCallId) {
+                        // Tolak otomatis
+                        callsRef.child(callId).remove().catch(() => {});
+                        return;
+                    }
+
+                    incomingCallId = callId;
+                    incCallerName.textContent = data.from || 'Seseorang';
+                    incCallType.textContent = data.isVideo ? '📹 Panggilan Video' : '📞 Panggilan Suara';
+                    incomingCallPopup.classList.add('show');
+
+                    // Mainkan suara notifikasi (opsional)
+                    playBirdSound();
+
+                    // Auto reject setelah 30 detik
+                    setTimeout(() => {
+                        if (incomingCallId === callId) {
+                            incomingCallPopup.classList.remove('show');
+                            callsRef.child(callId).remove().catch(() => {});
+                            incomingCallId = null;
+                        }
+                    }, 30000);
+                }
+            });
+        }
+
+        // --- 21f. Tombol Panggilan ---
+        voiceCallBtn.addEventListener('click', () => {
+            startCall(false);
+        });
+
+        videoCallBtn.addEventListener('click', () => {
+            startCall(true);
+        });
+
+        // --- 21g. Tombol Incoming Call ---
+        incAcceptBtn.addEventListener('click', acceptIncomingCall);
+
+        incRejectBtn.addEventListener('click', () => {
+            if (incomingCallId) {
+                callsRef.child(incomingCallId).remove().catch(() => {});
+                incomingCallId = null;
+                incomingCallPopup.classList.remove('show');
+            }
+        });
+
+        // --- 21h. Tombol Kontrol Selama Panggilan ---
+        endCallBtn.addEventListener('click', () => {
+            if (confirm('Akhiri panggilan?')) {
+                hideCallOverlay();
+            }
+        });
+
+        toggleMicBtn.addEventListener('click', () => {
+            if (localStream) {
+                const audioTracks = localStream.getAudioTracks();
+                if (audioTracks.length > 0) {
+                    isMuted = !isMuted;
+                    audioTracks[0].enabled = !isMuted;
+                    toggleMicBtn.textContent = isMuted ? '🔇' : '🎤';
+                    toggleMicBtn.classList.toggle('muted', isMuted);
+                }
+            }
+        });
+
+        toggleVideoBtn.addEventListener('click', () => {
+            if (localStream) {
+                const videoTracks = localStream.getVideoTracks();
+                if (videoTracks.length > 0) {
+                    isVideoOff = !isVideoOff;
+                    videoTracks[0].enabled = !isVideoOff;
+                    toggleVideoBtn.textContent = isVideoOff ? '🚫' : '📷';
+                    toggleVideoBtn.classList.toggle('video-off', isVideoOff);
+                }
+            }
+        });
+
+        // --- 21i. Cleanup jika panggilan dihapus dari Firebase ---
+        callsRef.on('child_removed', (snapshot) => {
+            const removedId = snapshot.key;
+            if (currentCallId === removedId) {
+                // Panggilan diakhiri oleh pihak lain
+                callStatusDisplay.textContent = '❌ Panggilan diakhiri';
+                setTimeout(() => hideCallOverlay(), 1500);
+            }
+            if (incomingCallId === removedId) {
+                incomingCallPopup.classList.remove('show');
+                incomingCallId = null;
+            }
+        });
+
+        // ============================================================
+        // 22. INISIALISASI
         // ============================================================
         const savedName = sessionStorage.getItem('chat_user');
         if (savedName) nameInput.value = savedName;
@@ -1997,11 +2677,13 @@
         const observer = new MutationObserver(() => updateEmptyState());
         observer.observe(container, { childList: true, subtree: true });
 
-        console.log('💬 WA Clone Lengkap siap!');
-        console.log('📌 Fitur: teks, gambar (✓ di pojok), file (GoFile), reply, forward, hapus, unsend, link preview, emoji, suara, tanggal.');
-        console.log('🔑 GoFile Token sudah diatur di kode.');
-        console.log('📎 Ganti GOFILE_API_TOKEN dengan token Anda dari https://gofile.io/my-account');
-    </script>
+        // Mulai listen untuk panggilan masuk
+        listenForIncomingCalls();
 
+        console.log('💬 Ja\'O Chating + Call siap!');
+        console.log('📹 Fitur: Chat + Video Call + Voice Call (WebRTC)');
+        console.log('📌 Gunakan tombol 📞 (Voice) atau 📹 (Video) di header.');
+        console.log('⚠️ Untuk tembus semua jaringan, aktifkan TURN server di rtcConfig.');
+    </script>
 </body>
 </html>
