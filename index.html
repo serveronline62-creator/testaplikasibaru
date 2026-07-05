@@ -3,10 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
-    <title>💬 WA Clone - Aman</title>
-
-    <!-- Load konfigurasi dari file terpisah -->
-    <script src="config.js"></script>
+    <title>💬 WA Clone - Upload Semua File</title>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
@@ -19,9 +16,6 @@
     </script>
 
     <style>
-        /* ===== CSS SAMA SEPERTI SEBELUMNYA ===== */
-        /* Untuk menghemat, saya akan gunakan CSS yang sudah ada */
-        /* Tapi di sini saya sertakan CSS lengkap agar semua fitur tetap jalan */
         /* ----- RESET & GLOBAL ----- */
         * {
             margin: 0;
@@ -301,7 +295,7 @@
             background: #f5f5f5;
         }
 
-        /* Image inside bubble */
+        /* Image inside bubble dengan tanda centang */
         .message .bubble-image-wrapper {
             position: relative;
             display: inline-block;
@@ -316,6 +310,7 @@
             max-width: 100%;
             cursor: pointer;
         }
+        /* Tanda centang di pojok kanan atas gambar (seperti WA) */
         .message .bubble-image-wrapper .image-check {
             position: absolute;
             top: 6px;
@@ -334,8 +329,11 @@
             pointer-events: none;
             z-index: 2;
         }
+        .message .bubble-image-wrapper .image-check.hidden {
+            display: none;
+        }
 
-        /* File attachment */
+        /* File attachment untuk semua jenis file */
         .message .file-attachment {
             display: flex;
             align-items: center;
@@ -355,8 +353,10 @@
             background: rgba(0, 0, 0, 0.08);
         }
         .message .file-attachment .file-icon {
-            font-size: 28px;
+            font-size: 32px;
             flex-shrink: 0;
+            width: 40px;
+            text-align: center;
         }
         .message .file-attachment .file-info {
             flex: 1;
@@ -864,7 +864,8 @@
                 width: 36px;
             }
             .message .file-attachment .file-icon {
-                font-size: 24px;
+                font-size: 26px;
+                width: 34px;
             }
             .message .file-attachment .file-name {
                 font-size: 13px;
@@ -963,7 +964,7 @@
             <div class="input-row">
                 <input type="text" class="name-input" id="nameInput" placeholder="Nama" maxlength="20" value="User" />
                 <input type="text" class="msg-input" id="messageInput" placeholder="Ketik pesan..." maxlength="500" autocomplete="off" />
-                <button class="icon-btn" id="attachBtn" title="Kirim File">📎</button>
+                <button class="icon-btn" id="attachBtn" title="Kirim File (semua jenis)">📎</button>
                 <button class="icon-btn" id="emojiToggle" type="button" aria-label="Emoji">😊</button>
                 <button class="send-btn" id="sendBtn">
                     <span>Kirim</span>
@@ -993,31 +994,36 @@
         </button>
     </div>
 
-    <!-- hidden file input - accept all types -->
+    <!-- hidden file input (semua jenis file) -->
     <input type="file" id="fileInput" style="display:none" />
 
     <script>
         // ============================================================
-        // 1. AMBIL KONFIGURASI DARI config.js
+        // 1. FIREBASE KONFIGURASI
         // ============================================================
-        // Pastikan file config.js sudah ada dengan window.CONFIG
-        if (typeof window.CONFIG === 'undefined') {
-            alert('❌ File config.js tidak ditemukan! Buat file config.js dengan konfigurasi Firebase dan GoFile token.');
-            throw new Error('config.js tidak ditemukan');
-        }
+        const firebaseConfig = {
+            apiKey: "AIzaSyDXAGqwKYZ0_CIqM_X4aqaQv1hZ0FL1_g0",
+            authDomain: "aplikasi1-81ca7.firebaseapp.com",
+            databaseURL: "https://aplikasi1-81ca7-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "aplikasi1-81ca7",
+            storageBucket: "aplikasi1-81ca7.firebasestorage.app",
+            messagingSenderId: "918066359695",
+            appId: "1:918066359695:web:31dddf1decc224e984affa"
+        };
 
-        const firebaseConfig = window.CONFIG.firebase;
-        const GOFILE_API_TOKEN = window.CONFIG.gofileToken;
-
-        // ============================================================
-        // 2. FIREBASE INISIALISASI
-        // ============================================================
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const messagesRef = database.ref('messages');
 
         // ============================================================
-        // 3. DOM ELEMEN (sama seperti sebelumnya)
+        // 2. GOFILE API TOKEN - GANTI DENGAN TOKEN ANDA
+        // ============================================================
+        // Dapatkan token dari https://gofile.io/my-account
+        // Token ini digunakan untuk upload semua jenis file (PDF, video, audio, dokumen, dll)
+        const GOFILE_API_TOKEN = 'YOUR_API_TOKEN'; // <-- GANTI DENGAN TOKEN ANDA
+
+        // ============================================================
+        // 3. DOM ELEMEN
         // ============================================================
         const container = document.getElementById('messageContainer');
         const emptyState = document.getElementById('emptyState');
@@ -1048,7 +1054,7 @@
         const cancelFileBtn = document.getElementById('cancelFileBtn');
 
         // ============================================================
-        // 4. SUARA (sama)
+        // 4. SUARA
         // ============================================================
         let audioCtx = null;
 
@@ -1119,7 +1125,7 @@
         }
 
         // ============================================================
-        // 5. FUNGSI BANTU (sama)
+        // 5. FUNGSI BANTU
         // ============================================================
         function formatTime(timestamp) {
             if (!timestamp) return '--:--';
@@ -1172,25 +1178,51 @@
             if (mimeType && mimeType.startsWith('audio/')) return '🎵';
             if (ext === 'pdf') return '📄';
             if (['doc', 'docx'].includes(ext)) return '📝';
-            if (['xls', 'xlsx'].includes(ext)) return '📊';
+            if (['xls', 'xlsx', 'csv'].includes(ext)) return '📊';
             if (['ppt', 'pptx'].includes(ext)) return '📑';
-            if (['zip', 'rar', '7z'].includes(ext)) return '📦';
+            if (['zip', 'rar', '7z', 'gz'].includes(ext)) return '📦';
+            if (['apk'].includes(ext)) return '📱';
+            if (['exe', 'msi'].includes(ext)) return '⚙️';
+            if (['txt', 'log'].includes(ext)) return '📃';
+            if (['json', 'xml', 'yaml', 'yml'].includes(ext)) return '📋';
             return '📎';
         }
 
         function formatFileSize(bytes) {
             if (bytes < 1024) return bytes + ' B';
             if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+            if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+            return (bytes / (1024 * 1024 * 1024)).toFixed(1) + ' GB';
         }
 
         // ============================================================
-        // 6. UPLOAD KE GOFILE DENGAN TOKEN DARI CONFIG
+        // 6. UPLOAD FILE (GoFile.io dengan Bearer Token - SEMUA JENIS FILE)
         // ============================================================
+        const IMGUR_CLIENT_ID = '546c25a59c58ad7';
+
+        async function uploadToImgur(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+            const response = await fetch('https://api.imgur.com/3/image', {
+                method: 'POST',
+                headers: { 'Authorization': 'Client-ID ' + IMGUR_CLIENT_ID },
+                body: formData
+            });
+            if (!response.ok) {
+                const err = await response.text();
+                throw new Error('Imgur error: ' + err);
+            }
+            const data = await response.json();
+            if (!data.success || !data.data || !data.data.link) {
+                throw new Error('Imgur response invalid');
+            }
+            return data.data.link;
+        }
+
         async function uploadToGoFile(file) {
             const token = GOFILE_API_TOKEN;
-            if (!token || token === 'YOUR_API_TOKEN_HERE') {
-                throw new Error('❌ GoFile API Token belum diatur di config.js. Dapatkan token dari https://gofile.io/my-account');
+            if (!token || token === 'YOUR_API_TOKEN') {
+                throw new Error('⚠️ GoFile API Token belum diatur. Silakan ganti GOFILE_API_TOKEN di kode.\nDapatkan token di: https://gofile.io/my-account');
             }
 
             const formData = new FormData();
@@ -1207,10 +1239,11 @@
 
                 if (!response.ok) {
                     const errText = await response.text();
+                    let errorMsg = 'Upload gagal (HTTP ' + response.status + ')';
                     if (response.status === 401 || response.status === 403) {
-                        throw new Error('❌ Token GoFile tidak valid. Periksa token di config.js');
+                        errorMsg = '❌ Token GoFile tidak valid. Periksa token Anda di https://gofile.io/my-account';
                     }
-                    throw new Error('Upload gagal (HTTP ' + response.status + '): ' + errText);
+                    throw new Error(errorMsg + ': ' + errText);
                 }
 
                 const result = await response.json();
@@ -1219,7 +1252,8 @@
                 }
 
                 const data = result.data;
-                const downloadUrl = data.link || data.downloadUrl || `https://gofile.io/d/${data.fileId}`;
+                // Beberapa format response GoFile
+                const downloadUrl = data.link || data.downloadUrl || data.directLink || `https://gofile.io/d/${data.fileId}`;
                 return downloadUrl;
 
             } catch (error) {
@@ -1228,7 +1262,7 @@
         }
 
         // ============================================================
-        // 7. HEADER DROPDOWN (sama)
+        // 7. HEADER DROPDOWN
         // ============================================================
         headerMenuBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1255,7 +1289,7 @@
         });
 
         // ============================================================
-        // 8. REPLY (sama)
+        // 8. REPLY
         // ============================================================
         let replyTo = null;
 
@@ -1274,7 +1308,7 @@
         cancelReplyBtn.addEventListener('click', clearReply);
 
         // ============================================================
-        // 9. CONTEXT MENU (sama)
+        // 9. CONTEXT MENU
         // ============================================================
         let currentMessageKey = null;
         let currentMessageElement = null;
@@ -1345,6 +1379,7 @@
             }
         });
 
+        // Hapus (Delete for me) - hanya dari tampilan sendiri
         menuDelete.addEventListener('click', () => {
             if (currentMessageKey && currentMessageElement) {
                 const el = currentMessageElement;
@@ -1357,6 +1392,7 @@
             }
         });
 
+        // Batalkan (Unsend for everyone)
         menuUnsend.addEventListener('click', () => {
             if (currentMessageKey) {
                 if (confirm('Batalkan pesan ini untuk semua orang?')) {
@@ -1390,7 +1426,7 @@
         }
 
         // ============================================================
-        // 11. LINK PREVIEW (sama)
+        // 11. LINK PREVIEW
         // ============================================================
         const previewCache = new Map();
 
@@ -1468,7 +1504,7 @@
         }
 
         // ============================================================
-        // 12. RENDER MESSAGE (sama)
+        // 12. RENDER MESSAGE
         // ============================================================
         let lastDisplayedDateKey = null;
 
@@ -1488,6 +1524,7 @@
 
             if (container.querySelector(`[data-key="${key}"]`)) return;
 
+            // Date separator
             const dateKey = getDateKey(time);
             if (lastDisplayedDateKey !== dateKey) {
                 const sep = document.createElement('div');
@@ -1512,6 +1549,7 @@
             const bubble = document.createElement('div');
             bubble.className = 'bubble';
 
+            // Reply quote
             if (replyData) {
                 const q = document.createElement('div');
                 q.className = 'reply-quote';
@@ -1527,6 +1565,7 @@
                 bubble.appendChild(q);
             }
 
+            // Image dengan tanda centang (untuk gambar yang diupload ke Imgur)
             if (imageUrl) {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'bubble-image-wrapper';
@@ -1540,15 +1579,19 @@
                     window.open(imageUrl, '_blank');
                 };
                 wrapper.appendChild(img);
+
+                // Tanda centang di pojok kanan atas (hanya untuk pesan sendiri)
                 if (isOwn) {
                     const checkMark = document.createElement('div');
                     checkMark.className = 'image-check';
                     checkMark.textContent = '✓';
                     wrapper.appendChild(checkMark);
                 }
+
                 bubble.appendChild(wrapper);
             }
 
+            // File attachment (untuk semua file dari GoFile - PDF, video, audio, dokumen, dll)
             if (fileUrl) {
                 const fileDiv = document.createElement('a');
                 fileDiv.className = 'file-attachment';
@@ -1584,6 +1627,7 @@
                 bubble.appendChild(fileDiv);
             }
 
+            // Text
             if (text) {
                 const textNode = document.createElement('div');
                 textNode.className = 'bubble-text';
@@ -1591,6 +1635,7 @@
                 bubble.appendChild(textNode);
             }
 
+            // Link preview (jika ada URL di teks dan tidak ada gambar/file)
             const urls = extractUrls(text);
             if (urls.length > 0 && !imageUrl && !fileUrl) {
                 const linkUrl = urls[0];
@@ -1653,6 +1698,7 @@
                     });
             }
 
+            // Jika tidak ada konten sama sekali
             if (!text && !imageUrl && !fileUrl) {
                 const placeholder = document.createElement('span');
                 placeholder.textContent = '📎';
@@ -1674,6 +1720,7 @@
             msgDiv.appendChild(bubble);
             msgDiv.appendChild(footer);
 
+            // Click events for context menu
             bubble.addEventListener('click', (e) => {
                 e.stopPropagation();
                 showContextMenu(e, key, msgDiv, { text, name: sender, imageUrl, fileUrl, fileName, fileSize,
@@ -1771,7 +1818,7 @@
         });
 
         // ============================================================
-        // 16. KIRIM PESAN (upload ke GoFile)
+        // 16. KIRIM PESAN (dengan file - SEMUA JENIS)
         // ============================================================
         let pendingFile = null;
         let isUploading = false;
@@ -1779,7 +1826,8 @@
         function showFilePreview(file) {
             const icon = getFileIcon(file.type, file.name);
             filePreviewIcon.textContent = icon;
-            filePreviewInfo.textContent = file.name + ' (' + formatFileSize(file.size) + ')';
+            const sizeStr = formatFileSize(file.size);
+            filePreviewInfo.textContent = file.name + ' (' + sizeStr + ')';
             filePreviewContainer.classList.add('show');
             uploadProgress.textContent = '';
             pendingFile = file;
@@ -1806,8 +1854,8 @@
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
-                if (file.size > 50 * 1024 * 1024) {
-                    alert('⚠️ Ukuran file maksimal 50MB.');
+                if (file.size > 100 * 1024 * 1024) {
+                    alert('⚠️ Ukuran file maksimal 100MB.');
                     fileInput.value = '';
                     return;
                 }
@@ -1828,7 +1876,8 @@
             const name = getSenderName();
             sessionStorage.setItem('chat_user', name);
 
-            let fileUrl = null,
+            let imageUrl = null,
+                fileUrl = null,
                 fileName = null,
                 fileSize = null,
                 fileMime = null;
@@ -1837,15 +1886,28 @@
                 isUploading = true;
                 attachBtn.classList.add('uploading');
                 sendBtn.disabled = true;
-                uploadProgress.textContent = '⏳ Mengupload ke GoFile...';
+                uploadProgress.textContent = '⏳ Uploading...';
 
                 try {
                     const file = pendingFile;
-                    fileUrl = await uploadToGoFile(file);
-                    fileName = file.name;
-                    fileSize = file.size;
-                    fileMime = file.type || 'application/octet-stream';
-                    uploadProgress.textContent = '✅ Selesai!';
+                    const fileType = file.type || '';
+                    const fileExt = file.name.split('.').pop().toLowerCase();
+
+                    // Jika file adalah gambar (JPG, PNG, GIF, BMP, WebP, SVG) dan ukuran < 5MB → Imgur
+                    const isImage = fileType.startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg']
+                        .includes(fileExt);
+
+                    if (isImage && file.size < 5 * 1024 * 1024) {
+                        imageUrl = await uploadToImgur(file);
+                        uploadProgress.textContent = '✅ Selesai (Imgur)';
+                    } else {
+                        // SEMUA FILE LAINNYA (PDF, video, audio, dokumen, zip, dll) → GoFile.io
+                        fileUrl = await uploadToGoFile(file);
+                        fileName = file.name;
+                        fileSize = file.size;
+                        fileMime = fileType || 'application/octet-stream';
+                        uploadProgress.textContent = '✅ Selesai (GoFile)';
+                    }
                 } catch (error) {
                     alert('❌ Gagal upload: ' + error.message);
                     isUploading = false;
@@ -1868,16 +1930,13 @@
                 read: false
             };
 
+            if (imageUrl) payload.imageUrl = imageUrl;
             if (fileUrl) {
                 payload.fileUrl = fileUrl;
                 payload.fileName = fileName;
                 payload.fileSize = fileSize;
                 payload.fileMime = fileMime;
-                if (fileMime && fileMime.startsWith('image/')) {
-                    payload.imageUrl = fileUrl;
-                }
             }
-
             if (replyTo) {
                 payload.replyTo = {
                     key: replyTo.key,
@@ -1960,10 +2019,12 @@
         const observer = new MutationObserver(() => updateEmptyState());
         observer.observe(container, { childList: true, subtree: true });
 
-        console.log('✅ Aplikasi chat siap dengan konfigurasi aman!');
-        console.log('🔐 Kredensial diambil dari config.js (tidak di-commit)');
-        console.log('📎 Upload semua jenis file ke GoFile.io dengan Bearer Token');
-        console.log('ℹ️ Pastikan config.js berisi token yang valid.');
+        console.log('💬 WA Clone - Upload Semua File siap!');
+        console.log('📌 Fitur: teks, gambar (✓ di pojok), dan SEMUA file (PDF, video, audio, dokumen, zip, dll)');
+        console.log('🔑 GoFile Token: ' + (GOFILE_API_TOKEN === 'YOUR_API_TOKEN' ? '⚠️ BELUM DIATUR - Ganti dengan token Anda!' :
+            '✅ Terpasang'));
+        console.log('📎 Dapatkan token di: https://gofile.io/my-account');
+        console.log('📁 File yang didukung: JPG, PNG, PDF, MP4, MP3, DOC, XLS, PPT, ZIP, dan semua jenis file lainnya!');
     </script>
 
 </body>
