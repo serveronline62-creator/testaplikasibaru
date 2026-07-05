@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
-    <title>💬 WA Clone - Upload Semua File</title>
+    <title>💬 WA Clone - Aman</title>
+
+    <!-- Load konfigurasi dari file terpisah -->
+    <script src="config.js"></script>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
@@ -16,6 +19,9 @@
     </script>
 
     <style>
+        /* ===== CSS SAMA SEPERTI SEBELUMNYA ===== */
+        /* Untuk menghemat, saya akan gunakan CSS yang sudah ada */
+        /* Tapi di sini saya sertakan CSS lengkap agar semua fitur tetap jalan */
         /* ----- RESET & GLOBAL ----- */
         * {
             margin: 0;
@@ -992,31 +998,26 @@
 
     <script>
         // ============================================================
-        // 1. FIREBASE KONFIGURASI
+        // 1. AMBIL KONFIGURASI DARI config.js
         // ============================================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyDXAGqwKYZ0_CIqM_X4aqaQv1hZ0FL1_g0",
-            authDomain: "aplikasi1-81ca7.firebaseapp.com",
-            databaseURL: "https://aplikasi1-81ca7-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "aplikasi1-81ca7",
-            storageBucket: "aplikasi1-81ca7.firebasestorage.app",
-            messagingSenderId: "918066359695",
-            appId: "1:918066359695:web:31dddf1decc224e984affa"
-        };
+        // Pastikan file config.js sudah ada dengan window.CONFIG
+        if (typeof window.CONFIG === 'undefined') {
+            alert('❌ File config.js tidak ditemukan! Buat file config.js dengan konfigurasi Firebase dan GoFile token.');
+            throw new Error('config.js tidak ditemukan');
+        }
 
+        const firebaseConfig = window.CONFIG.firebase;
+        const GOFILE_API_TOKEN = window.CONFIG.gofileToken;
+
+        // ============================================================
+        // 2. FIREBASE INISIALISASI
+        // ============================================================
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const messagesRef = database.ref('messages');
 
         // ============================================================
-        // 2. GOFILE API TOKEN - GANTI DENGAN TOKEN ANDA
-        // ============================================================
-        // Dapatkan token dari https://gofile.io/my-account
-        // Ganti "YOUR_API_TOKEN" dengan token asli Anda
-        const GOFILE_API_TOKEN = 'YOUR_API_TOKEN';
-
-        // ============================================================
-        // 3. DOM ELEMEN
+        // 3. DOM ELEMEN (sama seperti sebelumnya)
         // ============================================================
         const container = document.getElementById('messageContainer');
         const emptyState = document.getElementById('emptyState');
@@ -1047,7 +1048,7 @@
         const cancelFileBtn = document.getElementById('cancelFileBtn');
 
         // ============================================================
-        // 4. SUARA
+        // 4. SUARA (sama)
         // ============================================================
         let audioCtx = null;
 
@@ -1118,7 +1119,7 @@
         }
 
         // ============================================================
-        // 5. FUNGSI BANTU
+        // 5. FUNGSI BANTU (sama)
         // ============================================================
         function formatTime(timestamp) {
             if (!timestamp) return '--:--';
@@ -1184,12 +1185,12 @@
         }
 
         // ============================================================
-        // 6. UPLOAD FILE KE GOFILE DENGAN BEARER TOKEN
+        // 6. UPLOAD KE GOFILE DENGAN TOKEN DARI CONFIG
         // ============================================================
         async function uploadToGoFile(file) {
             const token = GOFILE_API_TOKEN;
-            if (!token || token === 'YOUR_API_TOKEN') {
-                throw new Error('❌ GoFile API Token belum diatur. Silakan ganti GOFILE_API_TOKEN di kode dengan token dari https://gofile.io/my-account');
+            if (!token || token === 'YOUR_API_TOKEN_HERE') {
+                throw new Error('❌ GoFile API Token belum diatur di config.js. Dapatkan token dari https://gofile.io/my-account');
             }
 
             const formData = new FormData();
@@ -1206,9 +1207,8 @@
 
                 if (!response.ok) {
                     const errText = await response.text();
-                    // Jika token tidak valid, beri pesan jelas
                     if (response.status === 401 || response.status === 403) {
-                        throw new Error('❌ Token GoFile tidak valid. Periksa token Anda di https://gofile.io/my-account');
+                        throw new Error('❌ Token GoFile tidak valid. Periksa token di config.js');
                     }
                     throw new Error('Upload gagal (HTTP ' + response.status + '): ' + errText);
                 }
@@ -1219,7 +1219,6 @@
                 }
 
                 const data = result.data;
-                // Cek berbagai format response dari GoFile
                 const downloadUrl = data.link || data.downloadUrl || `https://gofile.io/d/${data.fileId}`;
                 return downloadUrl;
 
@@ -1229,7 +1228,7 @@
         }
 
         // ============================================================
-        // 7. HEADER DROPDOWN
+        // 7. HEADER DROPDOWN (sama)
         // ============================================================
         headerMenuBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1256,7 +1255,7 @@
         });
 
         // ============================================================
-        // 8. REPLY
+        // 8. REPLY (sama)
         // ============================================================
         let replyTo = null;
 
@@ -1275,7 +1274,7 @@
         cancelReplyBtn.addEventListener('click', clearReply);
 
         // ============================================================
-        // 9. CONTEXT MENU
+        // 9. CONTEXT MENU (sama)
         // ============================================================
         let currentMessageKey = null;
         let currentMessageElement = null;
@@ -1346,7 +1345,6 @@
             }
         });
 
-        // Hapus (Delete for me) - hanya dari tampilan sendiri
         menuDelete.addEventListener('click', () => {
             if (currentMessageKey && currentMessageElement) {
                 const el = currentMessageElement;
@@ -1359,7 +1357,6 @@
             }
         });
 
-        // Batalkan (Unsend for everyone)
         menuUnsend.addEventListener('click', () => {
             if (currentMessageKey) {
                 if (confirm('Batalkan pesan ini untuk semua orang?')) {
@@ -1393,7 +1390,7 @@
         }
 
         // ============================================================
-        // 11. LINK PREVIEW
+        // 11. LINK PREVIEW (sama)
         // ============================================================
         const previewCache = new Map();
 
@@ -1471,7 +1468,7 @@
         }
 
         // ============================================================
-        // 12. RENDER MESSAGE
+        // 12. RENDER MESSAGE (sama)
         // ============================================================
         let lastDisplayedDateKey = null;
 
@@ -1491,7 +1488,6 @@
 
             if (container.querySelector(`[data-key="${key}"]`)) return;
 
-            // Date separator
             const dateKey = getDateKey(time);
             if (lastDisplayedDateKey !== dateKey) {
                 const sep = document.createElement('div');
@@ -1516,7 +1512,6 @@
             const bubble = document.createElement('div');
             bubble.className = 'bubble';
 
-            // Reply quote
             if (replyData) {
                 const q = document.createElement('div');
                 q.className = 'reply-quote';
@@ -1532,7 +1527,6 @@
                 bubble.appendChild(q);
             }
 
-            // Image dengan tanda centang (jika ada imageUrl)
             if (imageUrl) {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'bubble-image-wrapper';
@@ -1546,19 +1540,15 @@
                     window.open(imageUrl, '_blank');
                 };
                 wrapper.appendChild(img);
-
-                // Tanda centang di pojok kanan atas (hanya untuk pesan sendiri)
                 if (isOwn) {
                     const checkMark = document.createElement('div');
                     checkMark.className = 'image-check';
                     checkMark.textContent = '✓';
                     wrapper.appendChild(checkMark);
                 }
-
                 bubble.appendChild(wrapper);
             }
 
-            // File attachment (untuk semua file yang diupload ke GoFile)
             if (fileUrl) {
                 const fileDiv = document.createElement('a');
                 fileDiv.className = 'file-attachment';
@@ -1594,7 +1584,6 @@
                 bubble.appendChild(fileDiv);
             }
 
-            // Text
             if (text) {
                 const textNode = document.createElement('div');
                 textNode.className = 'bubble-text';
@@ -1602,7 +1591,6 @@
                 bubble.appendChild(textNode);
             }
 
-            // Link preview (jika ada URL di teks dan tidak ada gambar/file)
             const urls = extractUrls(text);
             if (urls.length > 0 && !imageUrl && !fileUrl) {
                 const linkUrl = urls[0];
@@ -1665,7 +1653,6 @@
                     });
             }
 
-            // Jika tidak ada konten sama sekali
             if (!text && !imageUrl && !fileUrl) {
                 const placeholder = document.createElement('span');
                 placeholder.textContent = '📎';
@@ -1687,7 +1674,6 @@
             msgDiv.appendChild(bubble);
             msgDiv.appendChild(footer);
 
-            // Click events for context menu
             bubble.addEventListener('click', (e) => {
                 e.stopPropagation();
                 showContextMenu(e, key, msgDiv, { text, name: sender, imageUrl, fileUrl, fileName, fileSize,
@@ -1785,7 +1771,7 @@
         });
 
         // ============================================================
-        // 16. KIRIM PESAN (SEMUA FILE KE GOFILE DENGAN BEARER TOKEN)
+        // 16. KIRIM PESAN (upload ke GoFile)
         // ============================================================
         let pendingFile = null;
         let isUploading = false;
@@ -1855,7 +1841,6 @@
 
                 try {
                     const file = pendingFile;
-                    // SEMUA file (termasuk gambar) diupload ke GoFile dengan Bearer Token
                     fileUrl = await uploadToGoFile(file);
                     fileName = file.name;
                     fileSize = file.size;
@@ -1883,16 +1868,13 @@
                 read: false
             };
 
-            // Semua file disimpan sebagai fileUrl (termasuk gambar)
-            // Ini membuat konsisten: semua file menggunakan GoFile
             if (fileUrl) {
                 payload.fileUrl = fileUrl;
                 payload.fileName = fileName;
                 payload.fileSize = fileSize;
                 payload.fileMime = fileMime;
-                // Jika file adalah gambar, kita tetap simpan imageUrl untuk kompatibilitas tampilan
                 if (fileMime && fileMime.startsWith('image/')) {
-                    payload.imageUrl = fileUrl; // biar muncul sebagai gambar dengan centang
+                    payload.imageUrl = fileUrl;
                 }
             }
 
@@ -1978,11 +1960,10 @@
         const observer = new MutationObserver(() => updateEmptyState());
         observer.observe(container, { childList: true, subtree: true });
 
-        console.log('💬 WA Clone - Upload Semua File siap!');
-        console.log('📌 Fitur: teks, gambar, video, PDF, dokumen, audio, ZIP, dan semua jenis file.');
-        console.log('🔑 Menggunakan Authorization: Bearer TOKEN ke GoFile.io');
-        console.log('📎 Ganti GOFILE_API_TOKEN dengan token Anda dari https://gofile.io/my-account');
-        console.log('✅ Tanda centang ✓ muncul di pojok gambar yang sudah terkirim.');
+        console.log('✅ Aplikasi chat siap dengan konfigurasi aman!');
+        console.log('🔐 Kredensial diambil dari config.js (tidak di-commit)');
+        console.log('📎 Upload semua jenis file ke GoFile.io dengan Bearer Token');
+        console.log('ℹ️ Pastikan config.js berisi token yang valid.');
     </script>
 
 </body>
