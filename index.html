@@ -1279,7 +1279,7 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const messagesRef = database.ref('messages');
-        const callsRef = database.ref('calls'); // Node untuk signaling
+        const callsRef = database.ref('calls');
 
         // ============================================================
         // 2. GOFILE API TOKEN
@@ -1289,23 +1289,11 @@
         // ============================================================
         // 3. WEBRTC KONFIGURASI
         // ============================================================
-        // STUN gratis dari Google. Untuk produksi, tambahkan TURN server.
         const rtcConfig = {
             iceServers: [
                 { urls: 'stun:stun.l.google.com:19302' },
-                { urls: 'stun:stun1.l.google.com:19302' },
-                // TURN gratis (rekomendasi untuk koneksi di jaringan ketat)
-                // Daftar gratis di https://www.metered.ca/tools/openrelay/
-                // {
-                //   urls: 'turn:openrelay.metered.ca:80',
-                //   username: 'openrelayproject',
-                //   credential: 'openrelayproject'
-                // },
-                // {
-                //   urls: 'turn:openrelay.metered.ca:443',
-                //   username: 'openrelayproject',
-                //   credential: 'openrelayproject'
-                // }
+                { urls: 'stun:stun1.l.google.com:19302' }
+                // Tambahkan TURN server jika perlu (lihat komentar di bawah)
             ]
         };
 
@@ -1371,9 +1359,10 @@
         let incomingCallId = null;
 
         // ============================================================
-        // 6. SUARA (Chat)
+        // 6. SUARA (Chat + Ringtone)
         // ============================================================
         let audioCtx = null;
+        let ringtoneNodes = null; // { gain, interval }
 
         function initAudio() {
             if (!audioCtx) {
@@ -1384,6 +1373,7 @@
             }
         }
 
+        // --- Suara chat ---
         function playBirdSound() {
             try {
                 initAudio();
@@ -1439,6 +1429,55 @@
                         );
                     a.volume = 0.3;
                     a.play().catch(() => {}); } catch (e2) {} }
+        }
+
+        // --- RINGTONE (nada dering looping) ---
+        function playRingtone() {
+            stopRingtone(); // Hentikan yang lama
+            try {
+                initAudio();
+                if (!audioCtx) {
+                    console.warn('AudioContext tidak tersedia');
+                    return;
+                }
+                const now = audioCtx.currentTime;
+                // Buat gain untuk mengontrol volume
+                const gain = audioCtx.createGain();
+                gain.connect(audioCtx.destination);
+                gain.gain.setValueAtTime(0.25, now);
+
+                let isOn = true;
+                const interval = setInterval(() => {
+                    if (!audioCtx || audioCtx.state === 'closed') {
+                        clearInterval(interval);
+                        return;
+                    }
+                    // Nada pertama (440Hz) dan kedua (480Hz) bergantian
+                    const freq = isOn ? 440 : 480;
+                    const osc = audioCtx.createOscillator();
+                    osc.connect(gain);
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    const startTime = audioCtx.currentTime;
+                    osc.start(startTime);
+                    osc.stop(startTime + 0.2);
+                    isOn = !isOn;
+                }, 400); // Ganti nada setiap 400ms
+
+                ringtoneNodes = { gain, interval };
+            } catch (e) {
+                console.warn('Gagal memutar ringtone:', e);
+            }
+        }
+
+        function stopRingtone() {
+            if (ringtoneNodes) {
+                clearInterval(ringtoneNodes.interval);
+                try {
+                    ringtoneNodes.gain.disconnect();
+                } catch (e) {}
+                ringtoneNodes = null;
+            }
         }
 
         // ============================================================
@@ -2282,7 +2321,7 @@
         });
 
         // ============================================================
-        // 21. WEBRTC - CALL LOGIC (BARU!)
+        // 21. WEBRTC - CALL LOGIC (dengan Ringtone)
         // ============================================================
 
         // --- 21a. Utility untuk Call ---
@@ -2295,16 +2334,13 @@
             callStatusDisplay.textContent = status || 'Menghubungkan...';
             isVideoCall = video;
             callOverlay.classList.add('show');
-            // Atur tampilan video (sembunyikan jika voice call)
             if (!video) {
                 localVideo.style.display = 'none';
                 remoteVideo.style.display = 'none';
-                // Tapi kita tetap butuh audio track
             } else {
                 localVideo.style.display = 'block';
                 remoteVideo.style.display = 'block';
             }
-            // Reset tombol
             toggleMicBtn.classList.remove('muted');
             toggleMicBtn.textContent = '🎤';
             toggleVideoBtn.classList.remove('video-off');
@@ -2315,11 +2351,12 @@
 
         function hideCallOverlay() {
             callOverlay.classList.remove('show');
-            // Hentikan semua stream dan tutup peer
+            stopRingtone(); // Hentikan dering jika masih berbunyi
             closeCall();
         }
 
         function closeCall() {
+            stopRingtone();
             if (localStream) {
                 localStream.getTracks().forEach(track => track.stop());
                 localStream = null;
@@ -2335,7 +2372,6 @@
             localVideo.srcObject = null;
             remoteVideo.srcObject = null;
             if (currentCallId) {
-                // Hapus data panggilan dari Firebase
                 callsRef.child(currentCallId).remove().catch(() => {});
                 currentCallId = null;
             }
@@ -2349,14 +2385,12 @@
         function createPeerConnection(isCallerFlag, callId) {
             const pc = new RTCPeerConnection(rtcConfig);
 
-            // Tambahkan stream lokal
             if (localStream) {
                 localStream.getTracks().forEach(track => {
                     pc.addTrack(track, localStream);
                 });
             }
 
-            // Terima stream remote
             pc.ontrack = (event) => {
                 if (!remoteStream) {
                     remoteStream = new MediaStream();
@@ -2366,9 +2400,9 @@
                 });
                 remoteVideo.srcObject = remoteStream;
                 callStatusDisplay.textContent = '📞 Tersambung';
+                stopRingtone(); // Hentikan dering saat tersambung
             };
 
-            // Kirim kandidat ICE
             pc.onicecandidate = (event) => {
                 if (event.candidate) {
                     callsRef.child(callId).child('candidates').push({
@@ -2378,14 +2412,15 @@
                 }
             };
 
-            // Status koneksi
             pc.oniceconnectionstatechange = () => {
                 const state = pc.iceConnectionState;
                 if (state === 'disconnected' || state === 'failed' || state === 'closed') {
                     callStatusDisplay.textContent = '❌ Panggilan terputus';
+                    stopRingtone();
                     setTimeout(() => hideCallOverlay(), 1500);
                 } else if (state === 'connected') {
                     callStatusDisplay.textContent = '📞 Tersambung';
+                    stopRingtone();
                 }
             };
 
@@ -2406,7 +2441,6 @@
             }
 
             try {
-                // Dapatkan akses media
                 const constraints = {
                     audio: true,
                     video: video ? { facingMode: 'user' } : false
@@ -2414,28 +2448,22 @@
                 localStream = await navigator.mediaDevices.getUserMedia(constraints);
                 localVideo.srcObject = localStream;
 
-                // Buat ID panggilan unik
                 const callId = callsRef.push().key;
                 currentCallId = callId;
                 isCaller = true;
                 isVideoCall = video;
 
-                // Tampilkan overlay
                 showCallOverlay(name, 'Menelepon...', video);
                 if (!video) {
-                    // Sembunyikan video jika voice call
                     localVideo.style.display = 'none';
                     remoteVideo.style.display = 'none';
                 }
 
-                // Buat peer connection
                 peerConnection = createPeerConnection(true, callId);
 
-                // Buat offer
                 const offer = await peerConnection.createOffer();
                 await peerConnection.setLocalDescription(offer);
 
-                // Simpan offer di Firebase
                 await callsRef.child(callId).set({
                     type: 'offer',
                     sdp: offer,
@@ -2446,7 +2474,6 @@
 
                 callStatusDisplay.textContent = '⏳ Menunggu penerima...';
 
-                // Listen untuk answer
                 const answerListener = callsRef.child(callId).child('answer');
                 const onAnswer = (snapshot) => {
                     if (snapshot.exists()) {
@@ -2455,13 +2482,13 @@
                             const answer = new RTCSessionDescription(data.sdp);
                             peerConnection.setRemoteDescription(answer).catch(console.error);
                             callStatusDisplay.textContent = '📞 Tersambung';
+                            stopRingtone(); // Hentikan dering jika berdering
                         }
                         answerListener.off('value', onAnswer);
                     }
                 };
                 answerListener.on('value', onAnswer);
 
-                // Listen untuk candidates dari callee
                 const candListener = callsRef.child(callId).child('candidates');
                 const onCandidate = (snapshot) => {
                     const data = snapshot.val();
@@ -2474,7 +2501,6 @@
                 };
                 candListener.on('child_added', onCandidate);
 
-                // Simpan referensi untuk cleanup
                 window._callListeners = { answerListener, candListener, onAnswer, onCandidate };
 
             } catch (error) {
@@ -2489,12 +2515,13 @@
             if (!incomingCallId) return;
             const callId = incomingCallId;
 
-            // Ambil data offer
             callsRef.child(callId).once('value', async (snapshot) => {
                 const data = snapshot.val();
                 if (!data || !data.sdp) {
                     alert('Panggilan sudah berakhir.');
                     incomingCallPopup.classList.remove('show');
+                    incomingCallId = null;
+                    stopRingtone();
                     return;
                 }
 
@@ -2504,7 +2531,6 @@
                     currentCallId = callId;
                     isCaller = false;
 
-                    // Akses media
                     const constraints = {
                         audio: true,
                         video: video ? { facingMode: 'user' } : false
@@ -2512,25 +2538,22 @@
                     localStream = await navigator.mediaDevices.getUserMedia(constraints);
                     localVideo.srcObject = localStream;
 
-                    // Tampilkan overlay
                     showCallOverlay(data.from || 'Penelepon', 'Menerima...', video);
                     if (!video) {
                         localVideo.style.display = 'none';
                         remoteVideo.style.display = 'none';
                     }
 
-                    // Buat peer
+                    stopRingtone(); // Hentikan dering karena sudah diangkat
+
                     peerConnection = createPeerConnection(false, callId);
 
-                    // Set remote description (offer)
                     const offer = new RTCSessionDescription(data.sdp);
                     await peerConnection.setRemoteDescription(offer);
 
-                    // Buat answer
                     const answer = await peerConnection.createAnswer();
                     await peerConnection.setLocalDescription(answer);
 
-                    // Simpan answer
                     await callsRef.child(callId).child('answer').set({
                         sdp: answer,
                         from: getCallerName()
@@ -2540,7 +2563,6 @@
                     incomingCallPopup.classList.remove('show');
                     incomingCallId = null;
 
-                    // Listen candidates dari caller
                     const candListener = callsRef.child(callId).child('candidates');
                     const onCandidate = (snapshot) => {
                         const candData = snapshot.val();
@@ -2562,17 +2584,14 @@
             });
         }
 
-        // --- 21e. Mendengarkan Panggilan Masuk ---
+        // --- 21e. Mendengarkan Panggilan Masuk (dengan Ringtone) ---
         function listenForIncomingCalls() {
             callsRef.on('child_added', (snapshot) => {
                 const data = snapshot.val();
                 const callId = snapshot.key;
 
-                // Hanya proses jika ini offer (panggilan baru) dan bukan dari diri sendiri
                 if (data.type === 'offer' && data.from !== getCallerName()) {
-                    // Jangan tampilkan jika sedang dalam panggilan
                     if (currentCallId) {
-                        // Tolak otomatis
                         callsRef.child(callId).remove().catch(() => {});
                         return;
                     }
@@ -2582,8 +2601,8 @@
                     incCallType.textContent = data.isVideo ? '📹 Panggilan Video' : '📞 Panggilan Suara';
                     incomingCallPopup.classList.add('show');
 
-                    // Mainkan suara notifikasi (opsional)
-                    playBirdSound();
+                    // 🔔 MAINAN RINGTONE
+                    playRingtone();
 
                     // Auto reject setelah 30 detik
                     setTimeout(() => {
@@ -2591,6 +2610,7 @@
                             incomingCallPopup.classList.remove('show');
                             callsRef.child(callId).remove().catch(() => {});
                             incomingCallId = null;
+                            stopRingtone();
                         }
                     }, 30000);
                 }
@@ -2607,13 +2627,17 @@
         });
 
         // --- 21g. Tombol Incoming Call ---
-        incAcceptBtn.addEventListener('click', acceptIncomingCall);
+        incAcceptBtn.addEventListener('click', () => {
+            stopRingtone(); // Hentikan dering saat accept
+            acceptIncomingCall();
+        });
 
         incRejectBtn.addEventListener('click', () => {
             if (incomingCallId) {
                 callsRef.child(incomingCallId).remove().catch(() => {});
                 incomingCallId = null;
                 incomingCallPopup.classList.remove('show');
+                stopRingtone();
             }
         });
 
@@ -2652,13 +2676,14 @@
         callsRef.on('child_removed', (snapshot) => {
             const removedId = snapshot.key;
             if (currentCallId === removedId) {
-                // Panggilan diakhiri oleh pihak lain
                 callStatusDisplay.textContent = '❌ Panggilan diakhiri';
+                stopRingtone();
                 setTimeout(() => hideCallOverlay(), 1500);
             }
             if (incomingCallId === removedId) {
                 incomingCallPopup.classList.remove('show');
                 incomingCallId = null;
+                stopRingtone();
             }
         });
 
@@ -2677,13 +2702,11 @@
         const observer = new MutationObserver(() => updateEmptyState());
         observer.observe(container, { childList: true, subtree: true });
 
-        // Mulai listen untuk panggilan masuk
         listenForIncomingCalls();
 
-        console.log('💬 Ja\'O Chating + Call siap!');
-        console.log('📹 Fitur: Chat + Video Call + Voice Call (WebRTC)');
-        console.log('📌 Gunakan tombol 📞 (Voice) atau 📹 (Video) di header.');
-        console.log('⚠️ Untuk tembus semua jaringan, aktifkan TURN server di rtcConfig.');
+        console.log('💬 Ja\'O Chating + Call + Ringtone siap!');
+        console.log('📹 Fitur: Chat + Video Call + Voice Call + Nada dering terus menerus');
+        console.log('🔔 Nada dering akan berbunyi sampai panggilan diangkat/ditolak.');
     </script>
 </body>
 </html>
