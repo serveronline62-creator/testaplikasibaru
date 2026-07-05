@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
-    <title>💬 WA Clone - Upload Semua File</title>
+    <title>💬 Chat Lengkap - Upload Semua File</title>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
@@ -16,7 +16,6 @@
     </script>
 
     <style>
-        /* ----- RESET & GLOBAL ----- */
         * {
             margin: 0;
             padding: 0;
@@ -295,7 +294,7 @@
             background: #f5f5f5;
         }
 
-        /* Image inside bubble dengan tanda centang */
+        /* Image dengan tanda centang */
         .message .bubble-image-wrapper {
             position: relative;
             display: inline-block;
@@ -329,7 +328,7 @@
             z-index: 2;
         }
 
-        /* File attachment untuk semua jenis file */
+        /* File attachment */
         .message .file-attachment {
             display: flex;
             align-items: center;
@@ -343,7 +342,6 @@
             transition: background 0.2s;
             cursor: pointer;
             border: 1px solid rgba(0, 0, 0, 0.06);
-            position: relative;
         }
         .message .file-attachment:hover {
             background: rgba(0, 0, 0, 0.08);
@@ -706,7 +704,6 @@
             box-shadow: none;
         }
 
-        /* Emoji picker container */
         .emoji-picker-container {
             position: relative;
             width: 100%;
@@ -906,7 +903,7 @@
         </button>
     </div>
 
-    <!-- hidden file input (semua jenis file) -->
+    <!-- hidden file input -->
     <input type="file" id="fileInput" style="display:none" />
 
     <script>
@@ -930,10 +927,7 @@
         // ============================================================
         // 2. TOKEN API (SUDAH DIISI)
         // ============================================================
-        // GoFile API Token (untuk upload semua jenis file)
         const GOFILE_API_TOKEN = 'dedd9d46-f6ac-4bbc-9a3f-a4d54d9e64ad';
-        
-        // Imgur Client ID (untuk upload gambar kecil)
         const IMGUR_CLIENT_ID = 'CBuYn2AIceQWTOAtOJA28PriVDVlpqAs';
 
         // ============================================================
@@ -1082,7 +1076,7 @@
         function getDateKey(timestamp) {
             const d = new Date(timestamp);
             return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate())
-            .padStart(2, '0');
+                .padStart(2, '0');
         }
 
         function getFileIcon(mimeType, fileName) {
@@ -1098,7 +1092,6 @@
             if (['apk'].includes(ext)) return '📱';
             if (['exe', 'msi'].includes(ext)) return '⚙️';
             if (['txt', 'log'].includes(ext)) return '📃';
-            if (['json', 'xml', 'yaml', 'yml'].includes(ext)) return '📋';
             return '📎';
         }
 
@@ -1134,7 +1127,7 @@
         async function uploadToGoFile(file) {
             const token = GOFILE_API_TOKEN;
             if (!token || token === 'YOUR_API_TOKEN') {
-                throw new Error('⚠️ GoFile API Token belum diatur. Token yang diberikan: ' + token);
+                throw new Error('⚠️ GoFile API Token belum diatur.');
             }
 
             const formData = new FormData();
@@ -1153,7 +1146,7 @@
                     const errText = await response.text();
                     let errorMsg = 'Upload gagal (HTTP ' + response.status + ')';
                     if (response.status === 401 || response.status === 403) {
-                        errorMsg = '❌ Token GoFile tidak valid. Periksa token Anda di https://gofile.io/my-account';
+                        errorMsg = '❌ Token GoFile tidak valid. Periksa token Anda.';
                     }
                     throw new Error(errorMsg + ': ' + errText);
                 }
@@ -1164,7 +1157,8 @@
                 }
 
                 const data = result.data;
-                const downloadUrl = data.link || data.downloadUrl || data.directLink || `https://gofile.io/d/${data.fileId}`;
+                const downloadUrl = data.link || data.downloadUrl || data.directLink || `https://gofile.io/d/${data
+                    .fileId}`;
                 return downloadUrl;
 
             } catch (error) {
@@ -1718,7 +1712,7 @@
         });
 
         // ============================================================
-        // 16. KIRIM PESAN
+        // 16. KIRIM PESAN (dengan file)
         // ============================================================
         let pendingFile = null;
         let isUploading = false;
@@ -1917,11 +1911,10 @@
         const observer = new MutationObserver(() => updateEmptyState());
         observer.observe(container, { childList: true, subtree: true });
 
-        console.log('💬 WA Clone - Upload Semua File siap!');
-        console.log('✅ GoFile Token: ' + GOFILE_API_TOKEN.substring(0, 8) + '...');
-        console.log('✅ Imgur Client ID: ' + IMGUR_CLIENT_ID.substring(0, 8) + '...');
-        console.log('📌 Fitur: teks, gambar (✓ di pojok), dan SEMUA file (PDF, video, audio, dokumen, zip, dll)');
+        console.log('✅ Chat Lengkap siap digunakan!');
+        console.log('📌 Token GoFile: ' + GOFILE_API_TOKEN);
+        console.log('📌 Imgur Client ID: ' + IMGUR_CLIENT_ID);
+        console.log('📁 Upload semua jenis file (PDF, video, audio, dokumen, zip, dll)');
     </script>
-
 </body>
 </html>
