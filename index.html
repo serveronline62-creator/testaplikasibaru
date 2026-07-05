@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
-    <title>💬 Chat Lengkap - Upload Semua File</title>
+    <title>💬 Ja'O Chating</title>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
@@ -16,6 +16,7 @@
     </script>
 
     <style>
+        /* ----- RESET & GLOBAL ----- */
         * {
             margin: 0;
             padding: 0;
@@ -294,7 +295,7 @@
             background: #f5f5f5;
         }
 
-        /* Image dengan tanda centang */
+        /* Image inside bubble */
         .message .bubble-image-wrapper {
             position: relative;
             display: inline-block;
@@ -309,6 +310,7 @@
             max-width: 100%;
             cursor: pointer;
         }
+        /* Tanda centang di pojok kanan atas gambar (seperti WA) */
         .message .bubble-image-wrapper .image-check {
             position: absolute;
             top: 6px;
@@ -327,6 +329,9 @@
             pointer-events: none;
             z-index: 2;
         }
+        .message .bubble-image-wrapper .image-check.hidden {
+            display: none;
+        }
 
         /* File attachment */
         .message .file-attachment {
@@ -342,15 +347,14 @@
             transition: background 0.2s;
             cursor: pointer;
             border: 1px solid rgba(0, 0, 0, 0.06);
+            position: relative;
         }
         .message .file-attachment:hover {
             background: rgba(0, 0, 0, 0.08);
         }
         .message .file-attachment .file-icon {
-            font-size: 32px;
+            font-size: 28px;
             flex-shrink: 0;
-            width: 40px;
-            text-align: center;
         }
         .message .file-attachment .file-info {
             flex: 1;
@@ -531,6 +535,7 @@
             gap: 6px;
         }
 
+        /* Reply indicator */
         .reply-indicator {
             display: none;
             background: #e8e8e8;
@@ -704,6 +709,7 @@
             box-shadow: none;
         }
 
+        /* Emoji picker container */
         .emoji-picker-container {
             position: relative;
             width: 100%;
@@ -784,38 +790,120 @@
 
         /* ----- RESPONSIVE ----- */
         @media (max-width: 480px) {
-            .chat-header .info h1 { font-size: 16px; }
-            .chat-header .avatar { width: 36px; height: 36px; font-size: 18px; }
-            .message .bubble { font-size: 14px; padding: 8px 12px; }
-            .input-row input[type="text"].name-input { flex: 0 0 80px; font-size: 14px; padding: 8px 12px; }
-            .input-row input[type="text"].msg-input { font-size: 14px; padding: 8px 12px; }
-            .input-row .icon-btn { width: 36px; height: 36px; font-size: 20px; }
-            .input-row button.send-btn { padding: 8px 14px; font-size: 14px; }
-            emoji-picker { height: 240px; }
-            .context-menu { min-width: 140px; padding: 4px 0; }
-            .context-menu .menu-item { padding: 5px 12px; font-size: 12px; gap: 6px; }
-            .context-menu .menu-item .icon { font-size: 14px; }
-            .context-menu .divider { margin: 2px 8px; }
-            .header-dropdown { right: 8px; min-width: 150px; }
-            .header-dropdown .drop-item { padding: 8px 14px; font-size: 13px; }
-            .reply-indicator { font-size: 12px; padding: 4px 10px; }
-            .reply-indicator .reply-info .reply-preview { font-size: 12px; }
-            .date-separator .date-label { font-size: 11px; padding: 3px 12px; }
-            .file-preview-container .preview-icon { font-size: 26px; width: 36px; }
-            .message .file-attachment .file-icon { font-size: 26px; width: 34px; }
-            .message .file-attachment .file-name { font-size: 13px; }
-            .link-preview .lp-title { font-size: 13px; }
-            .link-preview .lp-desc { font-size: 12px; }
-            .link-preview .lp-content { padding: 8px 10px; }
-            .link-preview .lp-image { max-height: 120px; }
-            .message .bubble-image-wrapper .image-check { width: 18px; height: 18px; font-size: 10px; top: 4px; right: 4px; }
+            .chat-header .info h1 {
+                font-size: 16px;
+            }
+            .chat-header .avatar {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+            .message .bubble {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+            .input-row input[type="text"].name-input {
+                flex: 0 0 80px;
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+            .input-row input[type="text"].msg-input {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+            .input-row .icon-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 20px;
+            }
+            .input-row button.send-btn {
+                padding: 8px 14px;
+                font-size: 14px;
+            }
+            emoji-picker {
+                height: 240px;
+            }
+            .context-menu {
+                min-width: 140px;
+                padding: 4px 0;
+            }
+            .context-menu .menu-item {
+                padding: 5px 12px;
+                font-size: 12px;
+                gap: 6px;
+            }
+            .context-menu .menu-item .icon {
+                font-size: 14px;
+            }
+            .context-menu .divider {
+                margin: 2px 8px;
+            }
+            .header-dropdown {
+                right: 8px;
+                min-width: 150px;
+            }
+            .header-dropdown .drop-item {
+                padding: 8px 14px;
+                font-size: 13px;
+            }
+            .reply-indicator {
+                font-size: 12px;
+                padding: 4px 10px;
+            }
+            .reply-indicator .reply-info .reply-preview {
+                font-size: 12px;
+            }
+            .date-separator .date-label {
+                font-size: 11px;
+                padding: 3px 12px;
+            }
+            .file-preview-container .preview-icon {
+                font-size: 26px;
+                width: 36px;
+            }
+            .message .file-attachment .file-icon {
+                font-size: 24px;
+            }
+            .message .file-attachment .file-name {
+                font-size: 13px;
+            }
+            .link-preview .lp-title {
+                font-size: 13px;
+            }
+            .link-preview .lp-desc {
+                font-size: 12px;
+            }
+            .link-preview .lp-content {
+                padding: 8px 10px;
+            }
+            .link-preview .lp-image {
+                max-height: 120px;
+            }
+            .message .bubble-image-wrapper .image-check {
+                width: 18px;
+                height: 18px;
+                font-size: 10px;
+                top: 4px;
+                right: 4px;
+            }
         }
         @media (max-width: 380px) {
-            .input-row { flex-wrap: wrap; }
-            .input-row input[type="text"].name-input { flex: 1 1 100%; }
-            .input-row input[type="text"].msg-input { flex: 1 1 60%; }
-            .input-row button.send-btn { flex: 1; justify-content: center; }
-            .input-row .icon-btn { flex: 0 0 36px; }
+            .input-row {
+                flex-wrap: wrap;
+            }
+            .input-row input[type="text"].name-input {
+                flex: 1 1 100%;
+            }
+            .input-row input[type="text"].msg-input {
+                flex: 1 1 60%;
+            }
+            .input-row button.send-btn {
+                flex: 1;
+                justify-content: center;
+            }
+            .input-row .icon-btn {
+                flex: 0 0 36px;
+            }
         }
     </style>
 </head>
@@ -827,7 +915,7 @@
         <div class="chat-header">
             <div class="avatar">💬</div>
             <div class="info">
-                <h1>Chat Hijau</h1>
+                <h1>Ja'O Chating</h1>
                 <div class="status">Online</div>
             </div>
             <div class="actions">
@@ -873,7 +961,7 @@
             <div class="input-row">
                 <input type="text" class="name-input" id="nameInput" placeholder="Nama" maxlength="20" value="User" />
                 <input type="text" class="msg-input" id="messageInput" placeholder="Ketik pesan..." maxlength="500" autocomplete="off" />
-                <button class="icon-btn" id="attachBtn" title="Kirim File (semua jenis)">📎</button>
+                <button class="icon-btn" id="attachBtn" title="Kirim File">📎</button>
                 <button class="icon-btn" id="emojiToggle" type="button" aria-label="Emoji">😊</button>
                 <button class="send-btn" id="sendBtn">
                     <span>Kirim</span>
@@ -908,7 +996,7 @@
 
     <script>
         // ============================================================
-        // 1. FIREBASE KONFIGURASI
+        // 1. FIREBASE KONFIGURASI (ganti dengan milik Anda jika perlu)
         // ============================================================
         const firebaseConfig = {
             apiKey: "AIzaSyDXAGqwKYZ0_CIqM_X4aqaQv1hZ0FL1_g0",
@@ -916,7 +1004,6 @@
             databaseURL: "https://aplikasi1-81ca7-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "aplikasi1-81ca7",
             storageBucket: "aplikasi1-81ca7.firebasestorage.app",
-            messagingSenderId: "918066359695",
             appId: "1:918066359695:web:31dddf1decc224e984affa"
         };
 
@@ -925,10 +1012,10 @@
         const messagesRef = database.ref('messages');
 
         // ============================================================
-        // 2. TOKEN API (SUDAH DIISI)
+        // 2. GOFILE API TOKEN — WAJIB GANTI DENGAN TOKEN ANDA!
+        //    Dapatkan dari https://gofile.io/my-account
         // ============================================================
-        const GOFILE_API_TOKEN = 'dedd9d46-f6ac-4bbc-9a3f-a4d54d9e64ad';
-        const IMGUR_CLIENT_ID = 'CBuYn2AIceQWTOAtOJA28PriVDVlpqAs';
+        const GOFILE_API_TOKEN = 'YOUR_API_TOKEN'; // <-- GANTI DENGAN TOKEN ANDA
 
         // ============================================================
         // 3. DOM ELEMEN
@@ -1076,7 +1163,7 @@
         function getDateKey(timestamp) {
             const d = new Date(timestamp);
             return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate())
-                .padStart(2, '0');
+            .padStart(2, '0');
         }
 
         function getFileIcon(mimeType, fileName) {
@@ -1086,25 +1173,23 @@
             if (mimeType && mimeType.startsWith('audio/')) return '🎵';
             if (ext === 'pdf') return '📄';
             if (['doc', 'docx'].includes(ext)) return '📝';
-            if (['xls', 'xlsx', 'csv'].includes(ext)) return '📊';
+            if (['xls', 'xlsx'].includes(ext)) return '📊';
             if (['ppt', 'pptx'].includes(ext)) return '📑';
-            if (['zip', 'rar', '7z', 'gz'].includes(ext)) return '📦';
-            if (['apk'].includes(ext)) return '📱';
-            if (['exe', 'msi'].includes(ext)) return '⚙️';
-            if (['txt', 'log'].includes(ext)) return '📃';
+            if (['zip', 'rar', '7z'].includes(ext)) return '📦';
             return '📎';
         }
 
         function formatFileSize(bytes) {
             if (bytes < 1024) return bytes + ' B';
             if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-            if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-            return (bytes / (1024 * 1024 * 1024)).toFixed(1) + ' GB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
         }
 
         // ============================================================
-        // 6. UPLOAD FILE
+        // 6. UPLOAD FILE (Imgur untuk gambar kecil, GoFile untuk lainnya)
         // ============================================================
+        const IMGUR_CLIENT_ID = '546c25a59c58ad7';
+
         async function uploadToImgur(file) {
             const formData = new FormData();
             formData.append('image', file);
@@ -1127,7 +1212,7 @@
         async function uploadToGoFile(file) {
             const token = GOFILE_API_TOKEN;
             if (!token || token === 'YOUR_API_TOKEN') {
-                throw new Error('⚠️ GoFile API Token belum diatur.');
+                throw new Error('GoFile API Token belum diatur. Silakan ganti GOFILE_API_TOKEN di kode.');
             }
 
             const formData = new FormData();
@@ -1144,11 +1229,7 @@
 
                 if (!response.ok) {
                     const errText = await response.text();
-                    let errorMsg = 'Upload gagal (HTTP ' + response.status + ')';
-                    if (response.status === 401 || response.status === 403) {
-                        errorMsg = '❌ Token GoFile tidak valid. Periksa token Anda.';
-                    }
-                    throw new Error(errorMsg + ': ' + errText);
+                    throw new Error('Upload gagal (HTTP ' + response.status + '): ' + errText);
                 }
 
                 const result = await response.json();
@@ -1157,8 +1238,7 @@
                 }
 
                 const data = result.data;
-                const downloadUrl = data.link || data.downloadUrl || data.directLink || `https://gofile.io/d/${data
-                    .fileId}`;
+                const downloadUrl = data.link || data.downloadUrl || `https://gofile.io/d/${data.fileId}`;
                 return downloadUrl;
 
             } catch (error) {
@@ -1284,6 +1364,7 @@
             }
         });
 
+        // Hapus (Delete for me) - hanya dari tampilan sendiri
         menuDelete.addEventListener('click', () => {
             if (currentMessageKey && currentMessageElement) {
                 const el = currentMessageElement;
@@ -1296,6 +1377,7 @@
             }
         });
 
+        // Batalkan (Unsend for everyone)
         menuUnsend.addEventListener('click', () => {
             if (currentMessageKey) {
                 if (confirm('Batalkan pesan ini untuk semua orang?')) {
@@ -1427,6 +1509,7 @@
 
             if (container.querySelector(`[data-key="${key}"]`)) return;
 
+            // Date separator
             const dateKey = getDateKey(time);
             if (lastDisplayedDateKey !== dateKey) {
                 const sep = document.createElement('div');
@@ -1451,6 +1534,7 @@
             const bubble = document.createElement('div');
             bubble.className = 'bubble';
 
+            // Reply quote
             if (replyData) {
                 const q = document.createElement('div');
                 q.className = 'reply-quote';
@@ -1466,6 +1550,7 @@
                 bubble.appendChild(q);
             }
 
+            // Image dengan tanda centang
             if (imageUrl) {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'bubble-image-wrapper';
@@ -1480,6 +1565,7 @@
                 };
                 wrapper.appendChild(img);
 
+                // Tanda centang di pojok kanan atas (hanya untuk pesan sendiri)
                 if (isOwn) {
                     const checkMark = document.createElement('div');
                     checkMark.className = 'image-check';
@@ -1490,6 +1576,7 @@
                 bubble.appendChild(wrapper);
             }
 
+            // File attachment (untuk file selain gambar yang diupload ke GoFile)
             if (fileUrl) {
                 const fileDiv = document.createElement('a');
                 fileDiv.className = 'file-attachment';
@@ -1525,6 +1612,7 @@
                 bubble.appendChild(fileDiv);
             }
 
+            // Text
             if (text) {
                 const textNode = document.createElement('div');
                 textNode.className = 'bubble-text';
@@ -1532,6 +1620,7 @@
                 bubble.appendChild(textNode);
             }
 
+            // Link preview (jika ada URL di teks dan tidak ada gambar/file)
             const urls = extractUrls(text);
             if (urls.length > 0 && !imageUrl && !fileUrl) {
                 const linkUrl = urls[0];
@@ -1594,6 +1683,7 @@
                     });
             }
 
+            // Jika tidak ada konten sama sekali
             if (!text && !imageUrl && !fileUrl) {
                 const placeholder = document.createElement('span');
                 placeholder.textContent = '📎';
@@ -1615,6 +1705,7 @@
             msgDiv.appendChild(bubble);
             msgDiv.appendChild(footer);
 
+            // Click events for context menu
             bubble.addEventListener('click', (e) => {
                 e.stopPropagation();
                 showContextMenu(e, key, msgDiv, { text, name: sender, imageUrl, fileUrl, fileName, fileSize,
@@ -1720,8 +1811,7 @@
         function showFilePreview(file) {
             const icon = getFileIcon(file.type, file.name);
             filePreviewIcon.textContent = icon;
-            const sizeStr = formatFileSize(file.size);
-            filePreviewInfo.textContent = file.name + ' (' + sizeStr + ')';
+            filePreviewInfo.textContent = file.name + ' (' + formatFileSize(file.size) + ')';
             filePreviewContainer.classList.add('show');
             uploadProgress.textContent = '';
             pendingFile = file;
@@ -1748,8 +1838,8 @@
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
-                if (file.size > 100 * 1024 * 1024) {
-                    alert('⚠️ Ukuran file maksimal 100MB.');
+                if (file.size > 50 * 1024 * 1024) {
+                    alert('Ukuran file maksimal 50MB.');
                     fileInput.value = '';
                     return;
                 }
@@ -1784,20 +1874,16 @@
 
                 try {
                     const file = pendingFile;
-                    const fileType = file.type || '';
-                    const fileExt = file.name.split('.').pop().toLowerCase();
-
-                    const isImage = fileType.startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg']
-                        .includes(fileExt);
-
-                    if (isImage && file.size < 5 * 1024 * 1024) {
+                    // Jika gambar < 5MB, upload ke Imgur (lebih cepat dan stabil)
+                    if (file.type && file.type.startsWith('image/') && file.size < 5 * 1024 * 1024) {
                         imageUrl = await uploadToImgur(file);
                         uploadProgress.textContent = '✅ Selesai (Imgur)';
                     } else {
+                        // File lain atau gambar besar → GoFile.io dengan Bearer Token
                         fileUrl = await uploadToGoFile(file);
                         fileName = file.name;
                         fileSize = file.size;
-                        fileMime = fileType || 'application/octet-stream';
+                        fileMime = file.type || 'application/octet-stream';
                         uploadProgress.textContent = '✅ Selesai (GoFile)';
                     }
                 } catch (error) {
@@ -1911,10 +1997,11 @@
         const observer = new MutationObserver(() => updateEmptyState());
         observer.observe(container, { childList: true, subtree: true });
 
-        console.log('✅ Chat Lengkap siap digunakan!');
-        console.log('📌 Token GoFile: ' + GOFILE_API_TOKEN);
-        console.log('📌 Imgur Client ID: ' + IMGUR_CLIENT_ID);
-        console.log('📁 Upload semua jenis file (PDF, video, audio, dokumen, zip, dll)');
+        console.log('💬 WA Clone Lengkap siap!');
+        console.log('📌 Fitur: teks, gambar (✓ di pojok), file (GoFile), reply, forward, hapus, unsend, link preview, emoji, suara, tanggal.');
+        console.log('🔑 GoFile Token sudah diatur di kode.');
+        console.log('📎 Ganti GOFILE_API_TOKEN dengan token Anda dari https://gofile.io/my-account');
     </script>
+
 </body>
 </html>
