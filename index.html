@@ -866,7 +866,7 @@
             width: 100%;
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 16px;
             backdrop-filter: blur(10px);
             flex-shrink: 0;
             flex-wrap: wrap;
@@ -878,7 +878,7 @@
             border: none;
             font-size: 28px;
             cursor: pointer;
-            transition: transform 0.15s, opacity 0.2s;
+            transition: transform 0.15s, opacity 0.2s, box-shadow 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -910,12 +910,20 @@
         .call-overlay .call-controls .btn-toggle-video.video-off {
             background: #e67e22;
         }
-        .call-overlay .call-controls .btn-flip-camera {
+        /* Tombol switch camera modern */
+        .call-overlay .call-controls .btn-switch-camera {
             background: #2d7d46;
         }
-        .call-overlay .call-controls .btn-flip-camera.hidden {
+        .call-overlay .call-controls .btn-switch-camera:hover {
+            background: #1f5f33;
+        }
+        .call-overlay .call-controls .btn-switch-camera:active {
+            transform: scale(0.9);
+        }
+        .call-overlay .call-controls .btn-switch-camera.hidden {
             display: none;
         }
+
         .call-overlay .call-info {
             position: absolute;
             top: 30px;
@@ -1374,6 +1382,10 @@
                 height: 50px;
                 font-size: 22px;
             }
+            .call-overlay .call-controls {
+                gap: 12px;
+                padding: 16px;
+            }
             .incoming-call {
                 bottom: 80px;
                 left: 16px;
@@ -1423,6 +1435,11 @@
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 2px;
+            }
+            .call-overlay .call-controls button {
+                width: 44px;
+                height: 44px;
+                font-size: 18px;
             }
         }
     </style>
@@ -1511,7 +1528,7 @@
             <div class="call-controls">
                 <button class="btn-toggle-mic" id="toggleMicBtn" title="Mute/Unmute Mic">🎤</button>
                 <button class="btn-toggle-video" id="toggleVideoBtn" title="Matikan/Hidupkan Kamera">📷</button>
-                <button class="btn-flip-camera hidden" id="flipCameraBtn" title="Ganti Kamera">🔄</button>
+                <button class="btn-switch-camera hidden" id="switchCameraBtn" title="Ganti Kamera">🔄</button>
                 <button class="btn-end-call" id="endCallBtn">📴</button>
             </div>
         </div>
@@ -1646,7 +1663,7 @@
         const callStatusDisplay = document.getElementById('callStatusDisplay');
         const toggleMicBtn = document.getElementById('toggleMicBtn');
         const toggleVideoBtn = document.getElementById('toggleVideoBtn');
-        const flipCameraBtn = document.getElementById('flipCameraBtn');
+        const switchCameraBtn = document.getElementById('switchCameraBtn');
         const endCallBtn = document.getElementById('endCallBtn');
         const voiceCallBtn = document.getElementById('voiceCallBtn');
         const videoCallBtn = document.getElementById('videoCallBtn');
@@ -1676,7 +1693,8 @@
         let isMuted = false;
         let isVideoOff = false;
         let incomingCallId = null;
-        let currentFacingMode = 'user'; // 'user' or 'environment'
+        let currentFacingMode = 'user'; // 'user' atau 'environment'
+        let videoSender = null; // untuk track video di peerConnection
 
         // ============================================================
         // 6. CALL HISTORY TRACKING
@@ -2649,6 +2667,7 @@
         // ============================================================
         // 20. CALL HISTORY UI
         // ============================================================
+
         function openCallHistory() {
             callHistoryOverlay.classList.add('show');
             renderCallHistory();
@@ -2688,6 +2707,7 @@
         // ============================================================
         // 21. CALL HISTORY - SAVE & RENDER
         // ============================================================
+
         function saveCallRecord(type, isVideo, callerName, calleeName, status, duration, startTime, endTime) {
             const recordId = callHistoryRef.push().key;
             const record = {
@@ -2849,7 +2869,7 @@
         });
 
         // ============================================================
-        // 22. WEBRTC - CALL LOGIC
+        // 22. WEBRTC - CALL LOGIC (dengan Call History & Switch Camera)
         // ============================================================
 
         function getCallerName() {
@@ -2864,11 +2884,11 @@
             if (!video) {
                 localVideo.style.display = 'none';
                 remoteVideo.style.display = 'none';
-                flipCameraBtn.classList.add('hidden');
+                switchCameraBtn.classList.add('hidden');
             } else {
                 localVideo.style.display = 'block';
                 remoteVideo.style.display = 'block';
-                flipCameraBtn.classList.remove('hidden');
+                switchCameraBtn.classList.remove('hidden');
             }
             toggleMicBtn.classList.remove('muted');
             toggleMicBtn.textContent = '🎤';
@@ -2876,6 +2896,8 @@
             toggleVideoBtn.textContent = '📷';
             isMuted = false;
             isVideoOff = false;
+            // Reset facing mode
+            currentFacingMode = 'user';
         }
 
         function hideCallOverlay() {
@@ -2912,7 +2934,7 @@
             activeCallRecord = null;
             callStartTime = 0;
             callConnectedTime = 0;
-            flipCameraBtn.classList.add('hidden');
+            videoSender = null;
         }
 
         function endCallAndSaveHistory() {
@@ -2924,19 +2946,23 @@
                 } else if (callStartTime > 0) {
                     duration = Math.floor((endTime - callStartTime) / 1000);
                 }
+
                 const status = activeCallRecord.status === 'ringing' ? 'missed' : 'answered';
                 const finalStatus = (activeCallRecord.status === 'ringing' && isCaller) ? 'outgoing' : status;
+
                 updateCallRecord(activeCallRecord.callId, {
                     endTime: endTime,
                     duration: duration,
                     status: finalStatus
                 });
+
                 if (activeCallRecord.status === 'ringing' && !isCaller) {
                     updateCallRecord(activeCallRecord.callId, {
                         status: 'missed',
                         duration: 0
                     });
                 }
+
                 activeCallRecord = null;
                 callStartTime = 0;
                 callConnectedTime = 0;
@@ -2968,7 +2994,10 @@
 
             if (localStream) {
                 localStream.getTracks().forEach(track => {
-                    pc.addTrack(track, localStream);
+                    const sender = pc.addTrack(track, localStream);
+                    if (track.kind === 'video') {
+                        videoSender = sender;
+                    }
                 });
             }
 
@@ -2982,6 +3011,7 @@
                 remoteVideo.srcObject = remoteStream;
                 callStatusDisplay.textContent = '📞 Tersambung';
                 stopRingtone();
+
                 if (activeCallRecord && activeCallRecord.callId) {
                     callConnectedTime = Date.now();
                     updateCallRecord(activeCallRecord.callId, { status: 'answered' });
@@ -3017,52 +3047,65 @@
         }
 
         // ============================================================
-        // 23. FLIP CAMERA (Switch front/back)
+        // 23. SWITCH CAMERA (Flip)
         // ============================================================
         async function switchCamera() {
             if (!localStream || !isVideoCall) return;
-            const videoTracks = localStream.getVideoTracks();
-            if (videoTracks.length === 0) return;
+            if (!videoSender) {
+                // fallback: coba cari sender video
+                if (peerConnection) {
+                    const senders = peerConnection.getSenders();
+                    for (let s of senders) {
+                        if (s.track && s.track.kind === 'video') {
+                            videoSender = s;
+                            break;
+                        }
+                    }
+                }
+                if (!videoSender) {
+                    console.warn('Tidak ada sender video, tidak bisa switch');
+                    return;
+                }
+            }
 
-            const newFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+            // Tentukan mode baru
+            const newMode = currentFacingMode === 'user' ? 'environment' : 'user';
             try {
-                // Get new stream with desired facingMode
-                const newStream = await navigator.mediaDevices.getUserMedia({
-                    audio: false,
-                    video: { facingMode: newFacingMode }
+                // Dapatkan video track baru dengan mode baru
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: newMode, width: { ideal: 640 }, height: { ideal: 480 } }
                 });
-                const newVideoTrack = newStream.getVideoTracks()[0];
-                if (!newVideoTrack) {
-                    newStream.getTracks().forEach(t => t.stop());
+                const newTrack = stream.getVideoTracks()[0];
+                if (!newTrack) {
+                    console.warn('Tidak dapat mendapatkan track video baru');
                     return;
                 }
 
-                // Replace track in localStream
-                const oldTrack = videoTracks[0];
-                localStream.removeTrack(oldTrack);
-                localStream.addTrack(newVideoTrack);
+                // Hentikan track video lama
+                const oldTracks = localStream.getVideoTracks();
+                oldTracks.forEach(t => t.stop());
 
-                // Replace track in peerConnection
-                if (peerConnection) {
-                    const senders = peerConnection.getSenders();
-                    const sender = senders.find(s => s.track && s.track.kind === 'video');
-                    if (sender) {
-                        await sender.replaceTrack(newVideoTrack);
-                    }
-                }
+                // Ganti track di sender
+                await videoSender.replaceTrack(newTrack);
 
-                // Stop old track
-                oldTrack.stop();
-                // Update local video display
-                localVideo.srcObject = localStream;
-                currentFacingMode = newFacingMode;
+                // Hapus track lama dari localStream dan tambahkan track baru
+                const audioTracks = localStream.getAudioTracks();
+                // Buat stream baru dengan audio yang sama + video baru
+                const newStream = new MediaStream();
+                audioTracks.forEach(t => newStream.addTrack(t));
+                newStream.addTrack(newTrack);
+
+                // Ganti localStream
+                localStream = newStream;
+                localVideo.srcObject = localStream; // update tampilan lokal
+
+                // Update facing mode
+                currentFacingMode = newMode;
             } catch (err) {
-                console.warn('Gagal mengganti kamera:', err);
-                alert('Tidak dapat mengganti kamera. Pastikan Anda memiliki lebih dari satu kamera.');
+                console.error('Gagal switch kamera:', err);
+                alert('Tidak dapat mengganti kamera: ' + err.message);
             }
         }
-
-        flipCameraBtn.addEventListener('click', switchCamera);
 
         // ============================================================
         // 24. MULAI PANGGILAN (Caller)
@@ -3082,16 +3125,16 @@
             try {
                 const constraints = {
                     audio: true,
-                    video: video ? { facingMode: 'user' } : false
+                    video: video ? { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } } : false
                 };
                 localStream = await navigator.mediaDevices.getUserMedia(constraints);
                 localVideo.srcObject = localStream;
-                currentFacingMode = 'user';
 
                 const callId = callsRef.push().key;
                 currentCallId = callId;
                 isCaller = true;
                 isVideoCall = video;
+                currentFacingMode = 'user';
 
                 const recordId = createCallRecord(video ? 'video' : 'voice', video, name, 'Penerima');
                 activeCallRecord = {
@@ -3188,14 +3231,14 @@
                     isVideoCall = video;
                     currentCallId = callId;
                     isCaller = false;
+                    currentFacingMode = 'user';
 
                     const constraints = {
                         audio: true,
-                        video: video ? { facingMode: 'user' } : false
+                        video: video ? { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } } : false
                     };
                     localStream = await navigator.mediaDevices.getUserMedia(constraints);
                     localVideo.srcObject = localStream;
-                    currentFacingMode = 'user';
 
                     const name = getCallerName();
                     const recordId = createCallRecord(video ? 'video' : 'voice', video, data.from || 'Penelepon', name);
@@ -3392,6 +3435,9 @@
             }
         });
 
+        // Tombol switch camera
+        switchCameraBtn.addEventListener('click', switchCamera);
+
         // ============================================================
         // 30. CLEANUP PANGGILAN DI FIREBASE
         // ============================================================
@@ -3436,8 +3482,8 @@
 
         listenForIncomingCalls();
 
-        console.log('💬 Ja\'O Chating & Call + Flip Camera siap!');
-        console.log('🔄 Tombol flip kamera muncul saat video call.');
+        console.log('💬 Ja\'O Chating & Call + Switch Camera siap!');
+        console.log('🔄 Tombol flip kamera tersedia saat video call.');
     </script>
 </body>
 </html>
