@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8" />
@@ -883,17 +883,17 @@
             width: 100%;
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 16px;
             backdrop-filter: blur(10px);
             flex-shrink: 0;
             flex-wrap: wrap;
         }
         .call-overlay .call-controls button {
-            width: 60px;
-            height: 60px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             border: none;
-            font-size: 26px;
+            font-size: 24px;
             cursor: pointer;
             transition: transform 0.15s, opacity 0.2s;
             display: flex;
@@ -926,6 +926,14 @@
         }
         .call-overlay .call-controls .btn-toggle-video.video-off {
             background: #e67e22;
+        }
+        .call-overlay .call-controls .btn-swap-camera {
+            background: #2d7d46;
+        }
+        .call-overlay .call-controls .btn-swap-camera:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
         }
         .call-overlay .call-info {
             position: absolute;
@@ -1404,9 +1412,13 @@
                 right: 4px;
             }
             .call-overlay .call-controls button {
-                width: 50px;
-                height: 50px;
-                font-size: 22px;
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+            .call-overlay .call-controls {
+                gap: 12px;
+                padding: 16px;
             }
             .incoming-call {
                 bottom: 80px;
@@ -1457,6 +1469,11 @@
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 2px;
+            }
+            .call-overlay .call-controls button {
+                width: 42px;
+                height: 42px;
+                font-size: 18px;
             }
         }
     </style>
@@ -1545,6 +1562,8 @@
             <div class="call-controls">
                 <button class="btn-toggle-mic" id="toggleMicBtn" title="Mute/Unmute Mic"><i class="fas fa-microphone"></i></button>
                 <button class="btn-toggle-video" id="toggleVideoBtn" title="Matikan/Hidupkan Kamera"><i class="fas fa-video"></i></button>
+                <!-- Tombol ganti kamera -->
+                <button class="btn-swap-camera" id="swapCameraBtn" title="Ganti Kamera (depan/belakang)"><i class="fas fa-sync-alt"></i></button>
                 <button class="btn-end-call" id="endCallBtn"><i class="fas fa-phone-slash"></i></button>
             </div>
         </div>
@@ -1679,6 +1698,7 @@
         const callStatusDisplay = document.getElementById('callStatusDisplay');
         const toggleMicBtn = document.getElementById('toggleMicBtn');
         const toggleVideoBtn = document.getElementById('toggleVideoBtn');
+        const swapCameraBtn = document.getElementById('swapCameraBtn');
         const endCallBtn = document.getElementById('endCallBtn');
         const voiceCallBtn = document.getElementById('voiceCallBtn');
         const videoCallBtn = document.getElementById('videoCallBtn');
@@ -1708,6 +1728,10 @@
         let isMuted = false;
         let isVideoOff = false;
         let incomingCallId = null;
+
+        // Variabel untuk swap kamera
+        let currentVideoDeviceId = null;
+        let videoDevices = [];
 
         // ============================================================
         // 6. CALL HISTORY TRACKING
@@ -2882,7 +2906,7 @@
         });
 
         // ============================================================
-        // 22. WEBRTC - CALL LOGIC (dengan Call History)
+        // 22. WEBRTC - CALL LOGIC (dengan Call History + Swap Camera)
         // ============================================================
 
         function getCallerName() {
@@ -2897,9 +2921,11 @@
             if (!video) {
                 localVideo.style.display = 'none';
                 remoteVideo.style.display = 'none';
+                swapCameraBtn.disabled = true;
             } else {
                 localVideo.style.display = 'block';
                 remoteVideo.style.display = 'block';
+                swapCameraBtn.disabled = false;
             }
             toggleMicBtn.classList.remove('muted');
             toggleMicBtn.innerHTML = '<i class="fas fa-microphone"></i>';
@@ -2943,6 +2969,9 @@
             activeCallRecord = null;
             callStartTime = 0;
             callConnectedTime = 0;
+            currentVideoDeviceId = null;
+            videoDevices = [];
+            swapCameraBtn.disabled = true;
         }
 
         function endCallAndSaveHistory() {
@@ -3052,7 +3081,123 @@
         }
 
         // ============================================================
-        // 23. MULAI PANGGILAN (Caller)
+        // 23. FUNGSI SWAP KAMERA
+        // ============================================================
+        async function swapCamera() {
+            if (!localStream) return;
+            const videoTracks = localStream.getVideoTracks();
+            if (videoTracks.length === 0) {
+                alert('Tidak ada track video untuk ditukar.');
+                return;
+            }
+
+            // Ambil daftar perangkat video jika belum
+            if (videoDevices.length === 0) {
+                try {
+                    const devices = await navigator.mediaDevices.enumerateDevices();
+                    videoDevices = devices.filter(d => d.kind === 'videoinput');
+                } catch (e) {
+                    console.warn('Gagal enumerate devices:', e);
+                    alert('Tidak dapat mengakses daftar kamera.');
+                    return;
+                }
+            }
+
+            if (videoDevices.length < 2) {
+                alert('Hanya ada satu kamera yang terdeteksi. Tidak bisa swap.');
+                return;
+            }
+
+            // Tentukan deviceId saat ini
+            let currentId = currentVideoDeviceId;
+            if (!currentId) {
+                // Ambil dari track yang sedang aktif
+                const track = videoTracks[0];
+                const settings = track.getSettings();
+                currentId = settings.deviceId;
+                if (!currentId) {
+                    // Jika tidak ada, ambil yang pertama
+                    currentId = videoDevices[0].deviceId;
+                }
+                currentVideoDeviceId = currentId;
+            }
+
+            // Cari indeks perangkat saat ini
+            let currentIndex = videoDevices.findIndex(d => d.deviceId === currentId);
+            if (currentIndex === -1) currentIndex = 0;
+
+            // Pilih perangkat berikutnya (siklus)
+            const nextIndex = (currentIndex + 1) % videoDevices.length;
+            const nextDevice = videoDevices[nextIndex];
+
+            try {
+                // Hentikan track video lama
+                videoTracks.forEach(track => {
+                    track.stop();
+                    localStream.removeTrack(track);
+                });
+
+                // Dapatkan track baru dari perangkat yang dipilih
+                const constraints = {
+                    video: {
+                        deviceId: { exact: nextDevice.deviceId },
+                        facingMode: nextDevice.label.toLowerCase().includes('front') ? 'user' : 'environment'
+                    }
+                };
+                // Fallback jika facingMode tidak didukung
+                const newStream = await navigator.mediaDevices.getUserMedia({
+                    video: { deviceId: { exact: nextDevice.deviceId } }
+                });
+                const newVideoTrack = newStream.getVideoTracks()[0];
+                if (!newVideoTrack) throw new Error('Tidak dapat mendapatkan track video baru.');
+
+                // Tambahkan track ke localStream
+                localStream.addTrack(newVideoTrack);
+                // Perbarui localVideo
+                localVideo.srcObject = localStream;
+
+                // Update peer connection: ganti track
+                if (peerConnection) {
+                    const senders = peerConnection.getSenders();
+                    const videoSender = senders.find(s => s.track && s.track.kind === 'video');
+                    if (videoSender) {
+                        await videoSender.replaceTrack(newVideoTrack);
+                    } else {
+                        // Jika tidak ada sender, tambahkan
+                        peerConnection.addTrack(newVideoTrack, localStream);
+                    }
+                }
+
+                // Simpan deviceId baru
+                currentVideoDeviceId = nextDevice.deviceId;
+                console.log('Kamera berhasil diganti ke:', nextDevice.label);
+            } catch (error) {
+                console.error('Gagal swap kamera:', error);
+                alert('Gagal mengganti kamera: ' + error.message);
+                // Kembalikan track lama jika gagal? Sulit, tapi kita coba restore dengan facingMode default
+                try {
+                    const fallbackStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    const fallbackTrack = fallbackStream.getVideoTracks()[0];
+                    if (fallbackTrack) {
+                        localStream.addTrack(fallbackTrack);
+                        localVideo.srcObject = localStream;
+                        if (peerConnection) {
+                            const senders = peerConnection.getSenders();
+                            const videoSender = senders.find(s => s.track && s.track.kind === 'video');
+                            if (videoSender) {
+                                await videoSender.replaceTrack(fallbackTrack);
+                            }
+                        }
+                        currentVideoDeviceId = null; // reset
+                    }
+                } catch (e2) {
+                    console.warn('Gagal restore kamera:', e2);
+                }
+            }
+        }
+
+        // ============================================================
+        // 24. MULAI PANGGILAN (Caller)
         // ============================================================
         async function startCall(video) {
             if (currentCallId) {
@@ -3073,6 +3218,20 @@
                 };
                 localStream = await navigator.mediaDevices.getUserMedia(constraints);
                 localVideo.srcObject = localStream;
+
+                // Catat deviceId video jika ada
+                if (video) {
+                    const videoTracks = localStream.getVideoTracks();
+                    if (videoTracks.length > 0) {
+                        const settings = videoTracks[0].getSettings();
+                        currentVideoDeviceId = settings.deviceId || null;
+                    }
+                    // Enumerate devices untuk persiapan swap
+                    try {
+                        const devices = await navigator.mediaDevices.enumerateDevices();
+                        videoDevices = devices.filter(d => d.kind === 'videoinput');
+                    } catch (e) { console.warn('Gagal enumerate devices:', e); }
+                }
 
                 const callId = callsRef.push().key;
                 currentCallId = callId;
@@ -3095,6 +3254,9 @@
                 if (!video) {
                     localVideo.style.display = 'none';
                     remoteVideo.style.display = 'none';
+                    swapCameraBtn.disabled = true;
+                } else {
+                    swapCameraBtn.disabled = (videoDevices.length < 2);
                 }
 
                 peerConnection = createPeerConnection(true, callId);
@@ -3153,7 +3315,7 @@
         }
 
         // ============================================================
-        // 24. MENERIMA PANGGILAN (Callee)
+        // 25. MENERIMA PANGGILAN (Callee)
         // ============================================================
         function acceptIncomingCall() {
             if (!incomingCallId) return;
@@ -3182,6 +3344,18 @@
                     localStream = await navigator.mediaDevices.getUserMedia(constraints);
                     localVideo.srcObject = localStream;
 
+                    if (video) {
+                        const videoTracks = localStream.getVideoTracks();
+                        if (videoTracks.length > 0) {
+                            const settings = videoTracks[0].getSettings();
+                            currentVideoDeviceId = settings.deviceId || null;
+                        }
+                        try {
+                            const devices = await navigator.mediaDevices.enumerateDevices();
+                            videoDevices = devices.filter(d => d.kind === 'videoinput');
+                        } catch (e) { console.warn('Gagal enumerate devices:', e); }
+                    }
+
                     const name = getCallerName();
                     const recordId = createCallRecord(video ? 'video' : 'voice', video, data.from || 'Penelepon', name);
                     activeCallRecord = {
@@ -3199,6 +3373,9 @@
                     if (!video) {
                         localVideo.style.display = 'none';
                         remoteVideo.style.display = 'none';
+                        swapCameraBtn.disabled = true;
+                    } else {
+                        swapCameraBtn.disabled = (videoDevices.length < 2);
                     }
 
                     stopRingtone();
@@ -3247,7 +3424,7 @@
         }
 
         // ============================================================
-        // 25. LISTENER PANGGILAN MASUK
+        // 26. LISTENER PANGGILAN MASUK
         // ============================================================
         function listenForIncomingCalls() {
             callsRef.on('child_added', (snapshot) => {
@@ -3309,7 +3486,7 @@
         }
 
         // ============================================================
-        // 26. TOMBOL PANGGILAN
+        // 27. TOMBOL PANGGILAN
         // ============================================================
         voiceCallBtn.addEventListener('click', () => {
             startCall(false);
@@ -3320,7 +3497,7 @@
         });
 
         // ============================================================
-        // 27. TOMBOL INCOMING CALL
+        // 28. TOMBOL INCOMING CALL
         // ============================================================
         incAcceptBtn.addEventListener('click', () => {
             stopRingtone();
@@ -3346,7 +3523,7 @@
         });
 
         // ============================================================
-        // 28. TOMBOL KONTROL PANGGILAN
+        // 29. TOMBOL KONTROL PANGGILAN
         // ============================================================
         endCallBtn.addEventListener('click', () => {
             if (confirm('Akhiri panggilan?')) {
@@ -3377,12 +3554,17 @@
                     toggleVideoBtn.innerHTML = isVideoOff ? '<i class="fas fa-video-slash"></i>' :
                         '<i class="fas fa-video"></i>';
                     toggleVideoBtn.classList.toggle('video-off', isVideoOff);
+                    // Jika video dimatikan, disable tombol swap
+                    swapCameraBtn.disabled = isVideoOff;
                 }
             }
         });
 
+        // Tombol swap kamera
+        swapCameraBtn.addEventListener('click', swapCamera);
+
         // ============================================================
-        // 29. CLEANUP PANGGILAN DI FIREBASE
+        // 30. CLEANUP PANGGILAN DI FIREBASE
         // ============================================================
         callsRef.on('child_removed', (snapshot) => {
             const removedId = snapshot.key;
@@ -3409,7 +3591,7 @@
         });
 
         // ============================================================
-        // 30. INISIALISASI
+        // 31. INISIALISASI
         // ============================================================
         const savedName = sessionStorage.getItem('chat_user');
         if (savedName) nameInput.value = savedName;
@@ -3424,9 +3606,10 @@
         observer.observe(container, { childList: true, subtree: true });
 
         listenForIncomingCalls();
+        swapCameraBtn.disabled = true; // awal nonaktif
 
-        console.log('💬 Ja\'O Chating & Call + Ikon Modern siap!');
-        console.log('📋 Gunakan ikon Font Awesome untuk tampilan lebih segar.');
+        console.log('💬 Ja\'O Chating & Call + Swap Kamera siap!');
+        console.log('📷 Gunakan tombol sync untuk ganti kamera depan/belakang saat video call.');
     </script>
 </body>
 </html>
