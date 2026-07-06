@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>📦 Order Komponen System + Notifikasi</title>
+    <title>📦 Order Komponen System</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
     </script>
 
     <style>
+        /* ===== CSS LENGKAP (sama seperti sebelumnya, hanya dipertahankan) ===== */
         :root,
         [data-theme="dark"] {
             --bg-primary: #0b1120;
@@ -46,8 +47,6 @@
             --spinner-accent-track: rgba(0, 212, 170, 0.2);
             --radius: 8px;
             --radius-lg: 14px;
-            --notif-bg: rgba(0, 212, 170, 0.06);
-            --notif-border: rgba(0, 212, 170, 0.15);
         }
         [data-theme="light"] {
             --bg-primary: #f0f4f8;
@@ -84,8 +83,6 @@
             --spinner-accent-track: rgba(13, 148, 136, 0.2);
             --radius: 8px;
             --radius-lg: 14px;
-            --notif-bg: rgba(13, 148, 136, 0.05);
-            --notif-border: rgba(13, 148, 136, 0.15);
         }
         *,
         *::before,
@@ -1029,6 +1026,16 @@
             background: rgba(239, 68, 68, 0.25);
             border-color: var(--danger);
         }
+        .btn-whatsapp {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: #fff;
+            border: 1px solid rgba(37, 211, 102, 0.4);
+            box-shadow: 0 0 16px rgba(37, 211, 102, 0.2);
+        }
+        .btn-whatsapp:hover {
+            box-shadow: 0 0 28px rgba(37, 211, 102, 0.4);
+            transform: translateY(-1px);
+        }
 
         /* ===== TABLE ===== */
         .table-card {
@@ -1754,121 +1761,18 @@
             justify-content: space-between;
         }
 
-        /* ===== NOTIFICATION PANEL ===== */
-        .notif-panel {
-            background: var(--bg-card);
-            border: 1px solid var(--notif-border);
-            border-radius: var(--radius-lg);
-            padding: 1rem 1.5rem;
-            margin-bottom: 1.5rem;
-            display: flex;
+        /* ===== NOTIF BADGE ===== */
+        .notif-badge {
+            display: inline-flex;
             align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-        }
-        .notif-panel .notif-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.85rem;
-        }
-        .notif-panel .notif-info i {
-            color: var(--accent);
-            font-size: 1.2rem;
-        }
-        .notif-panel .notif-info .phone-badge {
-            background: var(--accent-dim);
-            color: var(--accent);
-            padding: 3px 12px;
-            border-radius: 20px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        .notif-panel .notif-toggle {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .notif-toggle .toggle-switch {
-            width: 44px;
-            height: 24px;
-            background: var(--border);
+            gap: 4px;
+            padding: 2px 10px;
             border-radius: 12px;
-            position: relative;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            border: none;
-            padding: 0;
-        }
-        .notif-toggle .toggle-switch.active {
-            background: var(--accent);
-        }
-        .notif-toggle .toggle-switch .toggle-knob {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: #fff;
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            transition: transform 0.3s ease;
-        }
-        .notif-toggle .toggle-switch.active .toggle-knob {
-            transform: translateX(20px);
-        }
-        .notif-toggle .toggle-label {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-        .notif-log {
-            margin-top: 0.75rem;
-            max-height: 120px;
-            overflow-y: auto;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            border-top: 1px solid var(--border);
-            padding-top: 0.75rem;
-            display: none;
-        }
-        .notif-log.show {
-            display: block;
-        }
-        .notif-log .log-entry {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 4px 0;
-            border-bottom: 1px solid rgba(128, 128, 128, 0.05);
-        }
-        .notif-log .log-entry .log-time {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            min-width: 70px;
-        }
-        .notif-log .log-entry .log-msg {
-            color: var(--text-secondary);
-        }
-        .notif-log .log-entry .log-status {
             font-size: 0.6rem;
-            padding: 2px 8px;
-            border-radius: 10px;
             font-weight: 700;
-        }
-        .notif-log .log-entry .log-status.sent {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--success);
-        }
-        .notif-log .log-entry .log-status.fail {
-            background: rgba(239, 68, 68, 0.15);
-            color: var(--danger);
-        }
-        .notif-log .log-entry .log-status.pending {
-            background: rgba(245, 158, 11, 0.15);
-            color: var(--warning);
+            background: rgba(37, 211, 102, 0.15);
+            color: #25D366;
+            border: 1px solid rgba(37, 211, 102, 0.2);
         }
     </style>
 </head>
@@ -1954,36 +1858,6 @@
 
             <!-- ===== TAB AKTIF ===== -->
             <div class="tab-panel active" id="panelAktif">
-                <!-- NOTIFICATION PANEL -->
-                <div class="notif-panel" id="notifPanel">
-                    <div class="notif-info">
-                        <i class="fas fa-bell"></i>
-                        <span>Notifikasi WhatsApp ke</span>
-                        <span class="phone-badge" id="notifPhoneDisplay">+62 823-1309-8943</span>
-                        <span style="color:var(--text-muted);font-size:0.75rem;" id="notifStatusLabel">● Aktif</span>
-                    </div>
-                    <div class="notif-toggle">
-                        <span class="toggle-label" id="notifToggleLabel">On</span>
-                        <button class="toggle-switch active" id="notifToggle" onclick="toggleNotification()">
-                            <span class="toggle-knob"></span>
-                        </button>
-                        <button class="btn btn-secondary btn-sm" onclick="toggleNotifLog()" title="Lihat log notifikasi">
-                            <i class="fas fa-list-ul"></i>
-                        </button>
-                        <button class="btn btn-secondary btn-sm" onclick="sendTestNotification()" title="Kirim notifikasi uji coba">
-                            <i class="fas fa-paper-plane"></i> Test
-                        </button>
-                    </div>
-                </div>
-                <!-- NOTIFICATION LOG -->
-                <div class="notif-log" id="notifLog">
-                    <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-                        <span style="font-weight:700;font-size:0.75rem;color:var(--text-secondary);"><i class="fas fa-history"></i> Log Notifikasi</span>
-                        <button class="btn btn-secondary btn-sm" style="padding:2px 8px;font-size:0.65rem;" onclick="clearNotifLog()">Kosongkan</button>
-                    </div>
-                    <div id="notifLogEntries"></div>
-                </div>
-
                 <div class="stats-row">
                     <div class="stat-card"><div class="stat-icon total"><i class="fas fa-clipboard-list"></i></div><div><div class="stat-value" id="statTotal">0</div><div class="stat-label">Total Aktif</div></div></div>
                     <div class="stat-card"><div class="stat-icon pending"><i class="fas fa-clock"></i></div><div><div class="stat-value" id="statPending">0</div><div class="stat-label">Pending</div></div></div>
@@ -1993,7 +1867,7 @@
 
                 <div class="table-card">
                     <div class="table-toolbar">
-                        <h2><i class="fas fa-tasks"></i> Order Aktif</h2>
+                        <h2><i class="fas fa-tasks"></i> Order Aktif <span class="notif-badge"><i class="fab fa-whatsapp"></i> WA Notif Aktif</span></h2>
                         <div class="toolbar-right">
                             <div class="filter-chips">
                                 <button class="chip active" onclick="filterStatus('all',this)">Semua</button>
@@ -2050,7 +1924,7 @@
                 </div>
                 <div class="table-card">
                     <div class="table-toolbar">
-                        <h2><i class="fas fa-history" style="color:var(--info);"></i> Riwayat Order (Finish)</h2>
+                        <h2><i class="fas fa-history" style="color:var(--info);"></i> Riwayat Order (Finish) <span class="notif-badge"><i class="fab fa-whatsapp"></i> WA Notif Aktif</span></h2>
                         <div class="toolbar-right">
                             <div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="Cari riwayat..." id="searchRiwayat" oninput="debouncedSearchRiwayat()" /></div>
                             <button class="btn btn-download btn-sm" onclick="downloadExcel('riwayat')" id="btnDownloadRiwayat"><i class="fas fa-file-excel"></i> Download</button>
@@ -2266,24 +2140,15 @@
     <!-- ==================== SCRIPT ==================== -->
     <script>
         // ================================================================
-        //  KONFIGURASI GOOGLE SHEETS + NOTIFIKASI
+        //  KONFIGURASI GOOGLE SHEETS
+        //  Ganti URL_DEPLOY dengan URL Web App Anda setelah deploy
         // ================================================================
         var GS_API_URL = 'https://script.google.com/macros/s/AKfycbz_9RfGzAFPPopxR04spcnLBDjKZ2sFOr55TTrL2DxU7kxv8_7dKfQwUe_4jB6OeWqk/exec';
-        var ADMIN_PASSWORD = 'admin123';
+        var ADMIN_PASSWORD = 'admin123'; // Password untuk akses admin (ubah sesuai keinginan)
 
-        // ===== NOTIFIKASI =====
-        var NOTIFICATION_CONFIG = {
-            enabled: true,
-            // Webhook URL untuk meneruskan notifikasi (ganti dengan endpoint Anda)
-            // Bisa menggunakan: https://webhook.site/ untuk testing
-            webhookUrl: 'https://webhook.site/your-webhook-url',
-            // Token API yang diberikan user
-            apiKey: 'uubKwDevdo56Ksoti9ci4knawbwnzpr1pD',
-            // Nomor HP tujuan (dalam format internasional tanpa +)
-            phoneNumber: '6282313098943',
-            // Nama pengirim (opsional)
-            senderName: 'OrderKomponen'
-        };
+        // ===== KONFIGURASI NOTIFIKASI WHATSAPP (FONNTE) =====
+        var FONNTE_TOKEN = 'uubKwDevdo56Ksoti9ci4knawbwnzpr1pD';
+        var NOTIF_PHONE = '6282313098943'; // Format internasional tanpa + / spasi / strip
 
         // ===== STATE =====
         var allOrders = [],
@@ -2296,9 +2161,7 @@
             currentMainTab = 'aktif',
             isAdmin = false,
             currentUser = null,
-            pollInterval = null,
-            notifLogs = [],
-            notifLogVisible = false;
+            pollInterval = null;
 
         // ================================================================
         //  FUNGSI API KE GS
@@ -2310,7 +2173,9 @@
                 method: method,
                 mode: 'cors',
                 cache: 'no-cache',
-                headers: { 'Content-Type': 'application/json' }
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             };
             if (method === 'POST' && payload) {
                 options.body = JSON.stringify(payload);
@@ -2327,195 +2192,131 @@
         }
 
         // ================================================================
-        //  NOTIFIKASI - KIRIM KE WEBHOOK
+        //  FUNGSI NOTIFIKASI WHATSAPP (FONNTE)
         // ================================================================
-        function sendNotification(eventType, orderData, extraMessage) {
-            if (!NOTIFICATION_CONFIG.enabled) {
-                addNotifLog('Notifikasi dinonaktifkan', 'pending');
-                return Promise.resolve({ success: false, reason: 'disabled' });
+        function sendWhatsAppNotification(message, phoneNumber) {
+            phoneNumber = phoneNumber || NOTIF_PHONE;
+            if (!phoneNumber) {
+                console.warn('No phone number configured for notification.');
+                return Promise.resolve({ success: false, message: 'No phone number' });
+            }
+            if (!FONNTE_TOKEN) {
+                console.warn('Fonnte token not configured.');
+                return Promise.resolve({ success: false, message: 'No token' });
             }
 
-            var now = new Date();
-            var timestamp = now.toLocaleString('id-ID', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-
-            var message = extraMessage || '';
-            var orderInfo = orderData ? '#' + (orderData['No. Order'] || orderData['No. Service Case'] || '') : '';
-            var partName = orderData ? (orderData['NAMA PART'] || '') : '';
-            var konsumen = orderData ? (orderData['NAMA KONSUMEN'] || '') : '';
-            var status = orderData ? (orderData['STATUS'] || 'PENDING') : '';
-
-            var eventMap = {
-                'NEW_ORDER': '📦 *Order Baru*',
-                'STATUS_CHANGE': '🔄 *Status Berubah*',
-                'ORDER_COMPLETE': '✅ *Order Selesai*',
-                'ORDER_DELETED': '🗑️ *Order Dihapus*',
-                'TEST': '📢 *Notifikasi Uji Coba*'
-            };
-            var eventLabel = eventMap[eventType] || '📋 *Event*';
-
-            var fullMessage = eventLabel +
-                '\n📌 Order: ' + orderInfo +
-                '\n🔧 Part: ' + partName +
-                '\n👤 Konsumen: ' + konsumen +
-                '\n📊 Status: ' + status +
-                (message ? '\n📝 ' + message : '') +
-                '\n🕐 ' + timestamp +
-                '\n\n_Dikirim dari Order Komponen System_';
-
             var payload = {
-                event: eventType,
-                eventLabel: eventLabel,
-                phoneNumber: NOTIFICATION_CONFIG.phoneNumber,
-                apiKey: NOTIFICATION_CONFIG.apiKey,
-                senderName: NOTIFICATION_CONFIG.senderName,
-                message: fullMessage,
-                orderData: orderData || {},
-                timestamp: new Date().toISOString()
+                target: phoneNumber,
+                message: message,
+                // Optional: countryCode: '62' // sudah di handle di target
             };
 
-            addNotifLog('Mengirim notifikasi: ' + eventType + ' → ' + NOTIFICATION_CONFIG.phoneNumber, 'pending');
-
-            // Kirim ke webhook
-            return fetch(NOTIFICATION_CONFIG.webhookUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-API-Key': NOTIFICATION_CONFIG.apiKey
-                },
-                body: JSON.stringify(payload)
-            })
+            return fetch('https://api.fonnte.com/send', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + FONNTE_TOKEN,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                })
                 .then(function(res) {
-                    if (res.ok) {
-                        addNotifLog('✅ Berhasil: ' + eventType + ' → ' + NOTIFICATION_CONFIG.phoneNumber, 'sent');
-                        return { success: true };
+                    if (!res.ok) {
+                        return res.text().then(function(txt) {
+                            throw new Error('Fonnte API error: ' + res.status + ' ' + txt);
+                        });
+                    }
+                    return res.json();
+                })
+                .then(function(data) {
+                    if (data.status === true) {
+                        return { success: true, data: data };
                     } else {
-                        addNotifLog('❌ Gagal (HTTP ' + res.status + '): ' + eventType, 'fail');
-                        return { success: false, status: res.status };
+                        throw new Error(data.message || 'Unknown Fonnte error');
                     }
                 })
                 .catch(function(err) {
-                    addNotifLog('❌ Error: ' + err.message + ' — ' + eventType, 'fail');
-                    return { success: false, error: err.message };
+                    console.error('Fonnte error:', err);
+                    return { success: false, message: err.message };
                 });
         }
 
-        // ===== NOTIFIKASI UJI COBA =====
-        function sendTestNotification() {
-            if (!NOTIFICATION_CONFIG.enabled) {
-                showToast('Notifikasi sedang dinonaktifkan. Aktifkan dulu.', 'warning');
-                return;
-            }
-            var btn = document.querySelector('.notif-panel .btn-secondary:last-child');
-            if (btn) { btn.disabled = true;
-                btn.innerHTML = '<div class="spinner" style="width:14px;height:14px;"></div>'; }
+        // ===== Helper: format pesan notifikasi =====
+        function formatNotifMessage(order, eventType) {
+            var status = order['STATUS'] || 'PENDING';
+            var noOrder = order['No. Order'] || '-';
+            var part = order['NAMA PART'] || '-';
+            var konsumen = order['NAMA KONSUMEN'] || '-';
+            var teknisi = order['TEKNISI'] || '-';
+            var qty = order['QTY'] || '-';
 
-            sendNotification('TEST', { 'NAMA PART': 'TEST', 'NAMA KONSUMEN': 'Uji Coba', 'STATUS': 'TEST' },
-                    'Ini adalah notifikasi uji coba dari sistem Order Komponen.')
-                .then(function(res) {
-                    if (btn) { btn.disabled = false;
-                        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Test'; }
-                    if (res.success) {
-                        showToast('✅ Notifikasi uji coba terkirim ke ' + formatPhoneDisplay(NOTIFICATION_CONFIG
-                            .phoneNumber), 'success');
+            var lines = [];
+            if (eventType === 'new') {
+                lines.push('🔔 *ORDER BARU*');
+                lines.push('─────────────────');
+                lines.push('🆔 No. Order: ' + noOrder);
+                lines.push('📦 Part: ' + part);
+                lines.push('👤 Konsumen: ' + konsumen);
+                lines.push('🔧 Teknisi: ' + teknisi);
+                lines.push('📊 QTY: ' + qty);
+                lines.push('📌 Status: ' + status);
+                lines.push('─────────────────');
+                lines.push('🕐 ' + new Date().toLocaleString('id-ID'));
+            } else if (eventType === 'finish') {
+                lines.push('✅ *ORDER SELESAI*');
+                lines.push('─────────────────');
+                lines.push('🆔 No. Order: ' + noOrder);
+                lines.push('📦 Part: ' + part);
+                lines.push('👤 Konsumen: ' + konsumen);
+                lines.push('🔧 Teknisi: ' + teknisi);
+                lines.push('📊 QTY: ' + qty);
+                lines.push('📌 Status: FINISH ✅');
+                lines.push('─────────────────');
+                lines.push('🎉 Order telah selesai diproses!');
+                lines.push('🕐 ' + new Date().toLocaleString('id-ID'));
+            } else if (eventType === 'status') {
+                lines.push('📝 *STATUS ORDER BERUBAH*');
+                lines.push('─────────────────');
+                lines.push('🆔 No. Order: ' + noOrder);
+                lines.push('📦 Part: ' + part);
+                lines.push('👤 Konsumen: ' + konsumen);
+                lines.push('🔧 Teknisi: ' + teknisi);
+                lines.push('📌 Status Baru: ' + status);
+                lines.push('─────────────────');
+                lines.push('🕐 ' + new Date().toLocaleString('id-ID'));
+            } else {
+                // generic
+                lines.push('📋 *Informasi Order*');
+                lines.push('─────────────────');
+                lines.push('🆔 No. Order: ' + noOrder);
+                lines.push('📦 Part: ' + part);
+                lines.push('👤 Konsumen: ' + konsumen);
+                lines.push('📌 Status: ' + status);
+                lines.push('🕐 ' + new Date().toLocaleString('id-ID'));
+            }
+
+            return lines.join('\n');
+        }
+
+        // ===== Fungsi pengirim notifikasi dengan handling =====
+        function sendOrderNotification(order, eventType) {
+            if (!order) return;
+            var msg = formatNotifMessage(order, eventType || 'new');
+            sendWhatsAppNotification(msg, NOTIF_PHONE)
+                .then(function(result) {
+                    if (result.success) {
+                        showToast('✅ Notifikasi WhatsApp terkirim!', 'success');
                     } else {
-                        showToast('⚠️ Gagal kirim notifikasi uji coba. Cek webhook URL.', 'error');
+                        console.warn('Notif gagal:', result.message);
+                        // tidak menampilkan toast error agar tidak mengganggu user
                     }
                 })
-                .catch(function() {
-                    if (btn) { btn.disabled = false;
-                        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Test'; }
-                    showToast('Error saat mengirim notifikasi.', 'error');
+                .catch(function(err) {
+                    console.warn('Notif error:', err);
                 });
-        }
-
-        // ===== TOGGLE NOTIFIKASI =====
-        function toggleNotification() {
-            NOTIFICATION_CONFIG.enabled = !NOTIFICATION_CONFIG.enabled;
-            var toggle = document.getElementById('notifToggle');
-            var label = document.getElementById('notifToggleLabel');
-            var statusLabel = document.getElementById('notifStatusLabel');
-            if (NOTIFICATION_CONFIG.enabled) {
-                toggle.classList.add('active');
-                label.textContent = 'On';
-                statusLabel.textContent = '● Aktif';
-                statusLabel.style.color = 'var(--success)';
-                showToast('Notifikasi diaktifkan.', 'success');
-            } else {
-                toggle.classList.remove('active');
-                label.textContent = 'Off';
-                statusLabel.textContent = '○ Nonaktif';
-                statusLabel.style.color = 'var(--text-muted)';
-                showToast('Notifikasi dinonaktifkan.', 'info');
-            }
-        }
-
-        // ===== TOGGLE LOG =====
-        function toggleNotifLog() {
-            notifLogVisible = !notifLogVisible;
-            var el = document.getElementById('notifLog');
-            if (notifLogVisible) {
-                el.classList.add('show');
-                renderNotifLog();
-            } else {
-                el.classList.remove('show');
-            }
-        }
-
-        function renderNotifLog() {
-            var container = document.getElementById('notifLogEntries');
-            if (!container) return;
-            if (notifLogs.length === 0) {
-                container.innerHTML =
-                    '<div style="color:var(--text-muted);font-size:0.75rem;padding:8px 0;">Belum ada log notifikasi.</div>';
-                return;
-            }
-            var html = '';
-            var entries = notifLogs.slice().reverse();
-            for (var i = 0; i < entries.length; i++) {
-                var e = entries[i];
-                var statusClass = e.status || 'pending';
-                var statusLabel = { sent: 'Terkirim', fail: 'Gagal', pending: 'Proses' } [statusClass] || 'Proses';
-                html += '<div class="log-entry">' +
-                    '<span class="log-time">' + e.time + '</span>' +
-                    '<span class="log-msg">' + escapeHtml(e.message) + '</span>' +
-                    '<span class="log-status ' + statusClass + '">' + statusLabel + '</span>' +
-                    '</div>';
-            }
-            container.innerHTML = html;
-        }
-
-        function addNotifLog(message, status) {
-            var now = new Date();
-            var time = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            notifLogs.push({ time: time, message: message, status: status || 'pending' });
-            if (notifLogs.length > 50) notifLogs.shift();
-            if (notifLogVisible) renderNotifLog();
-        }
-
-        function clearNotifLog() {
-            notifLogs = [];
-            renderNotifLog();
-            showToast('Log notifikasi dikosongkan.', 'info');
-        }
-
-        function formatPhoneDisplay(num) {
-            if (!num) return '';
-            var s = String(num).replace(/[^0-9]/g, '');
-            if (s.length > 10) {
-                return '+' + s.slice(0, 2) + ' ' + s.slice(2, 5) + '-' + s.slice(5, 9) + '-' + s.slice(9);
-            }
-            return '+' + s;
         }
 
         // ================================================================
-        //  AUTH FUNCTIONS
+        //  AUTH FUNCTIONS (berbasis password)
         // ================================================================
         function switchAuthTab(t, b) {
             document.querySelectorAll('.auth-tab').forEach(function(x) { x.classList.remove('active'); });
@@ -2558,18 +2359,11 @@
                         document.getElementById('authScreen').classList.add('hidden');
                         document.getElementById('appWrapper').classList.add('visible');
                         updateUserUI(currentUser);
-
-                        // Tampilkan nomor HP di panel notifikasi
-                        var phoneDisplay = formatPhoneDisplay(NOTIFICATION_CONFIG.phoneNumber);
-                        document.getElementById('notifPhoneDisplay').textContent = phoneDisplay;
-
                         if (!window._appStarted) {
                             window._appStarted = true;
                             setDefaultDate();
                             startDataEngine();
                             startMasterEngine();
-                            // Log startup
-                            addNotifLog('🟢 Aplikasi dimulai — Notifikasi ke ' + phoneDisplay, 'sent');
                         } else {
                             renderAll();
                             renderMasterTable();
@@ -2691,7 +2485,7 @@
         }
 
         // ================================================================
-        //  ENGINE ORDERS
+        //  ENGINE ORDERS (polling dari GS)
         // ================================================================
         function startDataEngine() {
             fetchOrders();
@@ -2715,16 +2509,6 @@
                             for (var i = data.length - nc; i < data.length; i++) newRowIndices.add(data[i]
                             ._rowIndex);
                             showToast(nc + ' order baru!', 'info');
-                            // Kirim notifikasi untuk order baru
-                            var newOrders = data.slice(-nc);
-                            for (var j = 0; j < newOrders.length; j++) {
-                                var o = newOrders[j];
-                                if (o['STATUS'] && o['STATUS'].toUpperCase() !== 'FINISH') {
-                                    sendNotification('NEW_ORDER', o,
-                                        'Order baru dari ' + (o['NAMA KONSUMEN'] || 'konsumen') +
-                                        ' | Part: ' + (o['NAMA PART'] || ''));
-                                }
-                            }
                         }
                         isFirstLoad = false;
                         renderAll();
@@ -3067,7 +2851,7 @@
         }
 
         // ================================================================
-        //  HANDLE SUBMIT
+        //  HANDLE SUBMIT (ke GS) + NOTIF
         // ================================================================
         function handleSubmit(e) {
             e.preventDefault();
@@ -3127,13 +2911,11 @@
                     if (res.success) {
                         closeInputModal();
                         document.getElementById('successOverlay').classList.add('active');
-                        // Kirim notifikasi order baru
-                        var newOrder = Object.assign({}, payload);
-                        newOrder._docId = res.docId || 'new';
-                        sendNotification('NEW_ORDER', newOrder,
-                            'Order baru: ' + (payload['NAMA PART'] || '') +
-                            ' | Konsumen: ' + (payload['NAMA KONSUMEN'] || ''));
                         fetchOrders();
+
+                        // Kirim notifikasi WhatsApp untuk order baru
+                        var newOrder = res.data || payload;
+                        sendOrderNotification(newOrder, 'new');
                     } else {
                         showToast('Gagal: ' + (res.message || 'Unknown error'), 'error');
                     }
@@ -3147,7 +2929,7 @@
         }
 
         // ================================================================
-        //  EDIT FUNCTIONS
+        //  EDIT FUNCTIONS + NOTIF
         // ================================================================
         function editHitungJumlahHari() {
             if (!isAdmin) return;
@@ -3168,8 +2950,6 @@
             target.value = diffDays;
         }
 
-        var _pendingStatusChangeNotif = null;
-
         function openEditModal(docId) {
             var o = allOrders.find(function(x) { return x._docId === docId; });
             if (!o) return;
@@ -3179,8 +2959,7 @@
             }
 
             document.getElementById('modalRowIndex').value = docId;
-            var currentStatus = (o['STATUS'] || 'PENDING').toUpperCase();
-            document.getElementById('modalStatus').value = currentStatus;
+            document.getElementById('modalStatus').value = (o['STATUS'] || 'PENDING').toUpperCase();
 
             var adminFields = document.getElementById('adminOnlyFields');
             var userMsg = document.getElementById('userOnlyMessage');
@@ -3218,20 +2997,18 @@
                 keteranganEl.disabled = true;
             }
 
-            // Simpan status awal untuk deteksi perubahan
-            _pendingStatusChangeNotif = { docId: docId, oldStatus: currentStatus, order: o };
-
             document.getElementById('editModal').classList.add('active');
         }
 
         function submitUpdate() {
             var docId = document.getElementById('modalRowIndex').value;
             var status = document.getElementById('modalStatus').value;
+            var oldOrder = allOrders.find(function(o) { return o._docId === docId; });
+            var oldStatus = oldOrder ? (oldOrder['STATUS'] || 'PENDING').toUpperCase() : '';
 
-            var updates = { 'STATUS': status };
-
-            var oldStatus = _pendingStatusChangeNotif ? _pendingStatusChangeNotif.oldStatus : '';
-            var orderData = _pendingStatusChangeNotif ? _pendingStatusChangeNotif.order : null;
+            var updates = {
+                'STATUS': status
+            };
 
             if (isAdmin) {
                 var tglTerima = document.getElementById('modalTglTerimaPart').value;
@@ -3268,17 +3045,46 @@
                     sb.innerHTML = '<i class="fas fa-save"></i> Simpan';
                     if (res.success) {
                         var newStatus = updates['STATUS'].toUpperCase();
-                        // Notifikasi perubahan status
-                        if (oldStatus !== newStatus && orderData) {
-                            var statusMsg = 'Status berubah dari ' + oldStatus + ' → ' + newStatus;
-                            if (newStatus === 'FINISH') {
-                                statusMsg = '✅ Order selesai! ' + statusMsg;
-                                sendNotification('ORDER_COMPLETE', orderData, statusMsg);
+
+                        // Kirim notifikasi jika status berubah ke FINISH
+                        if (newStatus === 'FINISH' && oldStatus !== 'FINISH') {
+                            var updatedOrder = allOrders.find(function(o) { return o._docId === docId; });
+                            if (updatedOrder) {
+                                // Update local data dulu agar notif dapat data terbaru
+                                for (var k in updates) {
+                                    if (updates.hasOwnProperty(k)) updatedOrder[k] = updates[k];
+                                }
+                                updatedOrder['STATUS'] = 'FINISH';
+                                sendOrderNotification(updatedOrder, 'finish');
                             } else {
-                                sendNotification('STATUS_CHANGE', orderData, statusMsg);
+                                // fallback
+                                var dummyOrder = { 'STATUS': 'FINISH', 'No. Order': oldOrder ? oldOrder['No. Order'] :
+                                        '-', 'NAMA PART': oldOrder ? oldOrder['NAMA PART'] : '-',
+                                    'NAMA KONSUMEN': oldOrder ? oldOrder['NAMA KONSUMEN'] : '-',
+                                    'TEKNISI': oldOrder ? oldOrder['TEKNISI'] : '-', 'QTY': oldOrder ? oldOrder[
+                                        'QTY'] : '-'
+                                };
+                                sendOrderNotification(dummyOrder, 'finish');
                             }
-                        } else if (newStatus === 'FINISH' && orderData) {
-                            sendNotification('ORDER_COMPLETE', orderData, 'Order telah selesai.');
+                        }
+                        // Kirim notifikasi status change (selain ke FINISH, karena FINISH sudah di atas)
+                        else if (newStatus !== oldStatus && newStatus !== 'FINISH') {
+                            var updatedOrder2 = allOrders.find(function(o) { return o._docId === docId; });
+                            if (updatedOrder2) {
+                                for (var k2 in updates) {
+                                    if (updates.hasOwnProperty(k2)) updatedOrder2[k2] = updates[k2];
+                                }
+                                updatedOrder2['STATUS'] = newStatus;
+                                sendOrderNotification(updatedOrder2, 'status');
+                            } else {
+                                var dummyOrder2 = { 'STATUS': newStatus, 'No. Order': oldOrder ? oldOrder['No. Order'] :
+                                        '-', 'NAMA PART': oldOrder ? oldOrder['NAMA PART'] : '-',
+                                    'NAMA KONSUMEN': oldOrder ? oldOrder['NAMA KONSUMEN'] : '-',
+                                    'TEKNISI': oldOrder ? oldOrder['TEKNISI'] : '-', 'QTY': oldOrder ? oldOrder[
+                                        'QTY'] : '-'
+                                };
+                                sendOrderNotification(dummyOrder2, 'status');
+                            }
                         }
 
                         if (newStatus === 'FINISH') {
@@ -3369,9 +3175,6 @@
                                 order['JUMLAH'] = jumlah;
                             }
                             renderAll();
-                            // Notifikasi update
-                            sendNotification('STATUS_CHANGE', order, 'Tanggal terima part diperbarui: ' + (newValue ||
-                                '-'));
                         } else {
                             showToast('Gagal: ' + (res.message || 'Unknown error'), 'error');
                             td.textContent = currentValue || '-';
@@ -3441,7 +3244,6 @@
                             td.textContent = newValue || '-';
                             var order = allOrders.find(function(o) { return o._docId === docId; });
                             if (order) order['ORDER KE PABRIK'] = newValue;
-                            sendNotification('STATUS_CHANGE', order, 'Order ke Pabrik: ' + (newValue || '-'));
                         } else {
                             showToast('Gagal: ' + (res.message || 'Unknown error'), 'error');
                             td.textContent = currentValue || '-';
@@ -3490,7 +3292,6 @@
         }
 
         function deleteOrderAction(docId) {
-            var order = allOrders.find(function(o) { return o._docId === docId; });
             gsFetch('deleteOrder', {
                 docId: docId,
                 password: document.getElementById('loginPassword').value
@@ -3498,10 +3299,6 @@
                 .then(function(res) {
                     if (res.success) {
                         showToast('Berhasil dihapus!', 'success');
-                        if (order) {
-                            sendNotification('ORDER_DELETED', order, 'Order ' + (order['No. Order'] || '') +
-                                ' dihapus dari sistem.');
-                        }
                         fetchOrders();
                     } else {
                         showToast('Gagal: ' + (res.message || 'Unknown error'), 'error');
@@ -3513,7 +3310,7 @@
         }
 
         // ================================================================
-        //  MASTER FUNCTIONS
+        //  MASTER FUNCTIONS (via GS)
         // ================================================================
         function renderMasterTable() {
             var tb = document.getElementById('masterBody'),
@@ -3649,6 +3446,7 @@
                 });
         }
 
+        // ===== DELETE ALL MASTER =====
         function deleteAllMaster() {
             if (!isAdmin) { showToast('Hanya Admin yang bisa menghapus semua data.', 'warning'); return; }
             if (allMaster.length === 0) { showToast('Tidak ada data master untuk dihapus.', 'warning'); return; }
@@ -3713,8 +3511,8 @@
                         colDesc = -1;
                     for (var i = 0; i < header.length; i++) {
                         var h = String(header[i] || '').toLowerCase().trim();
-                        if (h.includes('part') || h.includes('part number') || h.includes('kode') || h.includes('no'))
-                            colPart = i;
+                        if (h.includes('part') || h.includes('part number') || h.includes('kode') || h.includes('no')) colPart =
+                            i;
                         if (h.includes('deskripsi') || h.includes('description') || h.includes('nama') || h.includes(
                             'part name')) colDesc = i;
                     }
@@ -3987,11 +3785,11 @@
         document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
         document.getElementById('masterModal').addEventListener('click', function(e) { if (e.target === this) closeMasterModal(); });
 
-        console.log('✅ Aplikasi siap - Backend Google Sheets + Notifikasi');
+        console.log('✅ Aplikasi siap - Backend Google Sheets');
         console.log('🔑 URL_API:', GS_API_URL);
-        console.log('📱 Nomor Notifikasi:', NOTIFICATION_CONFIG.phoneNumber);
-        console.log('🔑 API Key:', NOTIFICATION_CONFIG.apiKey);
         console.log('📄 Spreadsheet:', '1b1HEsngOlQuA-lbDxmLcopb5TukFW6piXgbQ3s4Vjpc');
+        console.log('📱 WhatsApp Notif aktif untuk:', NOTIF_PHONE);
+        console.log('🔐 Fonnte token terkonfigurasi:', FONNTE_TOKEN ? '✅' : '❌');
     </script>
 </body>
 </html>
