@@ -2164,7 +2164,7 @@
             pollInterval = null;
 
         // ================================================================
-        //  FUNGSI API KE GS
+        //  FUNGSI API KE GS (dengan timeout & error handling)
         // ================================================================
         function gsFetch(action, payload, method) {
             method = method || 'POST';
@@ -2185,10 +2185,27 @@
                 for (var k in payload) params.append(k, payload[k]);
                 url += '&' + params.toString();
             }
-            return fetch(url, options).then(function(res) {
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                return res.json();
-            });
+
+            // Tambahkan timeout 10 detik
+            var controller = new AbortController();
+            var timeout = setTimeout(function() {
+                controller.abort();
+            }, 10000);
+            options.signal = controller.signal;
+
+            return fetch(url, options)
+                .then(function(res) {
+                    clearTimeout(timeout);
+                    if (!res.ok) throw new Error('HTTP ' + res.status + ' - ' + res.statusText);
+                    return res.json();
+                })
+                .catch(function(err) {
+                    clearTimeout(timeout);
+                    if (err.name === 'AbortError') {
+                        throw new Error('Koneksi timeout, periksa koneksi internet atau URL API.');
+                    }
+                    throw err;
+                });
         }
 
         // ================================================================
@@ -2208,7 +2225,6 @@
             var payload = {
                 target: phoneNumber,
                 message: message,
-                // Optional: countryCode: '62' // sudah di handle di target
             };
 
             return fetch('https://api.fonnte.com/send', {
@@ -2240,7 +2256,6 @@
                 });
         }
 
-        // ===== Helper: format pesan notifikasi =====
         function formatNotifMessage(order, eventType) {
             var status = order['STATUS'] || 'PENDING';
             var noOrder = order['No. Order'] || '-';
@@ -2284,7 +2299,6 @@
                 lines.push('─────────────────');
                 lines.push('🕐 ' + new Date().toLocaleString('id-ID'));
             } else {
-                // generic
                 lines.push('📋 *Informasi Order*');
                 lines.push('─────────────────');
                 lines.push('🆔 No. Order: ' + noOrder);
@@ -2297,7 +2311,6 @@
             return lines.join('\n');
         }
 
-        // ===== Fungsi pengirim notifikasi dengan handling =====
         function sendOrderNotification(order, eventType) {
             if (!order) return;
             var msg = formatNotifMessage(order, eventType || 'new');
@@ -2307,7 +2320,6 @@
                         showToast('✅ Notifikasi WhatsApp terkirim!', 'success');
                     } else {
                         console.warn('Notif gagal:', result.message);
-                        // tidak menampilkan toast error agar tidak mengganggu user
                     }
                 })
                 .catch(function(err) {
@@ -2316,7 +2328,7 @@
         }
 
         // ================================================================
-        //  AUTH FUNCTIONS (berbasis password)
+        //  AUTH FUNCTIONS (dengan perbaikan error handling)
         // ================================================================
         function switchAuthTab(t, b) {
             document.querySelectorAll('.auth-tab').forEach(function(x) { x.classList.remove('active'); });
@@ -2343,12 +2355,20 @@
 
             if (!em || !pw) { showAuthErr('Email dan password wajib diisi.'); return; }
 
+            // Validasi URL API
+            if (!GS_API_URL || GS_API_URL === '') {
+                showAuthErr('URL API tidak dikonfigurasi. Hubungi admin.');
+                return;
+            }
+
             var b = document.getElementById('loginBtn');
             b.disabled = true;
             b.innerHTML = '<div class="spinner"></div> Memproses...';
 
             gsFetch('verifyPassword', { password: pw }, 'POST')
                 .then(function(res) {
+                    b.disabled = false;
+                    b.innerHTML = '<i class="fas fa-sign-in-alt"></i> Masuk';
                     if (res.success) {
                         isAdmin = res.isAdmin || false;
                         currentUser = {
@@ -2370,15 +2390,26 @@
                         }
                         showToast('Selamat datang, ' + currentUser.displayName + '!', 'success');
                     } else {
-                        showAuthErr(res.message || 'Password salah.');
+                        showAuthErr(res.message || 'Password salah. Coba lagi.');
                     }
-                    b.disabled = false;
-                    b.innerHTML = '<i class="fas fa-sign-in-alt"></i> Masuk';
                 })
                 .catch(function(er) {
                     b.disabled = false;
                     b.innerHTML = '<i class="fas fa-sign-in-alt"></i> Masuk';
-                    showAuthErr('Gagal konek ke server: ' + er.message);
+                    // Tampilkan pesan error yang lebih jelas
+                    var msg = er.message || 'Gagal terhubung ke server. Periksa koneksi atau URL API.';
+                    showAuthErr('⚠️ ' + msg);
+                    // Tambahkan tombol retry secara dinamis
+                    var errEl = document.getElementById('authError');
+                    var retryBtn = document.createElement('button');
+                    retryBtn.className = 'btn btn-secondary btn-sm';
+                    retryBtn.style.marginLeft = '8px';
+                    retryBtn.innerHTML = '<i class="fas fa-sync"></i> Coba Lagi';
+                    retryBtn.onclick = function() {
+                        hideAuthErr();
+                        document.getElementById('loginBtn').click();
+                    };
+                    errEl.appendChild(retryBtn);
                 });
         }
 
@@ -2485,7 +2516,7 @@
         }
 
         // ================================================================
-        //  ENGINE ORDERS (polling dari GS)
+        //  ENGINE ORDERS (polling dari GS) dengan error handling
         // ================================================================
         function startDataEngine() {
             fetchOrders();
@@ -2520,7 +2551,9 @@
                 })
                 .catch(function(er) {
                     sd.classList.remove('syncing');
+                    // Jangan tampilkan error setiap kali polling, hanya jika first load
                     if (isFirstLoad) showToast('Gagal muat data: ' + er.message, 'error');
+                    console.warn('Fetch orders error:', er.message);
                 });
         }
 
@@ -2542,11 +2575,14 @@
                         renderMasterTable();
                     }
                 })
-                .catch(function(er) {});
+                .catch(function(er) {
+                    // silent
+                    console.warn('Fetch master error:', er.message);
+                });
         }
 
         // ================================================================
-        //  RENDER FUNCTIONS
+        //  RENDER FUNCTIONS (tidak berubah)
         // ================================================================
         function renderAll() {
             renderAktifTable();
@@ -2597,7 +2633,6 @@
             searchRiwayatTimer = setTimeout(renderRiwayatTable, 150);
         }
 
-        // ===== RENDER AKTIF =====
         function renderAktifTable() {
             var tb = document.getElementById('tableBody'),
                 es = document.getElementById('emptyState'),
@@ -2681,7 +2716,6 @@
             }
         }
 
-        // ===== RENDER RIWAYAT =====
         function renderRiwayatTable() {
             var tb = document.getElementById('riwayatBody'),
                 es = document.getElementById('emptyRiwayat'),
@@ -2770,7 +2804,6 @@
             tb.innerHTML = h;
         }
 
-        // ===== STATS =====
         function updateAllStats() {
             var aktif = getAktifOrders(),
                 riwayat = getRiwayatOrders();
@@ -3050,14 +3083,12 @@
                         if (newStatus === 'FINISH' && oldStatus !== 'FINISH') {
                             var updatedOrder = allOrders.find(function(o) { return o._docId === docId; });
                             if (updatedOrder) {
-                                // Update local data dulu agar notif dapat data terbaru
                                 for (var k in updates) {
                                     if (updates.hasOwnProperty(k)) updatedOrder[k] = updates[k];
                                 }
                                 updatedOrder['STATUS'] = 'FINISH';
                                 sendOrderNotification(updatedOrder, 'finish');
                             } else {
-                                // fallback
                                 var dummyOrder = { 'STATUS': 'FINISH', 'No. Order': oldOrder ? oldOrder['No. Order'] :
                                         '-', 'NAMA PART': oldOrder ? oldOrder['NAMA PART'] : '-',
                                     'NAMA KONSUMEN': oldOrder ? oldOrder['NAMA KONSUMEN'] : '-',
