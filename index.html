@@ -15,6 +15,9 @@
     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.2/index.js">
     </script>
 
+    <!-- Font Awesome 6 (Free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
     <style>
         /* ----- RESET & GLOBAL ----- */
         * {
@@ -76,7 +79,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 20px;
             color: #00a884;
             font-weight: bold;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -119,9 +122,8 @@
         }
         .chat-header .actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             color: #fff;
-            font-size: 20px;
             align-items: center;
         }
         .chat-header .actions button {
@@ -130,12 +132,14 @@
             color: #fff;
             font-size: 20px;
             cursor: pointer;
-            padding: 4px 6px;
-            border-radius: 8px;
+            padding: 6px;
+            border-radius: 50%;
             transition: background 0.2s;
             display: flex;
             align-items: center;
-            gap: 4px;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
         }
         .chat-header .actions button:hover {
             background: rgba(255, 255, 255, 0.2);
@@ -144,17 +148,25 @@
             transform: scale(0.9);
         }
         .chat-header .actions .menu-dots {
-            font-size: 28px;
+            font-size: 24px;
             line-height: 1;
             cursor: pointer;
-            padding: 0 4px;
+            padding: 4px 6px;
             user-select: none;
             opacity: 0.9;
             transition: opacity 0.2s;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .chat-header .actions .menu-dots:hover {
             opacity: 1;
+            background: rgba(255, 255, 255, 0.2);
         }
+
         .header-dropdown {
             position: absolute;
             right: 12px;
@@ -163,7 +175,7 @@
             border-radius: 16px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
             padding: 8px 0;
-            min-width: 180px;
+            min-width: 200px;
             display: none;
             opacity: 0;
             transform: scale(0.92);
@@ -183,7 +195,7 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             transition: background 0.1s;
             border: none;
             background: transparent;
@@ -199,6 +211,8 @@
         }
         .header-dropdown .drop-item .icon {
             font-size: 18px;
+            width: 24px;
+            text-align: center;
         }
         .header-dropdown .drop-item.danger {
             color: #e74c3c;
@@ -368,6 +382,8 @@
         .message .file-attachment .file-icon {
             font-size: 28px;
             flex-shrink: 0;
+            width: 32px;
+            text-align: center;
         }
         .message .file-attachment .file-info {
             flex: 1;
@@ -600,8 +616,8 @@
             display: flex;
         }
         .file-preview-container .preview-icon {
-            font-size: 32px;
-            width: 44px;
+            font-size: 28px;
+            width: 40px;
             text-align: center;
         }
         .file-preview-container .preview-info {
@@ -638,7 +654,7 @@
         .input-row .icon-btn {
             background: transparent;
             border: none;
-            font-size: 24px;
+            font-size: 22px;
             cursor: pointer;
             padding: 4px;
             line-height: 1;
@@ -699,7 +715,7 @@
             white-space: nowrap;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             box-shadow: 0 2px 8px rgba(0, 168, 132, 0.3);
             flex-shrink: 0;
         }
@@ -745,7 +761,7 @@
             border-radius: 16px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
             padding: 6px 0;
-            min-width: 160px;
+            min-width: 170px;
             z-index: 1000;
             display: none;
             opacity: 0;
@@ -759,13 +775,13 @@
             transform: scale(1);
         }
         .context-menu .menu-item {
-            padding: 6px 14px;
-            font-size: 13px;
+            padding: 8px 16px;
+            font-size: 14px;
             color: #1a1a1a;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
             transition: background 0.1s;
             border: none;
             background: transparent;
@@ -781,8 +797,9 @@
             background: #e8e8e8;
         }
         .context-menu .menu-item .icon {
-            font-size: 16px;
-            line-height: 1;
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
         }
         .context-menu .menu-item.danger {
             color: #e74c3c;
@@ -793,7 +810,7 @@
         .context-menu .divider {
             height: 1px;
             background: #e8e8e8;
-            margin: 3px 10px;
+            margin: 3px 12px;
         }
 
         /* ================================================================
@@ -866,7 +883,7 @@
             width: 100%;
             display: flex;
             justify-content: center;
-            gap: 16px;
+            gap: 20px;
             backdrop-filter: blur(10px);
             flex-shrink: 0;
             flex-wrap: wrap;
@@ -876,9 +893,9 @@
             height: 60px;
             border-radius: 50%;
             border: none;
-            font-size: 28px;
+            font-size: 26px;
             cursor: pointer;
-            transition: transform 0.15s, opacity 0.2s, box-shadow 0.2s;
+            transition: transform 0.15s, opacity 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -910,20 +927,6 @@
         .call-overlay .call-controls .btn-toggle-video.video-off {
             background: #e67e22;
         }
-        /* Tombol switch camera modern */
-        .call-overlay .call-controls .btn-switch-camera {
-            background: #2d7d46;
-        }
-        .call-overlay .call-controls .btn-switch-camera:hover {
-            background: #1f5f33;
-        }
-        .call-overlay .call-controls .btn-switch-camera:active {
-            transform: scale(0.9);
-        }
-        .call-overlay .call-controls .btn-switch-camera.hidden {
-            display: none;
-        }
-
         .call-overlay .call-info {
             position: absolute;
             top: 30px;
@@ -994,7 +997,7 @@
             height: 56px;
             border-radius: 50%;
             border: none;
-            font-size: 26px;
+            font-size: 24px;
             cursor: pointer;
             transition: transform 0.15s;
         }
@@ -1085,21 +1088,28 @@
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         .call-history-header .close-history {
             background: transparent;
             border: none;
             color: #fff;
-            font-size: 28px;
+            font-size: 24px;
             cursor: pointer;
-            padding: 0 4px;
+            padding: 4px;
             line-height: 1;
             opacity: 0.8;
             transition: opacity 0.2s;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .call-history-header .close-history:hover {
             opacity: 1;
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .call-history-body {
@@ -1162,7 +1172,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 20px;
             flex-shrink: 0;
         }
         .call-history-item .ch-icon.answered {
@@ -1244,9 +1254,16 @@
             transition: color 0.2s;
             line-height: 1;
             flex-shrink: 0;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .call-history-item .ch-delete:hover {
             color: #e74c3c;
+            background: #fde8e8;
         }
 
         .call-history-footer {
@@ -1264,12 +1281,12 @@
             font-size: 13px;
             font-weight: 500;
             cursor: pointer;
-            padding: 6px 16px;
+            padding: 8px 18px;
             border-radius: 20px;
             transition: background 0.2s;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
         .call-history-footer .clear-history-btn:hover {
             background: #fde8e8;
@@ -1286,8 +1303,14 @@
                 font-size: 18px;
             }
             .chat-header .actions button {
-                font-size: 16px;
-                padding: 2px 4px;
+                width: 36px;
+                height: 36px;
+                font-size: 17px;
+            }
+            .chat-header .actions .menu-dots {
+                width: 36px;
+                height: 36px;
+                font-size: 20px;
             }
             .message .bubble {
                 font-size: 14px;
@@ -1305,7 +1328,7 @@
             .input-row .icon-btn {
                 width: 36px;
                 height: 36px;
-                font-size: 20px;
+                font-size: 18px;
             }
             .input-row button.send-btn {
                 padding: 8px 14px;
@@ -1315,27 +1338,29 @@
                 height: 240px;
             }
             .context-menu {
-                min-width: 140px;
+                min-width: 150px;
                 padding: 4px 0;
             }
             .context-menu .menu-item {
-                padding: 5px 12px;
-                font-size: 12px;
-                gap: 6px;
+                padding: 6px 14px;
+                font-size: 13px;
+                gap: 10px;
             }
             .context-menu .menu-item .icon {
-                font-size: 14px;
+                font-size: 16px;
+                width: 20px;
             }
             .context-menu .divider {
-                margin: 2px 8px;
+                margin: 2px 10px;
             }
             .header-dropdown {
                 right: 8px;
-                min-width: 150px;
+                min-width: 160px;
             }
             .header-dropdown .drop-item {
                 padding: 8px 14px;
                 font-size: 13px;
+                gap: 10px;
             }
             .reply-indicator {
                 font-size: 12px;
@@ -1349,11 +1374,12 @@
                 padding: 3px 12px;
             }
             .file-preview-container .preview-icon {
-                font-size: 26px;
-                width: 36px;
+                font-size: 24px;
+                width: 34px;
             }
             .message .file-attachment .file-icon {
                 font-size: 24px;
+                width: 28px;
             }
             .message .file-attachment .file-name {
                 font-size: 13px;
@@ -1381,10 +1407,6 @@
                 width: 50px;
                 height: 50px;
                 font-size: 22px;
-            }
-            .call-overlay .call-controls {
-                gap: 12px;
-                padding: 16px;
             }
             .incoming-call {
                 bottom: 80px;
@@ -1436,11 +1458,6 @@
                 align-items: flex-start;
                 gap: 2px;
             }
-            .call-overlay .call-controls button {
-                width: 44px;
-                height: 44px;
-                font-size: 18px;
-            }
         }
     </style>
 </head>
@@ -1450,24 +1467,24 @@
 
         <!-- HEADER -->
         <div class="chat-header">
-            <div class="avatar">💬</div>
+            <div class="avatar"><i class="fas fa-comment-dots"></i></div>
             <div class="info">
-                <h1>Ja'O Chating & Call</h1>
-                <div class="status">Online</div>
+                <h1>Ja'O Chat</h1>
+                <div class="status"><span>Online</span></div>
             </div>
             <div class="actions">
-                <button id="voiceCallBtn" title="Panggilan Suara">📞</button>
-                <button id="videoCallBtn" title="Panggilan Video">📹</button>
-                <button id="historyCallBtn" title="Riwayat Panggilan">📋</button>
-                <span class="menu-dots" id="headerMenuBtn">⋮</span>
+                <button id="voiceCallBtn" title="Panggilan Suara"><i class="fas fa-phone"></i></button>
+                <button id="videoCallBtn" title="Panggilan Video"><i class="fas fa-video"></i></button>
+                <button id="historyCallBtn" title="Riwayat Panggilan"><i class="fas fa-history"></i></button>
+                <span class="menu-dots" id="headerMenuBtn"><i class="fas fa-ellipsis-v"></i></span>
             </div>
             <div class="header-dropdown" id="headerDropdown">
                 <button class="drop-item danger" id="clearAllChat">
-                    <span class="icon">🗑️</span> Hapus Semua Chat
+                    <span class="icon"><i class="fas fa-trash-alt"></i></span> Hapus Semua Chat
                 </button>
                 <div class="divider"></div>
                 <button class="drop-item danger" id="clearAllHistory">
-                    <span class="icon">🧹</span> Hapus Riwayat Panggilan
+                    <span class="icon"><i class="fas fa-broom"></i></span> Hapus Riwayat Panggilan
                 </button>
             </div>
         </div>
@@ -1475,7 +1492,7 @@
         <!-- MESSAGES -->
         <div class="messages-wrapper" id="messageContainer">
             <div class="empty-state" id="emptyState">
-                <div class="icon">🕊️</div>
+                <div class="icon"><i class="fas fa-dove"></i></div>
                 <p>Belum ada pesan</p>
                 <div class="sub">Mulai ngobrol!</div>
             </div>
@@ -1485,27 +1502,27 @@
         <div class="input-area">
             <div class="reply-indicator" id="replyIndicator">
                 <div class="reply-info">
-                    <div class="reply-label">Balas ke <span id="replySender"></span></div>
+                    <div class="reply-label"><i class="fas fa-reply"></i> Balas ke <span id="replySender"></span></div>
                     <div class="reply-preview" id="replyPreview"></div>
                 </div>
-                <button class="cancel-reply" id="cancelReplyBtn">✕</button>
+                <button class="cancel-reply" id="cancelReplyBtn"><i class="fas fa-times"></i></button>
             </div>
 
             <div class="file-preview-container" id="filePreviewContainer">
-                <span class="preview-icon" id="filePreviewIcon">📎</span>
+                <span class="preview-icon" id="filePreviewIcon"><i class="fas fa-paperclip"></i></span>
                 <span class="preview-info" id="filePreviewInfo">file.pdf</span>
                 <span class="upload-progress" id="uploadProgress"></span>
-                <button class="preview-cancel" id="cancelFileBtn">✕</button>
+                <button class="preview-cancel" id="cancelFileBtn"><i class="fas fa-times"></i></button>
             </div>
 
             <div class="input-row">
                 <input type="text" class="name-input" id="nameInput" placeholder="Nama" maxlength="20" value="User" />
                 <input type="text" class="msg-input" id="messageInput" placeholder="Ketik pesan..." maxlength="500" autocomplete="off" />
-                <button class="icon-btn" id="attachBtn" title="Kirim File">📎</button>
-                <button class="icon-btn" id="emojiToggle" type="button" aria-label="Emoji">😊</button>
+                <button class="icon-btn" id="attachBtn" title="Kirim File"><i class="fas fa-paperclip"></i></button>
+                <button class="icon-btn" id="emojiToggle" type="button" aria-label="Emoji"><i class="far fa-smile"></i></button>
                 <button class="send-btn" id="sendBtn">
                     <span>Kirim</span>
-                    <span style="font-size:18px;">➤</span>
+                    <span style="font-size:16px;"><i class="fas fa-paper-plane"></i></span>
                 </button>
             </div>
             <div class="emoji-picker-container" id="emojiPickerContainer">
@@ -1526,10 +1543,9 @@
                 <video id="localVideo" autoplay playsinline muted></video>
             </div>
             <div class="call-controls">
-                <button class="btn-toggle-mic" id="toggleMicBtn" title="Mute/Unmute Mic">🎤</button>
-                <button class="btn-toggle-video" id="toggleVideoBtn" title="Matikan/Hidupkan Kamera">📷</button>
-                <button class="btn-switch-camera hidden" id="switchCameraBtn" title="Ganti Kamera">🔄</button>
-                <button class="btn-end-call" id="endCallBtn">📴</button>
+                <button class="btn-toggle-mic" id="toggleMicBtn" title="Mute/Unmute Mic"><i class="fas fa-microphone"></i></button>
+                <button class="btn-toggle-video" id="toggleVideoBtn" title="Matikan/Hidupkan Kamera"><i class="fas fa-video"></i></button>
+                <button class="btn-end-call" id="endCallBtn"><i class="fas fa-phone-slash"></i></button>
             </div>
         </div>
 
@@ -1538,10 +1554,10 @@
         <!-- ============================================================= -->
         <div class="incoming-call" id="incomingCallPopup">
             <div class="inc-caller" id="incCallerName">User</div>
-            <div class="inc-type" id="incCallType">📹 Panggilan Video</div>
+            <div class="inc-type" id="incCallType"><i class="fas fa-video"></i> Panggilan Video</div>
             <div class="inc-actions">
-                <button class="inc-reject" id="incRejectBtn">❌</button>
-                <button class="inc-accept" id="incAcceptBtn">✅</button>
+                <button class="inc-reject" id="incRejectBtn"><i class="fas fa-times"></i></button>
+                <button class="inc-accept" id="incAcceptBtn"><i class="fas fa-check"></i></button>
             </div>
         </div>
 
@@ -1551,18 +1567,18 @@
         <div class="call-history-overlay" id="callHistoryOverlay">
             <div class="call-history-panel">
                 <div class="call-history-header">
-                    <h2>📋 Riwayat Panggilan</h2>
-                    <button class="close-history" id="closeHistoryBtn">✕</button>
+                    <h2><i class="fas fa-history"></i> Riwayat Panggilan</h2>
+                    <button class="close-history" id="closeHistoryBtn"><i class="fas fa-times"></i></button>
                 </div>
                 <div class="call-history-body" id="callHistoryBody">
                     <div class="call-history-empty" id="historyEmpty">
-                        <div class="big-icon">📭</div>
+                        <div class="big-icon"><i class="fas fa-inbox"></i></div>
                         <p>Belum ada riwayat panggilan</p>
                         <div class="sub">Panggilan akan tercatat di sini</div>
                     </div>
                 </div>
                 <div class="call-history-footer">
-                    <button class="clear-history-btn" id="clearHistoryBtn">🧹 Hapus Semua</button>
+                    <button class="clear-history-btn" id="clearHistoryBtn"><i class="fas fa-broom"></i> Hapus Semua</button>
                 </div>
             </div>
         </div>
@@ -1572,17 +1588,17 @@
     <!-- Context Menu -->
     <div class="context-menu" id="contextMenu">
         <button class="menu-item" id="menuReply">
-            <span class="icon">↩️</span> Balas
+            <span class="icon"><i class="fas fa-reply"></i></span> Balas
         </button>
         <button class="menu-item" id="menuForward">
-            <span class="icon">➡️</span> Teruskan
+            <span class="icon"><i class="fas fa-share"></i></span> Teruskan
         </button>
         <div class="divider"></div>
         <button class="menu-item danger" id="menuDelete">
-            <span class="icon">🗑️</span> Hapus
+            <span class="icon"><i class="fas fa-trash-alt"></i></span> Hapus
         </button>
         <button class="menu-item danger" id="menuUnsend">
-            <span class="icon">❌</span> Batalkan
+            <span class="icon"><i class="fas fa-times-circle"></i></span> Batalkan
         </button>
     </div>
 
@@ -1663,7 +1679,6 @@
         const callStatusDisplay = document.getElementById('callStatusDisplay');
         const toggleMicBtn = document.getElementById('toggleMicBtn');
         const toggleVideoBtn = document.getElementById('toggleVideoBtn');
-        const switchCameraBtn = document.getElementById('switchCameraBtn');
         const endCallBtn = document.getElementById('endCallBtn');
         const voiceCallBtn = document.getElementById('voiceCallBtn');
         const videoCallBtn = document.getElementById('videoCallBtn');
@@ -1693,8 +1708,6 @@
         let isMuted = false;
         let isVideoOff = false;
         let incomingCallId = null;
-        let currentFacingMode = 'user'; // 'user' atau 'environment'
-        let videoSender = null; // untuk track video di peerConnection
 
         // ============================================================
         // 6. CALL HISTORY TRACKING
@@ -2769,13 +2782,13 @@
                     iconDiv.className = 'ch-icon';
                     if (isAnswered) {
                         iconDiv.classList.add('answered');
-                        iconDiv.textContent = isVideo ? '📹' : '📞';
+                        iconDiv.innerHTML = isVideo ? '<i class="fas fa-video"></i>' : '<i class="fas fa-phone"></i>';
                     } else if (isMissed) {
                         iconDiv.classList.add('missed');
-                        iconDiv.textContent = '🔴';
+                        iconDiv.innerHTML = '<i class="fas fa-phone-slash"></i>';
                     } else {
                         iconDiv.classList.add('outgoing');
-                        iconDiv.textContent = isVideo ? '📤' : '📤';
+                        iconDiv.innerHTML = isVideo ? '<i class="fas fa-video"></i>' : '<i class="fas fa-phone"></i>';
                     }
 
                     const infoDiv = document.createElement('div');
@@ -2805,7 +2818,7 @@
 
                     const typeSpan = document.createElement('span');
                     typeSpan.className = 'ch-type';
-                    typeSpan.textContent = isVideo ? '📹 Video' : '📞 Suara';
+                    typeSpan.innerHTML = isVideo ? '<i class="fas fa-video"></i> Video' : '<i class="fas fa-phone"></i> Suara';
 
                     const durSpan = document.createElement('span');
                     durSpan.className = 'ch-duration';
@@ -2830,7 +2843,7 @@
 
                     const deleteBtn = document.createElement('button');
                     deleteBtn.className = 'ch-delete';
-                    deleteBtn.textContent = '✕';
+                    deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
                     deleteBtn.title = 'Hapus riwayat ini';
                     deleteBtn.addEventListener('click', (e) => {
                         e.stopPropagation();
@@ -2869,7 +2882,7 @@
         });
 
         // ============================================================
-        // 22. WEBRTC - CALL LOGIC (dengan Call History & Switch Camera)
+        // 22. WEBRTC - CALL LOGIC (dengan Call History)
         // ============================================================
 
         function getCallerName() {
@@ -2884,20 +2897,16 @@
             if (!video) {
                 localVideo.style.display = 'none';
                 remoteVideo.style.display = 'none';
-                switchCameraBtn.classList.add('hidden');
             } else {
                 localVideo.style.display = 'block';
                 remoteVideo.style.display = 'block';
-                switchCameraBtn.classList.remove('hidden');
             }
             toggleMicBtn.classList.remove('muted');
-            toggleMicBtn.textContent = '🎤';
+            toggleMicBtn.innerHTML = '<i class="fas fa-microphone"></i>';
             toggleVideoBtn.classList.remove('video-off');
-            toggleVideoBtn.textContent = '📷';
+            toggleVideoBtn.innerHTML = '<i class="fas fa-video"></i>';
             isMuted = false;
             isVideoOff = false;
-            // Reset facing mode
-            currentFacingMode = 'user';
         }
 
         function hideCallOverlay() {
@@ -2934,7 +2943,6 @@
             activeCallRecord = null;
             callStartTime = 0;
             callConnectedTime = 0;
-            videoSender = null;
         }
 
         function endCallAndSaveHistory() {
@@ -2994,10 +3002,7 @@
 
             if (localStream) {
                 localStream.getTracks().forEach(track => {
-                    const sender = pc.addTrack(track, localStream);
-                    if (track.kind === 'video') {
-                        videoSender = sender;
-                    }
+                    pc.addTrack(track, localStream);
                 });
             }
 
@@ -3047,68 +3052,7 @@
         }
 
         // ============================================================
-        // 23. SWITCH CAMERA (Flip)
-        // ============================================================
-        async function switchCamera() {
-            if (!localStream || !isVideoCall) return;
-            if (!videoSender) {
-                // fallback: coba cari sender video
-                if (peerConnection) {
-                    const senders = peerConnection.getSenders();
-                    for (let s of senders) {
-                        if (s.track && s.track.kind === 'video') {
-                            videoSender = s;
-                            break;
-                        }
-                    }
-                }
-                if (!videoSender) {
-                    console.warn('Tidak ada sender video, tidak bisa switch');
-                    return;
-                }
-            }
-
-            // Tentukan mode baru
-            const newMode = currentFacingMode === 'user' ? 'environment' : 'user';
-            try {
-                // Dapatkan video track baru dengan mode baru
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: newMode, width: { ideal: 640 }, height: { ideal: 480 } }
-                });
-                const newTrack = stream.getVideoTracks()[0];
-                if (!newTrack) {
-                    console.warn('Tidak dapat mendapatkan track video baru');
-                    return;
-                }
-
-                // Hentikan track video lama
-                const oldTracks = localStream.getVideoTracks();
-                oldTracks.forEach(t => t.stop());
-
-                // Ganti track di sender
-                await videoSender.replaceTrack(newTrack);
-
-                // Hapus track lama dari localStream dan tambahkan track baru
-                const audioTracks = localStream.getAudioTracks();
-                // Buat stream baru dengan audio yang sama + video baru
-                const newStream = new MediaStream();
-                audioTracks.forEach(t => newStream.addTrack(t));
-                newStream.addTrack(newTrack);
-
-                // Ganti localStream
-                localStream = newStream;
-                localVideo.srcObject = localStream; // update tampilan lokal
-
-                // Update facing mode
-                currentFacingMode = newMode;
-            } catch (err) {
-                console.error('Gagal switch kamera:', err);
-                alert('Tidak dapat mengganti kamera: ' + err.message);
-            }
-        }
-
-        // ============================================================
-        // 24. MULAI PANGGILAN (Caller)
+        // 23. MULAI PANGGILAN (Caller)
         // ============================================================
         async function startCall(video) {
             if (currentCallId) {
@@ -3125,7 +3069,7 @@
             try {
                 const constraints = {
                     audio: true,
-                    video: video ? { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } } : false
+                    video: video ? { facingMode: 'user' } : false
                 };
                 localStream = await navigator.mediaDevices.getUserMedia(constraints);
                 localVideo.srcObject = localStream;
@@ -3134,7 +3078,6 @@
                 currentCallId = callId;
                 isCaller = true;
                 isVideoCall = video;
-                currentFacingMode = 'user';
 
                 const recordId = createCallRecord(video ? 'video' : 'voice', video, name, 'Penerima');
                 activeCallRecord = {
@@ -3210,7 +3153,7 @@
         }
 
         // ============================================================
-        // 25. MENERIMA PANGGILAN (Callee)
+        // 24. MENERIMA PANGGILAN (Callee)
         // ============================================================
         function acceptIncomingCall() {
             if (!incomingCallId) return;
@@ -3231,11 +3174,10 @@
                     isVideoCall = video;
                     currentCallId = callId;
                     isCaller = false;
-                    currentFacingMode = 'user';
 
                     const constraints = {
                         audio: true,
-                        video: video ? { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } } : false
+                        video: video ? { facingMode: 'user' } : false
                     };
                     localStream = await navigator.mediaDevices.getUserMedia(constraints);
                     localVideo.srcObject = localStream;
@@ -3305,7 +3247,7 @@
         }
 
         // ============================================================
-        // 26. LISTENER PANGGILAN MASUK
+        // 25. LISTENER PANGGILAN MASUK
         // ============================================================
         function listenForIncomingCalls() {
             callsRef.on('child_added', (snapshot) => {
@@ -3320,7 +3262,9 @@
 
                     incomingCallId = callId;
                     incCallerName.textContent = data.from || 'Seseorang';
-                    incCallType.textContent = data.isVideo ? '📹 Panggilan Video' : '📞 Panggilan Suara';
+                    incCallType.innerHTML = data.isVideo ?
+                        '<i class="fas fa-video"></i> Panggilan Video' :
+                        '<i class="fas fa-phone"></i> Panggilan Suara';
                     incomingCallPopup.classList.add('show');
 
                     playRingtone();
@@ -3365,7 +3309,7 @@
         }
 
         // ============================================================
-        // 27. TOMBOL PANGGILAN
+        // 26. TOMBOL PANGGILAN
         // ============================================================
         voiceCallBtn.addEventListener('click', () => {
             startCall(false);
@@ -3376,7 +3320,7 @@
         });
 
         // ============================================================
-        // 28. TOMBOL INCOMING CALL
+        // 27. TOMBOL INCOMING CALL
         // ============================================================
         incAcceptBtn.addEventListener('click', () => {
             stopRingtone();
@@ -3402,7 +3346,7 @@
         });
 
         // ============================================================
-        // 29. TOMBOL KONTROL PANGGILAN
+        // 28. TOMBOL KONTROL PANGGILAN
         // ============================================================
         endCallBtn.addEventListener('click', () => {
             if (confirm('Akhiri panggilan?')) {
@@ -3417,7 +3361,8 @@
                 if (audioTracks.length > 0) {
                     isMuted = !isMuted;
                     audioTracks[0].enabled = !isMuted;
-                    toggleMicBtn.textContent = isMuted ? '🔇' : '🎤';
+                    toggleMicBtn.innerHTML = isMuted ? '<i class="fas fa-microphone-slash"></i>' :
+                        '<i class="fas fa-microphone"></i>';
                     toggleMicBtn.classList.toggle('muted', isMuted);
                 }
             }
@@ -3429,17 +3374,15 @@
                 if (videoTracks.length > 0) {
                     isVideoOff = !isVideoOff;
                     videoTracks[0].enabled = !isVideoOff;
-                    toggleVideoBtn.textContent = isVideoOff ? '🚫' : '📷';
+                    toggleVideoBtn.innerHTML = isVideoOff ? '<i class="fas fa-video-slash"></i>' :
+                        '<i class="fas fa-video"></i>';
                     toggleVideoBtn.classList.toggle('video-off', isVideoOff);
                 }
             }
         });
 
-        // Tombol switch camera
-        switchCameraBtn.addEventListener('click', switchCamera);
-
         // ============================================================
-        // 30. CLEANUP PANGGILAN DI FIREBASE
+        // 29. CLEANUP PANGGILAN DI FIREBASE
         // ============================================================
         callsRef.on('child_removed', (snapshot) => {
             const removedId = snapshot.key;
@@ -3466,7 +3409,7 @@
         });
 
         // ============================================================
-        // 31. INISIALISASI
+        // 30. INISIALISASI
         // ============================================================
         const savedName = sessionStorage.getItem('chat_user');
         if (savedName) nameInput.value = savedName;
@@ -3482,8 +3425,8 @@
 
         listenForIncomingCalls();
 
-        console.log('💬 Ja\'O Chating & Call + Switch Camera siap!');
-        console.log('🔄 Tombol flip kamera tersedia saat video call.');
+        console.log('💬 Ja\'O Chating & Call + Ikon Modern siap!');
+        console.log('📋 Gunakan ikon Font Awesome untuk tampilan lebih segar.');
     </script>
 </body>
 </html>
