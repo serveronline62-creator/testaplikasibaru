@@ -2156,7 +2156,7 @@
         // Format: 'NAMA TEKNISI': '628xxxxxxxxxx' (tanpa tanda +, tanpa spasi)
         // Ganti dengan nomor WhatsApp asli masing-masing teknisi
         var TEKNISI_WA_MAP = {
-            'YANDRI OTTU': '6285333071119',
+            'YANDRI OTTU': '628123456789',
             'HARMINDO LAMMA': '628987654321',
             'INOSENCIUS FA\'OT': '628111222333',
             'RIZALDI ABDULLAH': '628222333444',
@@ -3246,7 +3246,7 @@
             input.addEventListener('blur', save);
         }
 
-        // ===== FUNGSI KIRIM NOTIFIKASI WHATSAPP =====
+        // ===== FUNGSI KIRIM NOTIFIKASI WHATSAPP (FORMAT BARU) =====
         function sendWaNotification(docId) {
             var order = allOrders.find(function(o) { return o._docId === docId; });
             if (!order) {
@@ -3266,15 +3266,20 @@
                 return;
             }
 
-            // Susun pesan
-            var msg = 'Halo *' + teknisi + '*,\n\n';
-            msg += 'Status order komponen:\n';
-            msg += '*No. Service:* ' + (order['No. Service'] || '-') + '\n';
-            msg += '*Part:* ' + (order['NAMA PART'] || '-') + '\n';
-            msg += '*Konsumen:* ' + (order['NAMA KONSUMEN'] || '-') + '\n';
-            msg += '*Status:* ' + (order['STATUS'] || 'PENDING') + '\n';
-            msg += '*Tgl Pengajuan:* ' + formatDateDisplay(order['TGL PENGAJUAN ORD'] || '') + '\n';
-            msg += '\nTerima kasih.';
+            // ===== FORMAT PESAN SESUAI PERMINTAAN =====
+            var msg = '📋 *NOTIFIKASI ORDER KOMPONEN*\n\n';
+            msg += 'Kepada Yth. *' + teknisi + '*\n\n';
+            msg += 'Berikut informasi order baru:\n';
+            msg += '━━━━━━━━━━━━━━━━━━━━\n';
+            msg += '🆔 No. Order : ' + (order['No. Order'] || '-') + '\n';
+            msg += '📦 Part      : ' + (order['NAMA PART'] || '-') + '\n';
+            msg += '👤 Konsumen  : ' + (order['NAMA KONSUMEN'] || '-') + '\n';
+            msg += '📞 HP        : ' + (order['NO. HP'] || '-') + '\n';
+            msg += '📊 Status    : ' + (order['STATUS'] || 'PENDING') + '\n';
+            msg += '📅 Tgl Order : ' + formatDateDisplay(order['TGL PENGAJUAN ORD'] || '') + '\n';
+            msg += '━━━━━━━━━━━━━━━━━━━━\n';
+            msg += 'Mohon segera diproses.\n';
+            msg += 'Terima kasih. 🙏';
 
             // Buka WhatsApp dengan pesan terisi
             var url = 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(msg);
@@ -3725,7 +3730,21 @@
         document.getElementById('masterModal').addEventListener('click', function(e) { if (e.target === this) closeMasterModal(); });
 
         console.log('✅ Aplikasi siap - User hanya bisa ubah status, Admin edit semua field. Master Komponen dengan tombol Hapus Semua.');
-        console.log('📱 Fitur WhatsApp aktif! Ganti nomor di TEKNISI_WA_MAP.');
+        console.log('📱 Format WhatsApp baru aktif!');
+        console.log('📋 Template pesan:');
+        console.log('📋 *NOTIFIKASI ORDER KOMPONEN*');
+        console.log('Kepada Yth. *NAMA TEKNISI*');
+        console.log('Berikut informasi order baru:');
+        console.log('━━━━━━━━━━━━━━━━━━━━');
+        console.log('🆔 No. Order : ...');
+        console.log('📦 Part      : ...');
+        console.log('👤 Konsumen  : ...');
+        console.log('📞 HP        : ...');
+        console.log('📊 Status    : ...');
+        console.log('📅 Tgl Order : ...');
+        console.log('━━━━━━━━━━━━━━━━━━━━');
+        console.log('Mohon segera diproses.');
+        console.log('Terima kasih. 🙏');
     </script>
 </body>
 </html>
