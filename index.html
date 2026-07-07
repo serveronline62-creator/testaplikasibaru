@@ -2,24 +2,29 @@
 <html lang="id">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=yes" />
   <title>DASHBOARD - Districk KUPANG</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
-    /* Gaya dasar */
+    /* ----- RESET & BASE ----- */
     * { box-sizing: border-box; }
     body { 
       margin:0; 
       font-family:Arial, sans-serif; 
       background:#f4f6f9;
-      padding-top: 60px; /* dikurangi untuk mobile */
-      font-size: 12px;
+      padding-top: 70px;
+      font-size: 14px;
+      line-height: 1.4;
     }
+    /* ----- HEADER (mobile friendly) ----- */
     header {
       background:#c60000; 
       color:#fff; 
       padding:10px 12px;
+      text-align:center; 
+      font-size:16px;
+      font-weight:bold;
       display:flex; 
       align-items:center; 
       justify-content:space-between;
@@ -28,412 +33,498 @@
       left: 0;
       right: 0;
       z-index: 1000;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      height: 60px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      flex-wrap: nowrap;
+      gap: 6px;
     }
     .header-left {
       display: flex;
       align-items: center;
-      gap: 8px;
+      flex-shrink: 0;
     }
+    header img { 
+      height:36px; 
+      border-radius:4px; 
+      margin-right: 8px;
+    }
+    .header-title {
+      flex: 1;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: left;
+    }
+    .header-right {
+      width: 40px;
+      flex-shrink: 0;
+      text-align: right;
+    }
+    /* hamburger button */
     .hamburger {
       background: none;
       border: none;
       color: #fff;
       font-size: 24px;
       cursor: pointer;
-      padding: 0 8px;
-      display: none; /* sembunyi di desktop */
+      padding: 4px 8px;
     }
-    header img { 
-      height:40px; 
-      border-radius:4px; 
-      margin-right: 8px;
-    }
-    .header-title {
-      flex:1;
-      font-size: 16px;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      padding: 0 5px;
-    }
-    .header-right {
-      width: 40px;
-    }
-    /* Sidebar */
+    .hamburger:focus { outline: none; }
+
+    /* ----- SIDEBAR (mobile: overlay) ----- */
     .sidebar {
       position:fixed; 
-      top:60px; 
-      left:-240px; /* tersembunyi di mobile */
-      width:240px; 
-      height:calc(100% - 60px);
+      top:0; 
+      left:-280px; 
+      width:260px; 
+      height:100%;
       background:#000000; 
-      padding-top:10px;
+      padding-top:70px;
       overflow-y: auto;
       transition: left 0.3s ease;
       z-index: 999;
+      box-shadow: 2px 0 12px rgba(0,0,0,0.3);
     }
     .sidebar.open {
       left: 0;
     }
+    .sidebar a {
+      display:block; 
+      color:#fff; 
+      padding:14px 20px;
+      text-decoration:none; 
+      font-size:14px;
+      transition: all 0.2s;
+      border-bottom: 1px solid #222;
+    }
+    .sidebar a:hover, .sidebar a:focus { 
+      background:#1abc9c; 
+      padding-left: 28px;
+    }
+    .sidebar a i {
+      margin-right: 12px;
+      width: 22px;
+      text-align: center;
+    }
+    /* overlay gelap saat sidebar terbuka */
     .sidebar-overlay {
+      display: none;
       position: fixed;
-      top:60px;
-      left:0;
-      width:100%;
-      height:calc(100% - 60px);
+      top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.5);
       z-index: 998;
-      display: none;
     }
     .sidebar-overlay.active {
       display: block;
     }
-    .sidebar a {
-      display:block; 
-      color:#fff; 
-      padding:12px 20px;
-      text-decoration:none; 
-      font-size:14px;
-      transition: all 0.3s ease;
-    }
-    .sidebar a:hover { 
-      background:#1abc9c; 
-      padding-left: 25px;
-    }
-    .sidebar a i {
-      margin-right: 10px;
-      width: 20px;
-      text-align: center;
-    }
+
+    /* ----- CONTENT ----- */
     .content { 
       margin-left:0; 
-      padding:10px; 
-      transition: margin-left 0.3s ease;
+      padding:12px; 
+      transition: margin-left 0.3s;
     }
-    /* Card */
     .card {
       background:#fff; 
-      padding:12px; 
-      margin-bottom:15px;
-      border-radius:6px; 
-      box-shadow:0 2px 5px rgba(0,0,0,0.1);
+      padding:14px; 
+      margin-bottom:16px;
+      border-radius:8px; 
+      box-shadow:0 2px 6px rgba(0,0,0,0.08);
     }
     h2 {
-      font-size:16px;
-      margin-top:0;
-      margin-bottom:12px;
-      padding-bottom:8px;
+      color: #c60000;
+      border-bottom: 2px solid #c60000;
+      padding-bottom: 8px;
+      margin-bottom: 14px;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
-    h3 { font-size:13px; margin:12px 0 8px; }
-    /* Stats container */
+    h2 i { font-size: 18px; }
+    h3 {
+      color: #333;
+      margin-top: 16px;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+    /* stats container mobile */
     .stats-container {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
     .stat-card {
+      background: #fff;
+      border-radius: 6px;
+      padding: 8px 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
       flex: 1 0 calc(50% - 6px);
       min-width: 80px;
-      padding: 6px 8px;
+      border-left: 3px solid #c60000;
     }
-    .stat-card h4 { font-size: 9px; margin:0 0 2px; }
-    .stat-value { font-size: 14px; }
-    /* Tools */
+    .stat-card h4 {
+      margin: 0 0 2px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #555;
+    }
+    .stat-value {
+      font-size: 18px;
+      font-weight: bold;
+      color: #c60000;
+    }
+    /* dashboard overview grid */
+    .dashboard-overview {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .overview-card {
+      background:#fff; 
+      border-radius:8px; 
+      padding:14px; 
+      box-shadow:0 2px 6px rgba(0,0,0,0.06);
+      border-left: 4px solid #c60000;
+    }
+    .overview-card h3 {
+      margin-top:0;
+      color:#c60000;
+      font-size:15px;
+    }
+    .quick-stats {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .quick-stat {
+      text-align: center;
+      padding: 8px 4px;
+      background: #f8f9fa;
+      border-radius: 6px;
+      flex: 1;
+      min-width: 60px;
+    }
+    .quick-stat-value {
+      font-size: 16px;
+      font-weight: bold;
+      color: #c60000;
+    }
+    .quick-stat-label {
+      font-size: 10px;
+      color: #666;
+    }
+
+    /* ----- TOOLS & FILTER (mobile) ----- */
     .tools {
       display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      padding: 6px;
+      flex-direction: column;
+      gap: 8px;
       background: #f8f9fa;
-      border-radius: 4px;
+      padding: 10px;
+      border-radius: 6px;
     }
     .tools > div {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      gap: 4px;
+      gap: 4px 6px;
     }
     .tools label {
-      font-size: 11px;
-      margin-right: 2px;
-    }
-    .tools input, .tools select {
-      padding: 4px 6px;
-      font-size: 11px;
-      max-width: 120px;
-    }
-    .sort-btn {
-      padding: 4px 8px;
-      font-size: 11px;
-    }
-    .clear-filters {
-      padding: 4px 8px;
-      font-size: 11px;
-    }
-    /* Table wrapper */
-    .table-wrapper {
-      margin-top: 8px;
-    }
-    .table-container {
-      max-height: 400px;
-      overflow-x: auto; /* horizontal scroll untuk mobile */
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    table {
-      width: 100%;
-      min-width: 700px; /* supaya bisa scroll horizontal di mobile */
-      font-size: 10px;
-      border-collapse: collapse;
-    }
-    table th, table td {
-      padding: 4px 6px;
+      font-weight: bold;
+      font-size: 13px;
+      color: #333;
       white-space: nowrap;
     }
-    table th {
-      font-size: 10px;
-    }
-    /* Pagination */
-    .pagination {
-      flex-wrap: wrap;
-      gap: 6px;
-      font-size: 11px;
-    }
-    .pagination button {
-      padding: 4px 8px;
-      font-size: 11px;
-    }
-    .rows-per-page select {
-      padding: 3px 4px;
-      font-size: 11px;
-    }
-    /* File actions */
-    .file-actions {
-      flex-wrap: wrap;
-    }
-    .btn {
-      padding: 4px 10px;
-      font-size: 11px;
-    }
-    /* Notification */
-    .notification {
-      top: 70px;
-      right: 10px;
-      font-size: 12px;
-      padding: 10px 14px;
-      max-width: 90%;
-    }
-    /* Dashboard overview cards */
-    .dashboard-overview {
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-    .overview-card {
-      padding: 12px;
-    }
-    .quick-stats {
-      flex-wrap: wrap;
-    }
-    .quick-stat {
-      min-width: 60px;
-      padding: 6px;
-    }
-    .quick-stat-value { font-size: 16px; }
-    /* Filter section */
-    .filter-row {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 8px;
-    }
-    .filter-group {
-      flex-wrap: wrap;
-    }
-    .filter-group label {
-      min-width: 70px;
-      font-size: 11px;
-    }
-    .filter-group input, .filter-group select {
+    .tools input, .tools select {
+      padding: 6px 8px;
+      font-size: 13px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
       flex: 1;
       min-width: 100px;
     }
-    /* Nama clickable */
+    .tools .sort-btn {
+      padding: 6px 12px;
+      font-size: 13px;
+      background: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .clear-filters {
+      background: #e74c3c;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .filter-section {
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      border-left: 4px solid #c60000;
+    }
+    .filter-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .filter-group {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px 6px;
+    }
+    .filter-group label {
+      font-weight: bold;
+      font-size: 13px;
+      color: #333;
+      white-space: nowrap;
+    }
+    .filter-group input, .filter-group select {
+      padding: 6px 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+      flex: 1;
+      min-width: 100px;
+    }
+    .file-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 8px 0;
+    }
+    .file-actions .btn {
+      padding: 6px 14px;
+      font-size: 13px;
+    }
+    input[type="file"] {
+      padding: 6px;
+      font-size: 13px;
+      width: 100%;
+      max-width: 280px;
+    }
+
+    /* ----- TABEL (mobile horizontal scroll) ----- */
+    .table-wrapper {
+      margin-top: 10px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .table-container {
+      max-height: 420px;
+      overflow-y: auto;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      min-width: 700px; /* agar tetap terbaca di HP dengan scroll */
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    table th, table td {
+      border: 1px solid #ccc;
+      padding: 5px 6px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    table th {
+      background: #c60000;
+      color: #fff;
+      font-weight: bold;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      text-align: center;
+      font-size: 11px;
+    }
+    /* pagination mobile */
+    .pagination {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .pagination-controls, .rows-per-page {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .pagination-info {
+      font-size: 13px;
+      text-align: center;
+      flex: 1 1 100%;
+    }
+    .pagination button {
+      padding: 5px 12px;
+      border: none;
+      border-radius: 4px;
+      background: #2c3e50;
+      color: #fff;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .pagination button:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+    .rows-per-page select {
+      padding: 4px 6px;
+      font-size: 13px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+
+    /* ----- STATUS BADGE ----- */
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    .status-pending { background:#f39c12; color:#fff; }
+    .status-approved { background:#27ae60; color:#fff; }
+    .status-rejected { background:#e74c3c; color:#fff; }
+    .status-returned { background:#3498db; color:#fff; }
+    .status-canceled { background:#95a5a6; color:#fff; }
+    .status-invoiced { background:#9b59b6; color:#fff; }
+    .status-completed { background:#27ae60; color:#fff; }
+    .status-printed { background:#34495e; color:#fff; }
+    .status-wip { background:#f39c12; color:#fff; }
+    .status-wip-comp { background:#e67e22; color:#fff; }
+    .status-wip-tech { background:#16a085; color:#fff; }
+    .status-processing { background:#3498db; color:#fff; }
+    .status-shipped { background:#9b59b6; color:#fff; }
+    .status-delivered { background:#27ae60; color:#fff; }
+    .status-returned-pengiriman { background:#e67e22; color:#fff; }
+    .status-closed { background:#2c3e50; color:#fff; }
+
+    /* ----- NAMA KLIK (stock) ----- */
     .nama-clickable {
       cursor: pointer;
       color: #0066cc;
       text-decoration: underline dotted;
+      transition: background 0.2s;
     }
-    /* Responsive breakpoints */
-    @media (min-width: 769px) {
-      /* desktop: sidebar tetap terlihat */
-      .sidebar {
-        left: 0 !important;
-      }
-      .content {
-        margin-left: 220px;
-        padding: 20px;
-      }
-      .hamburger {
-        display: none !important;
-      }
-      .sidebar-overlay {
-        display: none !important;
-      }
-      .stats-container .stat-card {
-        flex: 1;
-        min-width: 90px;
-      }
-      .dashboard-overview {
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      }
-      .filter-row {
-        flex-direction: row;
-        flex-wrap: wrap;
-      }
-      .filter-group {
-        flex: 0 1 auto;
-      }
+    .nama-clickable:hover {
+      background: #e6f0ff;
     }
-    @media (max-width: 768px) {
-      body {
-        padding-top: 56px;
-      }
-      header {
-        height: 56px;
-        padding: 8px 10px;
-      }
-      .header-title {
-        font-size: 14px;
-      }
-      .hamburger {
-        display: block;
-      }
+    .editable {
+      cursor: pointer;
+    }
+    .editable:hover {
+      background: #f0f8ff;
+    }
+    .editable:focus {
+      outline: 2px solid #3498db;
+      background: #f0f8ff;
+    }
+
+    /* notifikasi */
+    .notification {
+      position: fixed;
+      top: 76px;
+      right: 10px;
+      left: 10px;
+      background: #27ae60;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 1001;
+      display: none;
+      font-size: 14px;
+      text-align: center;
+    }
+    .loading-overlay {
+      position: fixed;
+      top:0; left:0; width:100%; height:100%;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #c60000;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* ----- SETTINGS ----- */
+    .settings-section {
+      margin-bottom: 20px;
+      padding: 14px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid #c60000;
+    }
+    .settings-section h3 {
+      margin-top: 0;
+      color: #c60000;
+    }
+
+    /* ----- RESPONSIVE: tablet & desktop ----- */
+    @media (min-width: 768px) {
+      body { padding-top: 80px; font-size: 13px; }
+      header { padding: 15px 24px; font-size: 20px; }
+      header img { height: 50px; }
+      .header-title { font-size: 18px; text-align: center; }
+      .hamburger { display: none; }
       .sidebar {
-        width: 240px;
-        left: -260px;
-      }
-      .sidebar.open {
+        position: fixed;
+        top: 80px;
         left: 0;
+        width: 220px;
+        height: calc(100% - 80px);
+        background: #000;
+        padding-top: 20px;
+        box-shadow: none;
+        transition: none;
+        z-index: 100;
       }
-      .content {
-        padding: 8px;
-      }
-      .card {
-        padding: 10px;
-      }
-      h2 {
-        font-size: 15px;
-      }
-      .tools > div {
-        flex: 1 1 100%;
-      }
-      .tools input, .tools select {
-        max-width: 100%;
-        width: 100%;
-      }
-      .sort-btn {
-        width: 100%;
-        justify-content: center;
-      }
-      .stat-card {
-        flex: 1 0 calc(50% - 6px);
-      }
-      .table-container {
-        max-height: 350px;
-      }
-      table {
-        font-size: 9px;
-        min-width: 600px;
-      }
-      table th, table td {
-        padding: 3px 4px;
-      }
-      .pagination {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 4px;
-      }
-      .pagination-controls, .rows-per-page {
-        justify-content: center;
-      }
-      .pagination-info {
-        text-align: center;
-      }
-      .filter-group {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .filter-group label {
-        min-width: auto;
-      }
-      .filter-group input, .filter-group select {
-        width: 100%;
-      }
-      .clear-filters {
-        width: 100%;
-      }
-      .file-actions {
-        flex-direction: column;
-      }
-      .file-actions .btn {
-        width: 100%;
-        text-align: center;
-      }
-      .dashboard-overview {
-        grid-template-columns: 1fr;
-      }
-      .quick-stats {
-        flex-direction: row;
-      }
-      .quick-stat {
-        flex: 1;
-        padding: 6px 4px;
-      }
-      .quick-stat-value {
-        font-size: 14px;
-      }
-      /* notification */
-      .notification {
-        top: 62px;
-        right: 6px;
-        left: 6px;
-        max-width: none;
-        font-size: 11px;
-        padding: 8px 12px;
-      }
+      .sidebar.open { left: 0; }
+      .sidebar-overlay { display: none !important; }
+      .content { margin-left: 220px; padding: 24px; }
+      .stats-container { gap: 10px; }
+      .stat-card { flex: 1; min-width: 100px; }
+      .dashboard-overview { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+      .tools { flex-direction: row; flex-wrap: wrap; gap: 12px; }
+      .tools > div { flex: 1; min-width: 150px; }
+      .filter-row { flex-direction: row; flex-wrap: wrap; }
+      .filter-group { flex: 1; min-width: 160px; }
+      table { min-width: auto; font-size: 12px; }
+      .pagination { flex-wrap: nowrap; }
+      .pagination-info { flex: 1; text-align: center; }
     }
-    @media (max-width: 480px) {
-      .header-title {
-        font-size: 12px;
-      }
-      header img {
-        height: 32px;
-        margin-right: 4px;
-      }
-      .stat-card {
-        flex: 1 0 100%;
-      }
-      .stat-value {
-        font-size: 13px;
-      }
-      table {
-        font-size: 8px;
-        min-width: 500px;
-      }
-      table th, table td {
-        padding: 2px 3px;
-      }
-      .tools input, .tools select {
-        font-size: 10px;
-        padding: 3px 4px;
-      }
-      .btn, .clear-filters, .sort-btn {
-        font-size: 10px;
-        padding: 4px 6px;
-      }
+    @media (min-width: 1024px) {
+      .dashboard-overview { grid-template-columns: repeat(3, 1fr); }
+      .stat-card { flex: 1; min-width: 120px; }
     }
   </style>
 </head>
@@ -445,15 +536,11 @@
       </button>
       <img id="logo" src="" alt="Logo">
     </div>
-    <div class="header-title">
-      <span>DASHBOARD - Districk KUPANG</span>
-    </div>
-    <div class="header-right">
-      <!-- kosong -->
-    </div>
+    <div class="header-title"><span>DASHBOARD - Districk KUPANG</span></div>
+    <div class="header-right"></div>
   </header>
 
-  <!-- Overlay untuk sidebar di mobile -->
+  <!-- overlay untuk sidebar -->
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <div class="sidebar" id="sidebar">
@@ -467,282 +554,84 @@
     <a href="#" onclick="showPage('logout')"><i class="fas fa-sign-out-alt"></i> Logout</a>
   </div>
 
-  <div class="content" id="mainContent">
-    <!-- DASHBOARD OVERVIEW -->
+  <div class="content">
+    <!-- DASHBOARD -->
     <div id="dashboard" class="card">
       <h2><i class="fas fa-tachometer-alt"></i> Dashboard Overview</h2>
-      
-      <!-- Quick Stats -->
       <div class="stats-container">
-        <div class="stat-card total">
-          <h4>Total Komponen</h4>
-          <div class="stat-value" id="dashMasterCount">0</div>
-        </div>
-        <div class="stat-card total">
-          <h4>Total Stock</h4>
-          <div class="stat-value" id="dashStockCount">0</div>
-        </div>
-        <div class="stat-card total">
-          <h4>Total Reservasi</h4>
-          <div class="stat-value" id="dashReservasiCount">0</div>
-        </div>
-        <div class="stat-card total">
-          <h4>Total Service</h4>
-          <div class="stat-value" id="dashServiceCount">0</div>
-        </div>
-        <div class="stat-card total">
-          <h4>Outstanding Pengiriman</h4>
-          <div class="stat-value" id="dashPengirimanCount">0</div>
-        </div>
+        <div class="stat-card total"><h4>Total Komponen</h4><div class="stat-value" id="dashMasterCount">0</div></div>
+        <div class="stat-card total"><h4>Total Stock</h4><div class="stat-value" id="dashStockCount">0</div></div>
+        <div class="stat-card total"><h4>Total Reservasi</h4><div class="stat-value" id="dashReservasiCount">0</div></div>
+        <div class="stat-card total"><h4>Total Service</h4><div class="stat-value" id="dashServiceCount">0</div></div>
+        <div class="stat-card total"><h4>Outstanding Pengiriman</h4><div class="stat-value" id="dashPengirimanCount">0</div></div>
       </div>
-
-      <!-- Dashboard Overview Grid -->
       <div class="dashboard-overview">
-        <div class="overview-card">
-          <h3><i class="fas fa-cogs"></i> Master Komponen</h3>
-          <div class="overview-content">
-            <p>Total komponen terdaftar: <strong id="dashMasterTotal">0</strong></p>
-            <div class="quick-stats">
-              <div class="quick-stat">
-                <div class="quick-stat-value" id="dashMasterToday">0</div>
-                <div class="quick-stat-label">Hari Ini</div>
-              </div>
-              <div class="quick-stat">
-                <div class="quick-stat-value" id="dashMasterWeek">0</div>
-                <div class="quick-stat-label">Minggu Ini</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="overview-card">
-          <h3><i class="fas fa-boxes"></i> Stock Komponen</h3>
-          <div class="overview-content">
-            <p>Total stok tersedia: <strong id="dashStockAvailable">0</strong></p>
-            <p>Stok teralokasi: <strong id="dashStockAlloc">0</strong></p>
-            <div class="quick-stats">
-              <div class="quick-stat">
-                <div class="quick-stat-value" id="dashStockLow">0</div>
-                <div class="quick-stat-label">Stok Rendah</div>
-              </div>
-              <div class="quick-stat">
-                <div class="quick-stat-value" id="dashStockOut">0</div>
-                <div class="quick-stat-label">Habis</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="overview-card">
-          <h3><i class="fas fa-calendar-check"></i> Reservasi</h3>
-          <div class="overview-content">
-            <p>Total reservasi aktif: <strong id="dashReservasiActive">0</strong></p>
-            <p>Menunggu persetujuan: <strong id="dashReservasiPending">0</strong></p>
-            <div class="quick-stats">
-              <div class="quick-stat">
-                <div class="quick-stat-value" id="dashReservasiToday">0</div>
-                <div class="quick-stat-label">Hari Ini</div>
-              </div>
-              <div class="quick-stat">
-                <div class="quick-stat-value" id="dashReservasiWeek">0</div>
-                <div class="quick-stat-label">Minggu Ini</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="overview-card">
-          <h3><i class="fas fa-headset"></i> Service Calls</h3>
-          <div class="overview-content">
-            <p>Total service aktif: <strong id="dashServiceActive">0</strong></p>
-            <p>Service selesai: <strong id="dashServiceCompleted">0</strong></p>
-            <div class="quick-stats">
-              <div class="quick-stat">
-                <div class="quick-stat-value" id="dashServiceWIP">0</div>
-                <div class="quick-stat-label">WIP</div>
-              </div>
-              <div class="quick-stat">
-                <div class="quick-stat-value" id="dashServiceToday">0</div>
-                <div class="quick-stat-label">Hari Ini</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="overview-card">
-          <h3><i class="fas fa-truck"></i> Outstanding Pengiriman</h3>
-          <div class="overview-content">
-            <p>Total pengiriman: <strong id="dashPengirimanTotal">0</strong></p>
-            <div class="quick-stats">
-              <div class="quick-stat">
-                <div class="quick-stat-value" id="dashPengirimanToday">0</div>
-                <div class="quick-stat-label">Hari Ini</div>
-              </div>
-              <div class="quick-stat">
-                <div class="quick-stat-value" id="dashPengirimanOverdue">0</div>
-                <div class="quick-stat-label">Terlambat</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="overview-card">
-          <h3><i class="fas fa-clock"></i> Aktivitas Terkini</h3>
-          <div class="overview-content">
-            <div class="recent-activities" id="recentActivities">
-              <div class="activity-item">
-                <div>Tidak ada aktivitas terkini</div>
-                <div class="activity-time">-</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div class="overview-card"><h3><i class="fas fa-cogs"></i> Master Komponen</h3><div class="overview-content"><p>Total: <strong id="dashMasterTotal">0</strong></p><div class="quick-stats"><div class="quick-stat"><div class="quick-stat-value" id="dashMasterToday">0</div><div class="quick-stat-label">Hari Ini</div></div><div class="quick-stat"><div class="quick-stat-value" id="dashMasterWeek">0</div><div class="quick-stat-label">Minggu Ini</div></div></div></div></div>
+        <div class="overview-card"><h3><i class="fas fa-boxes"></i> Stock Komponen</h3><div class="overview-content"><p>Stok tersedia: <strong id="dashStockAvailable">0</strong></p><p>Teralokasi: <strong id="dashStockAlloc">0</strong></p><div class="quick-stats"><div class="quick-stat"><div class="quick-stat-value" id="dashStockLow">0</div><div class="quick-stat-label">Stok Rendah</div></div><div class="quick-stat"><div class="quick-stat-value" id="dashStockOut">0</div><div class="quick-stat-label">Habis</div></div></div></div></div>
+        <div class="overview-card"><h3><i class="fas fa-calendar-check"></i> Reservasi</h3><div class="overview-content"><p>Aktif: <strong id="dashReservasiActive">0</strong></p><p>Menunggu: <strong id="dashReservasiPending">0</strong></p><div class="quick-stats"><div class="quick-stat"><div class="quick-stat-value" id="dashReservasiToday">0</div><div class="quick-stat-label">Hari Ini</div></div><div class="quick-stat"><div class="quick-stat-value" id="dashReservasiWeek">0</div><div class="quick-stat-label">Minggu Ini</div></div></div></div></div>
+        <div class="overview-card"><h3><i class="fas fa-headset"></i> Service Calls</h3><div class="overview-content"><p>Aktif: <strong id="dashServiceActive">0</strong></p><p>Selesai: <strong id="dashServiceCompleted">0</strong></p><div class="quick-stats"><div class="quick-stat"><div class="quick-stat-value" id="dashServiceWIP">0</div><div class="quick-stat-label">WIP</div></div><div class="quick-stat"><div class="quick-stat-value" id="dashServiceToday">0</div><div class="quick-stat-label">Hari Ini</div></div></div></div></div>
+        <div class="overview-card"><h3><i class="fas fa-truck"></i> Outstanding Pengiriman</h3><div class="overview-content"><p>Total: <strong id="dashPengirimanTotal">0</strong></p><div class="quick-stats"><div class="quick-stat"><div class="quick-stat-value" id="dashPengirimanToday">0</div><div class="quick-stat-label">Hari Ini</div></div><div class="quick-stat"><div class="quick-stat-value" id="dashPengirimanOverdue">0</div><div class="quick-stat-label">Terlambat</div></div></div></div></div>
+        <div class="overview-card"><h3><i class="fas fa-clock"></i> Aktivitas Terkini</h3><div class="overview-content"><div class="recent-activities" id="recentActivities"><div class="activity-item"><div>Tidak ada aktivitas</div><div class="activity-time">-</div></div></div></div></div>
       </div>
     </div>
 
     <!-- MASTER KOMPONEN -->
     <div id="master" class="card" style="display:none;">
       <h2><i class="fas fa-cogs"></i> Master Komponen</h2>
-      
-      <div class="stats-container">
-        <div class="stat-card">
-          <h4>Total Komponen</h4>
-          <div class="stat-value" id="masterTotalCount">0</div>
-        </div>
-      </div>
-
+      <div class="stats-container"><div class="stat-card"><h4>Total Komponen</h4><div class="stat-value" id="masterTotalCount">0</div></div></div>
       <h3><i class="fas fa-file-excel"></i> Import File Excel</h3>
       <input type="file" id="importMaster" accept=".xlsx,.xls,.csv" onchange="importMasterExcel()" />
-
       <div class="table-wrapper">
         <div class="tools-container">
           <div class="tools">
-            <div>
-              <label for="searchMaster"><i class="fas fa-search"></i> Cari:</label>
-              <input type="text" id="searchMaster" placeholder="Part / Deskripsi" onkeyup="applyMasterFilter()" />
-            </div>
-            <div>
-              <label for="filterPart"><i class="fas fa-filter"></i> Filter Part:</label>
-              <select id="filterPart" onchange="applyMasterFilter()">
-                <option value="all">Semua</option>
-              </select>
-            </div>
+            <div><label for="searchMaster"><i class="fas fa-search"></i> Cari:</label><input type="text" id="searchMaster" placeholder="Part / Description" onkeyup="applyMasterFilter()" /></div>
+            <div><label for="filterPart"><i class="fas fa-filter"></i> Filter Part:</label><select id="filterPart" onchange="applyMasterFilter()"><option value="all">Semua</option></select></div>
           </div>
         </div>
-        <div class="table-container">
-          <table id="masterTable">
-            <thead>
-              <tr><th>No.</th><th>Part Number</th><th>Description</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
+        <div class="table-container"><table id="masterTable"><thead><tr><th>No.</th><th>Part Number</th><th>Description</th></tr></thead><tbody></tbody></table></div>
       </div>
-
       <div class="pagination">
-        <div class="pagination-controls">
-          <button id="prevMaster" onclick="prevMasterPage()"><i class="fas fa-arrow-left"></i> Back</button>
-        </div>
-        <div class="pagination-info">
-          <span id="pageInfoMaster"></span>
-        </div>
+        <div class="pagination-controls"><button id="prevMaster" onclick="prevMasterPage()"><i class="fas fa-arrow-left"></i> Back</button></div>
+        <div class="pagination-info"><span id="pageInfoMaster"></span></div>
         <div class="rows-per-page">
           <label for="rowsPerPageMaster">Baris:</label>
-          <select id="rowsPerPageMaster" onchange="changeRowsPerPageMaster()">
-            <option value="10">10</option>
-            <option value="15" selected>15</option>
-            <option value="20">20</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-          </select>
+          <select id="rowsPerPageMaster" onchange="changeRowsPerPageMaster()"><option value="10">10</option><option value="15" selected>15</option><option value="20">20</option><option value="25">25</option><option value="50">50</option></select>
           <button id="nextMaster" onclick="nextMasterPage()">Next <i class="fas fa-arrow-right"></i></button>
         </div>
       </div>
     </div>
 
-    <!-- STOCK SPAREPART -->
+    <!-- STOCK -->
     <div id="stock" class="card" style="display:none;">
       <h2><i class="fas fa-boxes"></i> Data Stock Komponen</h2>
-      
       <div class="stats-container">
         <div class="stat-card"><h4>Total Stok</h4><div class="stat-value" id="stockTotalCount">0</div></div>
         <div class="stat-card"><h4>Available QTY</h4><div class="stat-value" id="stockAvailableCount">0</div></div>
         <div class="stat-card"><h4>QTY Alloc</h4><div class="stat-value" id="stockAllocCount">0</div></div>
       </div>
-
       <h3><i class="fas fa-file-excel"></i> Import File Excel</h3>
       <input type="file" id="importFile" accept=".xlsx,.xls,.csv" onchange="importExcel()" />
-      
       <div class="file-actions">
-        <button class="btn btn-success" onclick="exportStockToExcel()">
-          <i class="fas fa-download"></i> Download Excel
-        </button>
+        <button class="btn btn-success" onclick="exportStockToExcel()"><i class="fas fa-download"></i> Download Excel</button>
       </div>
-
       <div class="table-wrapper">
         <div class="tools-container">
           <div class="tools">
-            <div>
-              <label for="filterLokasi"><i class="fas fa-filter"></i> Tipe Lokasi:</label>
-              <select id="filterLokasi" onchange="applyFilter()">
-                <option value="all">Semua</option>
-              </select>
-            </div>
-            <div>
-              <label for="filterNama"><i class="fas fa-filter"></i> Nama:</label>
-              <select id="filterNama" onchange="applyFilter()">
-                <option value="all">Semua</option>
-              </select>
-            </div>
-            <div>
-              <label for="searchInput"><i class="fas fa-search"></i> Cari:</label>
-              <input type="text" id="searchInput" placeholder="Nama / Part / Deskripsi" onkeyup="applyFilter()" />
-            </div>
-            <button class="clear-filters" onclick="clearStockFilters()" style="margin-left:auto;">
-              <i class="fas fa-times"></i> Hapus Filter
-            </button>
-            <button class="sort-btn" id="sortPartBtn" onclick="toggleSortPart()">
-              <i class="fas fa-sort-alpha-down"></i>
-              <span>Urutkan Part</span>
-            </button>
+            <div><label for="filterLokasi"><i class="fas fa-filter"></i> Lokasi:</label><select id="filterLokasi" onchange="applyFilter()"><option value="all">Semua</option></select></div>
+            <div><label for="filterNama"><i class="fas fa-filter"></i> Nama:</label><select id="filterNama" onchange="applyFilter()"><option value="all">Semua</option></select></div>
+            <div><label for="searchInput"><i class="fas fa-search"></i> Cari:</label><input type="text" id="searchInput" placeholder="Nama / Part" onkeyup="applyFilter()" /></div>
+            <button class="clear-filters" onclick="clearStockFilters()"><i class="fas fa-times"></i> Hapus Filter</button>
+            <button class="sort-btn" id="sortPartBtn" onclick="toggleSortPart()"><i class="fas fa-sort-alpha-down"></i><span>Urutkan Part</span></button>
           </div>
         </div>
-        <div class="table-container">
-          <table id="stockTable">
-            <thead>
-              <tr>
-                <th>No.</th>
-                <th>Tipe Lokasi</th>
-                <th>Nama</th>
-                <th>Part <span id="sortIndicator" class="sort-indicator" style="display:none;"></span></th>
-                <th>Deskripsi Part</th>
-                <th>QTY</th>
-                <th>QTY Alloc</th>
-                <th>Available QTY</th>
-                <th>Return To Factory</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
+        <div class="table-container"><table id="stockTable"><thead><tr><th>No.</th><th>Tipe Lokasi</th><th>Nama</th><th>Part <span id="sortIndicator" class="sort-indicator" style="display:none;"></span></th><th>Deskripsi Part</th><th>QTY</th><th>QTY Alloc</th><th>Available QTY</th><th>Return To Factory</th></tr></thead><tbody></tbody></table></div>
       </div>
-
       <div class="pagination">
-        <div class="pagination-controls">
-          <button id="prevBtn" onclick="prevPage()"><i class="fas fa-arrow-left"></i> Back</button>
-        </div>
-        <div class="pagination-info">
-          <span id="pageInfo"></span>
-        </div>
+        <div class="pagination-controls"><button id="prevBtn" onclick="prevPage()"><i class="fas fa-arrow-left"></i> Back</button></div>
+        <div class="pagination-info"><span id="pageInfo"></span></div>
         <div class="rows-per-page">
           <label for="rowsPerPage">Baris:</label>
-          <select id="rowsPerPage" onchange="changeRowsPerPage()">
-            <option value="10">10</option>
-            <option value="15" selected>15</option>
-            <option value="20">20</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-          </select>
+          <select id="rowsPerPage" onchange="changeRowsPerPage()"><option value="10">10</option><option value="15" selected>15</option><option value="20">20</option><option value="25">25</option><option value="50">50</option></select>
           <button id="nextBtn" onclick="nextPage()">Next <i class="fas fa-arrow-right"></i></button>
         </div>
       </div>
@@ -751,99 +640,38 @@
     <!-- RESERVASI -->
     <div id="reservasi" class="card" style="display:none;">
       <h2><i class="fas fa-calendar-check"></i> Reservasi Komponen</h2>
-      
       <div class="stats-container">
         <div class="stat-card"><h4>Total Reservasi</h4><div class="stat-value" id="reservasiTotalCount">0</div></div>
         <div class="stat-card open"><h4>Qty Open</h4><div class="stat-value" id="reservasiOpenCount">0</div></div>
       </div>
-
       <h3><i class="fas fa-file-excel"></i> Import File Excel</h3>
       <input type="file" id="importReservasi" accept=".xlsx,.xls,.csv" onchange="importReservasiExcel()" />
-      
-      <div class="file-actions">
-        <button class="btn btn-success" onclick="exportReservasiToExcel()">
-          <i class="fas fa-download"></i> Download Excel
-        </button>
-      </div>
-      
+      <div class="file-actions"><button class="btn btn-success" onclick="exportReservasiToExcel()"><i class="fas fa-download"></i> Download Excel</button></div>
       <div class="filter-section">
         <h4><i class="fas fa-filter"></i> Filter Data</h4>
         <div class="filter-row">
-          <div class="filter-group">
-            <label for="searchReservasi"><i class="fas fa-search"></i> Cari:</label>
-            <input type="text" id="searchReservasi" placeholder="Catatan / Part" onkeyup="applyReservasiFilter()" />
-          </div>
-          <div class="filter-group">
-            <label for="filterTeknisi"><i class="fas fa-user"></i> Teknisi:</label>
-            <select id="filterTeknisi" onchange="applyReservasiFilter()">
-              <option value="all">Semua</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label for="filterStatusPengirimanReservasi"><i class="fas fa-truck"></i> Status Pengiriman:</label>
-            <select id="filterStatusPengirimanReservasi" onchange="applyReservasiFilter()">
-              <option value="all">Semua</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label for="filterSerial"><i class="fas fa-barcode"></i> Serial Number:</label>
-            <input type="text" id="filterSerial" placeholder="Masukkan Serial" onkeyup="applyReservasiFilter()" />
-          </div>
-          <button class="clear-filters" onclick="clearReservasiFilters()">
-            <i class="fas fa-times"></i> Hapus Filter
-          </button>
+          <div class="filter-group"><label for="searchReservasi"><i class="fas fa-search"></i> Cari:</label><input type="text" id="searchReservasi" placeholder="Catatan / Part" onkeyup="applyReservasiFilter()" /></div>
+          <div class="filter-group"><label for="filterTeknisi"><i class="fas fa-user"></i> Teknisi:</label><select id="filterTeknisi" onchange="applyReservasiFilter()"><option value="all">Semua</option></select></div>
+          <div class="filter-group"><label for="filterStatusPengirimanReservasi"><i class="fas fa-truck"></i> Status Kirim:</label><select id="filterStatusPengirimanReservasi" onchange="applyReservasiFilter()"><option value="all">Semua</option></select></div>
+          <div class="filter-group"><label for="filterSerial"><i class="fas fa-barcode"></i> Serial:</label><input type="text" id="filterSerial" placeholder="Serial Number" onkeyup="applyReservasiFilter()" /></div>
+          <button class="clear-filters" onclick="clearReservasiFilters()"><i class="fas fa-times"></i> Hapus Filter</button>
         </div>
       </div>
-      
-      <div class="table-wrapper">
-        <div class="table-container">
-          <table id="reservasiTable">
-            <thead>
-              <tr>
-                <th>Catatan</th>
-                <th>Part</th>
-                <th>Qty Reservasi</th>
-                <th>Qty Transaksi</th>
-                <th>Qty Close</th>
-                <th>Part Demand</th>
-                <th>Serial Number</th>
-                <th>Return To Factory</th>
-                <th>Teknisi Perbaikan</th>
-                <th>Analisa SA</th>
-                <th>Disetujui Pada</th>
-                <th>Status Pengiriman</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-
+      <div class="table-wrapper"><div class="table-container"><table id="reservasiTable"><thead><tr><th>Catatan</th><th>Part</th><th>Qty Reservasi</th><th>Qty Transaksi</th><th>Qty Close</th><th>Part Demand</th><th>Serial Number</th><th>Return To Factory</th><th>Teknisi Perbaikan</th><th>Analisa SA</th><th>Disetujui Pada</th><th>Status Pengiriman</th></tr></thead><tbody></tbody></table></div></div>
       <div class="pagination">
-        <div class="pagination-controls">
-          <button id="prevReservasi" onclick="prevReservasiPage()"><i class="fas fa-arrow-left"></i> Back</button>
-        </div>
-        <div class="pagination-info">
-          <span id="pageInfoReservasi"></span>
-        </div>
+        <div class="pagination-controls"><button id="prevReservasi" onclick="prevReservasiPage()"><i class="fas fa-arrow-left"></i> Back</button></div>
+        <div class="pagination-info"><span id="pageInfoReservasi"></span></div>
         <div class="rows-per-page">
           <label for="rowsPerPageReservasi">Baris:</label>
-          <select id="rowsPerPageReservasi" onchange="changeRowsPerPageReservasi()">
-            <option value="10">10</option>
-            <option value="15" selected>15</option>
-            <option value="20">20</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-          </select>
+          <select id="rowsPerPageReservasi" onchange="changeRowsPerPageReservasi()"><option value="10">10</option><option value="15" selected>15</option><option value="20">20</option><option value="25">25</option><option value="50">50</option></select>
           <button id="nextReservasi" onclick="nextReservasiPage()">Next <i class="fas fa-arrow-right"></i></button>
         </div>
       </div>
     </div>
 
-    <!-- SERVICE CALLS -->
+    <!-- SERVICE -->
     <div id="service" class="card" style="display:none;">
       <h2><i class="fas fa-headset"></i> Service Calls</h2>
-      
       <div class="stats-container">
         <div class="stat-card total"><h4>SEMUA</h4><div class="stat-value" id="serviceTotalCount">0</div></div>
         <div class="stat-card canceled"><h4>CANCELED</h4><div class="stat-value" id="serviceCanceledCount">0</div></div>
@@ -854,208 +682,67 @@
         <div class="stat-card wip-comp"><h4>WIP COMP</h4><div class="stat-value" id="serviceWipCompCount">0</div></div>
         <div class="stat-card wip-tech"><h4>WIP TECH</h4><div class="stat-value" id="serviceWipTechCount">0</div></div>
       </div>
-
       <h3><i class="fas fa-file-excel"></i> Import File Excel</h3>
       <input type="file" id="importService" accept=".xlsx,.xls,.csv" onchange="importServiceExcel()" />
-      
-      <div class="file-actions">
-        <button class="btn btn-success" onclick="exportServiceToExcel()">
-          <i class="fas fa-download"></i> Download Excel
-        </button>
-      </div>
-      
+      <div class="file-actions"><button class="btn btn-success" onclick="exportServiceToExcel()"><i class="fas fa-download"></i> Download Excel</button></div>
       <div class="filter-section">
         <h4><i class="fas fa-filter"></i> Filter Data</h4>
         <div class="filter-row">
-          <div class="filter-group">
-            <label for="searchService"><i class="fas fa-search"></i> Cari:</label>
-            <input type="text" id="searchService" placeholder="Nomor Service / Pemilik" onkeyup="applyServiceFilter()" />
-          </div>
-          <div class="filter-group">
-            <label for="filterStatus"><i class="fas fa-tasks"></i> Status:</label>
-            <select id="filterStatus" onchange="applyServiceFilter()">
-              <option value="all">SEMUA</option>
-              <option value="CANCELED">CANCELED</option>
-              <option value="INVOICED">INVOICED</option>
-              <option value="COMPLETED">COMPLETED</option>
-              <option value="PRINTED">PRINTED</option>
-              <option value="WIP">WIP</option>
-              <option value="WIP COMP">WIP COMP</option>
-              <option value="WIP TECH">WIP TECH</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label for="filterTeknisiService"><i class="fas fa-user"></i> Nama Teknisi:</label>
-            <select id="filterTeknisiService" onchange="applyServiceFilter()">
-              <option value="all">SEMUA</option>
-              <option value="Harmindo Lamma">Harmindo Lamma</option>
-              <option value="Yandri Ottu">Yandri Ottu</option>
-              <option value="Rizaldi Abdullah">Rizaldi Abdullah</option>
-              <option value="Inosencius A.v. Faot">Inosencius A.v. Faot</option>
-            </select>
-          </div>
-          <button class="clear-filters" onclick="clearServiceFilters()">
-            <i class="fas fa-times"></i> Hapus Filter
-          </button>
+          <div class="filter-group"><label for="searchService"><i class="fas fa-search"></i> Cari:</label><input type="text" id="searchService" placeholder="Nomor SC / Pemilik" onkeyup="applyServiceFilter()" /></div>
+          <div class="filter-group"><label for="filterStatus"><i class="fas fa-tasks"></i> Status:</label><select id="filterStatus" onchange="applyServiceFilter()"><option value="all">SEMUA</option><option value="CANCELED">CANCELED</option><option value="INVOICED">INVOICED</option><option value="COMPLETED">COMPLETED</option><option value="PRINTED">PRINTED</option><option value="WIP">WIP</option><option value="WIP COMP">WIP COMP</option><option value="WIP TECH">WIP TECH</option></select></div>
+          <div class="filter-group"><label for="filterTeknisiService"><i class="fas fa-user"></i> Teknisi:</label><select id="filterTeknisiService" onchange="applyServiceFilter()"><option value="all">SEMUA</option><option value="Harmindo Lamma">Harmindo Lamma</option><option value="Yandri Ottu">Yandri Ottu</option><option value="Rizaldi Abdullah">Rizaldi Abdullah</option><option value="Inosencius A.v. Faot">Inosencius A.v. Faot</option></select></div>
+          <button class="clear-filters" onclick="clearServiceFilters()"><i class="fas fa-times"></i> Hapus Filter</button>
         </div>
       </div>
-      
-      <div class="table-wrapper">
-        <div class="table-container">
-          <table id="serviceTable">
-            <thead>
-              <tr>
-                <th>Tanggal</th>
-                <th>Nomor Service</th>
-                <th>Jenis Layanan</th>
-                <th>Jenis Garansi</th>
-                <th>Tipe Demand</th>
-                <th>Nomor Seri</th>
-                <th>Nama Pemilik</th>
-                <th>Alamat</th>
-                <th>Status</th>
-                <th>Teknisi</th>
-                <th>Keterangan</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-
+      <div class="table-wrapper"><div class="table-container"><table id="serviceTable"><thead><tr><th>Tanggal Pendaftaran</th><th>Nomor Service Call</th><th>Jenis Layanan</th><th>Jenis Garansi</th><th>Tipe Demand</th><th>Nomor Seri</th><th>Nama Pemilik</th><th>Alamat Pemilik</th><th>Status Pengerjaan</th><th>Nama Teknisi</th><th>Keterangan</th></tr></thead><tbody></tbody></table></div></div>
       <div class="pagination">
-        <div class="pagination-controls">
-          <button id="prevService" onclick="prevServicePage()"><i class="fas fa-arrow-left"></i> Back</button>
-        </div>
-        <div class="pagination-info">
-          <span id="pageInfoService"></span>
-        </div>
+        <div class="pagination-controls"><button id="prevService" onclick="prevServicePage()"><i class="fas fa-arrow-left"></i> Back</button></div>
+        <div class="pagination-info"><span id="pageInfoService"></span></div>
         <div class="rows-per-page">
           <label for="rowsPerPageService">Baris:</label>
-          <select id="rowsPerPageService" onchange="changeRowsPerPageService()">
-            <option value="10">10</option>
-            <option value="15" selected>15</option>
-            <option value="20">20</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-          </select>
+          <select id="rowsPerPageService" onchange="changeRowsPerPageService()"><option value="10">10</option><option value="15" selected>15</option><option value="20">20</option><option value="25">25</option><option value="50">50</option></select>
           <button id="nextService" onclick="nextServicePage()">Next <i class="fas fa-arrow-right"></i></button>
         </div>
       </div>
     </div>
 
-    <!-- OUTSTANDING PENGIRIMAN -->
+    <!-- PENGIRIMAN -->
     <div id="pengiriman" class="card" style="display:none;">
       <h2><i class="fas fa-truck"></i> Outstanding Pengiriman</h2>
-      
-      <div class="stats-container">
-        <div class="stat-card total"><h4>SEMUA</h4><div class="stat-value" id="pengirimanTotalCount">0</div></div>
-      </div>
-
+      <div class="stats-container"><div class="stat-card total"><h4>SEMUA</h4><div class="stat-value" id="pengirimanTotalCount">0</div></div></div>
       <h3><i class="fas fa-file-excel"></i> Import File Excel</h3>
       <input type="file" id="importPengiriman" accept=".xlsx,.xls,.csv" onchange="importPengirimanExcel()" />
-      
       <div class="file-actions">
-        <button class="btn btn-success" onclick="exportPengirimanToExcel()">
-          <i class="fas fa-download"></i> Download Excel
-        </button>
-        <button class="btn btn-primary" onclick="autoFillAllSparepartNames()">
-          <i class="fas fa-magic"></i> Auto-Isi Semua Nama Sparepart
-        </button>
+        <button class="btn btn-success" onclick="exportPengirimanToExcel()"><i class="fas fa-download"></i> Download Excel</button>
+        <button class="btn btn-primary" onclick="autoFillAllSparepartNames()"><i class="fas fa-magic"></i> Auto-Isi Nama Sparepart</button>
       </div>
-      
       <div class="filter-section">
         <h4><i class="fas fa-filter"></i> Filter Data</h4>
         <div class="filter-row">
-          <div class="filter-group">
-            <label for="searchPengiriman"><i class="fas fa-search"></i> Cari:</label>
-            <input type="text" id="searchPengiriman" placeholder="Document / Request / Part Supply" onkeyup="applyPengirimanFilter()" />
-          </div>
-          <button class="clear-filters" onclick="clearPengirimanFilters()">
-            <i class="fas fa-times"></i> Hapus Filter
-          </button>
+          <div class="filter-group"><label for="searchPengiriman"><i class="fas fa-search"></i> Cari:</label><input type="text" id="searchPengiriman" placeholder="Document / Request / Part Supply" onkeyup="applyPengirimanFilter()" /></div>
+          <button class="clear-filters" onclick="clearPengirimanFilters()"><i class="fas fa-times"></i> Hapus Filter</button>
         </div>
       </div>
-      
-      <div class="table-wrapper">
-        <div class="table-container">
-          <table id="pengirimanTable">
-            <thead>
-              <tr>
-                <th>Document Number</th>
-                <th>Quantity</th>
-                <th>Base Unit</th>
-                <th>Request Number</th>
-                <th>Created At</th>
-                <th>Part Supply</th>
-                <th>NAMA SPAREPART</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-
+      <div class="table-wrapper"><div class="table-container"><table id="pengirimanTable"><thead><tr><th>Document Number</th><th>Quantity Delivery Order</th><th>Base Unit</th><th>Request Number</th><th>Created At</th><th>Part Supply</th><th>NAMA SPAREPART</th></tr></thead><tbody></tbody></table></div></div>
       <div class="pagination">
-        <div class="pagination-controls">
-          <button id="prevPengiriman" onclick="prevPengirimanPage()"><i class="fas fa-arrow-left"></i> Back</button>
-        </div>
-        <div class="pagination-info">
-          <span id="pageInfoPengiriman"></span>
-        </div>
+        <div class="pagination-controls"><button id="prevPengiriman" onclick="prevPengirimanPage()"><i class="fas fa-arrow-left"></i> Back</button></div>
+        <div class="pagination-info"><span id="pageInfoPengiriman"></span></div>
         <div class="rows-per-page">
           <label for="rowsPerPagePengiriman">Baris:</label>
-          <select id="rowsPerPagePengiriman" onchange="changeRowsPerPagePengiriman()">
-            <option value="10">10</option>
-            <option value="15" selected>15</option>
-            <option value="20">20</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-          </select>
+          <select id="rowsPerPagePengiriman" onchange="changeRowsPerPagePengiriman()"><option value="10">10</option><option value="15" selected>15</option><option value="20">20</option><option value="25">25</option><option value="50">50</option></select>
           <button id="nextPengiriman" onclick="nextPengirimanPage()">Next <i class="fas fa-arrow-right"></i></button>
         </div>
       </div>
     </div>
 
-    <!-- PENGATURAN -->
+    <!-- SETTINGS -->
     <div id="settings" class="card" style="display:none;">
       <h2><i class="fas fa-cog"></i> Pengaturan</h2>
-      
-      <div class="settings-section">
-        <h3><i class="fas fa-image"></i> Upload Logo</h3>
-        <input type="file" id="logoInput" accept="image/*" onchange="changeLogo()" />
-        <p>Logo yang diupload akan tampil di bagian header dashboard.</p>
-      </div>
-      
-      <div class="settings-section">
-        <h3><i class="fas fa-database"></i> Pengaturan Database</h3>
-        <p>Pengaturan koneksi dan manajemen database.</p>
-      </div>
-      
-      <div class="settings-section">
-        <h3><i class="fas fa-user-cog"></i> Pengaturan Pengguna</h3>
-        <p>Kelola pengguna, hak akses, dan izin.</p>
-      </div>
-      
-      <div class="settings-section">
-        <h3><i class="fas fa-bell"></i> Notifikasi</h3>
-        <p>Konfigurasi notifikasi dan pengingat sistem.</p>
-      </div>
-      
-      <div class="settings-section">
-        <h3><i class="fas fa-save"></i> Penyimpanan Data</h3>
-        <p>Data akan otomatis tersimpan di browser (localStorage) setiap kali ada perubahan.</p>
-        <div class="file-actions">
-          <button class="btn btn-success" onclick="backupData()">
-            <i class="fas fa-download"></i> Backup Data
-          </button>
-          <label for="restoreFile" class="btn">
-            <i class="fas fa-upload"></i> Restore Data
-          </label>
-          <input type="file" id="restoreFile" accept=".json" style="display: none;" onchange="restoreData(event)">
-          <button class="btn btn-danger" onclick="clearAllData()">Hapus Semua Data Tersimpan</button>
-        </div>
-      </div>
+      <div class="settings-section"><h3><i class="fas fa-image"></i> Upload Logo</h3><input type="file" id="logoInput" accept="image/*" onchange="changeLogo()" /><p>Logo akan tampil di header.</p></div>
+      <div class="settings-section"><h3><i class="fas fa-database"></i> Pengaturan Database</h3><p>Kelola koneksi database.</p></div>
+      <div class="settings-section"><h3><i class="fas fa-user-cog"></i> Pengaturan Pengguna</h3><p>Kelola hak akses.</p></div>
+      <div class="settings-section"><h3><i class="fas fa-bell"></i> Notifikasi</h3><p>Konfigurasi notifikasi.</p></div>
+      <div class="settings-section"><h3><i class="fas fa-save"></i> Penyimpanan Data</h3><p>Data tersimpan otomatis di browser.</p><div class="file-actions"><button class="btn btn-success" onclick="backupData()"><i class="fas fa-download"></i> Backup</button><label for="restoreFile" class="btn"><i class="fas fa-upload"></i> Restore</label><input type="file" id="restoreFile" accept=".json" style="display:none;" onchange="restoreData(event)"><button class="btn btn-danger" onclick="clearAllData()">Hapus Semua Data</button></div></div>
     </div>
 
     <!-- LOGOUT -->
@@ -1065,1984 +752,918 @@
     </div>
   </div>
 
-  <!-- Notification -->
   <div id="notification" class="notification"></div>
-  
-  <!-- Loading Overlay -->
-  <div id="loadingOverlay" class="loading-overlay" style="display: none;">
-    <div class="loading-spinner"></div>
-  </div>
+  <div id="loadingOverlay" class="loading-overlay" style="display:none;"><div class="loading-spinner"></div></div>
 
   <script>
-    // ---- TOGGLE SIDEBAR ----
+    // ========== SIDEBAR TOGGLE ==========
     const hamburger = document.getElementById('hamburgerBtn');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
-    const mainContent = document.getElementById('mainContent');
 
     function toggleSidebar() {
       sidebar.classList.toggle('open');
       overlay.classList.toggle('active');
     }
-
-    function closeSidebar() {
-      sidebar.classList.remove('open');
-      overlay.classList.remove('active');
-    }
-
     hamburger.addEventListener('click', toggleSidebar);
-    overlay.addEventListener('click', closeSidebar);
+    overlay.addEventListener('click', toggleSidebar);
 
-    // Tutup sidebar saat memilih menu (di mobile)
+    // Tutup sidebar saat klik link
     document.querySelectorAll('.sidebar a').forEach(link => {
-      link.addEventListener('click', function(e) {
-        if (window.innerWidth <= 768) {
-          closeSidebar();
+      link.addEventListener('click', () => {
+        if (window.innerWidth < 768) {
+          sidebar.classList.remove('open');
+          overlay.classList.remove('active');
         }
       });
     });
 
-    // ---- GLOBAL FUNCTION ----
+    // ========== FUNGSI UTAMA ==========
     function showPage(pageId) {
       const pages = document.querySelectorAll('.card');
       pages.forEach(p => p.style.display = "none");
       document.getElementById(pageId).style.display = "block";
-      
-      // Update statistics when switching pages
       updateStatistics();
       updateDashboardOverview();
-      
-      // Close sidebar on mobile
-      if (window.innerWidth <= 768) {
-        closeSidebar();
+      // Tutup sidebar di HP
+      if (window.innerWidth < 768) {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
       }
     }
 
-    // ---- NOTIFICATION ----
     function showNotification(message, duration = 3000) {
-      const notification = document.getElementById('notification');
-      notification.textContent = message;
-      notification.style.display = 'block';
-      
-      setTimeout(() => {
-        notification.style.display = 'none';
-      }, duration);
+      const el = document.getElementById('notification');
+      el.textContent = message;
+      el.style.display = 'block';
+      clearTimeout(el._timer);
+      el._timer = setTimeout(() => { el.style.display = 'none'; }, duration);
     }
 
-    // ---- LOADING OVERLAY ----
-    function showLoading() {
-      document.getElementById('loadingOverlay').style.display = 'flex';
-    }
+    function showLoading() { document.getElementById('loadingOverlay').style.display = 'flex'; }
+    function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
 
-    function hideLoading() {
-      document.getElementById('loadingOverlay').style.display = 'none';
-    }
-
-    // ---- LOCAL STORAGE MANAGEMENT ----
+    // ========== LOCALSTORAGE ==========
     function saveToLocalStorage(key, data) {
       try {
         localStorage.setItem(key, JSON.stringify(data));
         showNotification('Data berhasil disimpan!');
-      } catch (e) {
-        console.error('Gagal menyimpan data ke localStorage:', e);
-        showNotification('Gagal menyimpan data!', 5000);
-      }
+      } catch(e) { console.error(e); showNotification('Gagal menyimpan data!', 5000); }
     }
-
     function loadFromLocalStorage(key, defaultValue = []) {
-      try {
-        const data = localStorage.getItem(key);
-        return data ? JSON.parse(data) : defaultValue;
-      } catch (e) {
-        console.error('Gagal memuat data dari localStorage:', e);
-        return defaultValue;
-      }
+      try { const d = localStorage.getItem(key); return d ? JSON.parse(d) : defaultValue; } catch(e) { return defaultValue; }
     }
-
     function clearAllData() {
-      if (confirm('Apakah Anda yakin ingin menghapus semua data tersimpan?')) {
-        localStorage.removeItem('masterData');
-        localStorage.removeItem('stockData');
-        localStorage.removeItem('reservasiData');
-        localStorage.removeItem('serviceData');
-        localStorage.removeItem('pengirimanData');
-        showNotification('Semua data berhasil dihapus!');
-        
-        // Reset data di memori
-        masterData = [];
-        filteredMaster = [];
-        allData = [];
-        filteredStock = [];
-        reservasiData = [];
-        filteredReservasi = [];
-        serviceData = [];
-        filteredService = [];
-        pengirimanData = [];
-        filteredPengiriman = [];
-        
-        // Update statistics
-        updateStatistics();
-        updateDashboardOverview();
-        
-        // Render ulang tabel
-        if (document.getElementById('master').style.display !== 'none') {
-          renderMasterTable();
-        } else if (document.getElementById('stock').style.display !== 'none') {
-          renderTable();
-        } else if (document.getElementById('reservasi').style.display !== 'none') {
-          renderReservasiTable();
-        } else if (document.getElementById('service').style.display !== 'none') {
-          renderServiceTable();
-        } else if (document.getElementById('pengiriman').style.display !== 'none') {
-          renderPengirimanTable();
-        }
-      }
+      if (!confirm('Hapus semua data tersimpan?')) return;
+      ['masterData','stockData','reservasiData','serviceData','pengirimanData'].forEach(k => localStorage.removeItem(k));
+      showNotification('Semua data dihapus!');
+      masterData = []; filteredMaster = []; allData = []; filteredStock = [];
+      reservasiData = []; filteredReservasi = []; serviceData = []; filteredService = [];
+      pengirimanData = []; filteredPengiriman = [];
+      updateStatistics(); updateDashboardOverview();
+      renderMasterTable(); renderTable(); renderReservasiTable(); renderServiceTable(); renderPengirimanTable();
     }
 
-    // ---- BACKUP AND RESTORE ----
     function backupData() {
-      const backup = {
-        masterData: masterData,
-        stockData: allData,
-        reservasiData: reservasiData,
-        serviceData: serviceData,
-        pengirimanData: pengirimanData,
-        timestamp: new Date().toISOString()
-      };
-      
-      const dataStr = JSON.stringify(backup);
-      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-      
-      const exportFileDefaultName = `dashboard_backup_${new Date().toISOString().slice(0,10)}.json`;
-      
-      const linkElement = document.createElement('a');
-      linkElement.setAttribute('href', dataUri);
-      linkElement.setAttribute('download', exportFileDefaultName);
-      linkElement.click();
-      
-      showNotification('Data backup berhasil!');
+      const backup = { masterData, stockData: allData, reservasiData, serviceData, pengirimanData, timestamp: new Date().toISOString() };
+      const dataUri = 'data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(backup));
+      const a = document.createElement('a');
+      a.href = dataUri;
+      a.download = `dashboard_backup_${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      showNotification('Backup berhasil!');
     }
-
     function restoreData(event) {
       const file = event.target.files[0];
+      if (!file) return;
       const reader = new FileReader();
-      
       reader.onload = function(e) {
         try {
           const backup = JSON.parse(e.target.result);
-          
-          if (confirm('Restore backup akan menimpa data saat ini. Lanjutkan?')) {
-            masterData = backup.masterData || [];
-            allData = backup.stockData || [];
-            reservasiData = backup.reservasiData || [];
-            serviceData = backup.serviceData || [];
-            pengirimanData = backup.pengirimanData || [];
-            
-            // Save to localStorage
-            saveToLocalStorage('masterData', masterData);
-            saveToLocalStorage('stockData', allData);
-            saveToLocalStorage('reservasiData', reservasiData);
-            saveToLocalStorage('serviceData', serviceData);
-            saveToLocalStorage('pengirimanData', pengirimanData);
-            
-            // Refresh current display
-            loadDataFromStorage();
-            updateStatistics();
-            updateDashboardOverview();
-            
-            showNotification('Data berhasil dipulihkan!');
-          }
-        } catch (error) {
-          showNotification('Restore gagal: File backup tidak valid!', 5000);
-        }
+          if (!confirm('Restore akan menimpa data saat ini. Lanjutkan?')) return;
+          masterData = backup.masterData || [];
+          allData = backup.stockData || [];
+          reservasiData = backup.reservasiData || [];
+          serviceData = backup.serviceData || [];
+          pengirimanData = backup.pengirimanData || [];
+          saveToLocalStorage('masterData', masterData);
+          saveToLocalStorage('stockData', allData);
+          saveToLocalStorage('reservasiData', reservasiData);
+          saveToLocalStorage('serviceData', serviceData);
+          saveToLocalStorage('pengirimanData', pengirimanData);
+          loadDataFromStorage();
+          updateStatistics(); updateDashboardOverview();
+          showNotification('Data berhasil dipulihkan!');
+        } catch(err) { showNotification('Restore gagal: file tidak valid!', 5000); }
       };
-      
       reader.readAsText(file);
     }
 
-    // ---- DASHBOARD OVERVIEW ----
+    // ========== DASHBOARD ==========
     function updateDashboardOverview() {
-      // Update master statistics
       document.getElementById('dashMasterCount').textContent = masterData.length;
       document.getElementById('dashMasterTotal').textContent = masterData.length;
-      document.getElementById('dashMasterToday').textContent = Math.floor(Math.random() * 5);
-      document.getElementById('dashMasterWeek').textContent = Math.floor(Math.random() * 20);
-      
-      // Update stock statistics
-      let totalStock = 0;
-      let availableStock = 0;
-      let allocStock = 0;
-      let lowStock = 0;
-      let outStock = 0;
-      
+      document.getElementById('dashMasterToday').textContent = Math.floor(Math.random()*5);
+      document.getElementById('dashMasterWeek').textContent = Math.floor(Math.random()*20);
+      let totalStock=0, availableStock=0, allocStock=0, lowStock=0, outStock=0;
       allData.forEach(row => {
-        const qty = parseInt(row[stockIndexMap[5]]) || 0;
-        const alloc = parseInt(row[stockIndexMap[6]]) || 0;
-        const available = parseInt(row[stockIndexMap[7]]) || 0;
-        
-        totalStock += qty;
-        availableStock += available;
-        allocStock += alloc;
-        
-        if (available <= 0) outStock++;
-        else if (available < 5) lowStock++;
+        const qty = parseInt(row[stockIndexMap[5]])||0, alloc = parseInt(row[stockIndexMap[6]])||0, avail = parseInt(row[stockIndexMap[7]])||0;
+        totalStock += qty; availableStock += avail; allocStock += alloc;
+        if (avail <= 0) outStock++; else if (avail < 5) lowStock++;
       });
-      
       document.getElementById('dashStockCount').textContent = totalStock;
       document.getElementById('dashStockAvailable').textContent = availableStock;
       document.getElementById('dashStockAlloc').textContent = allocStock;
       document.getElementById('dashStockLow').textContent = lowStock;
       document.getElementById('dashStockOut').textContent = outStock;
-      
-      // Update reservasi statistics
       document.getElementById('dashReservasiCount').textContent = reservasiData.length;
       document.getElementById('dashReservasiActive').textContent = reservasiData.length;
-      document.getElementById('dashReservasiPending').textContent = Math.floor(reservasiData.length * 0.3);
-      document.getElementById('dashReservasiToday').textContent = Math.floor(Math.random() * 10);
-      document.getElementById('dashReservasiWeek').textContent = Math.floor(Math.random() * 30);
-      
-      // Update service statistics
-      let activeService = 0;
-      let completedService = 0;
-      let wipService = 0;
-      
+      document.getElementById('dashReservasiPending').textContent = Math.floor(reservasiData.length*0.3);
+      document.getElementById('dashReservasiToday').textContent = Math.floor(Math.random()*10);
+      document.getElementById('dashReservasiWeek').textContent = Math.floor(Math.random()*30);
+      let active=0, completed=0, wip=0;
       serviceData.forEach(row => {
-        const status = (row[serviceIndexMap[8]] || "").toUpperCase();
-        if (status === 'COMPLETED' || status === 'PRINTED') {
-          completedService++;
-        } else if (status !== 'CANCELED') {
-          activeService++;
-        }
-        if (status === 'WIP' || status === 'WIP COMP' || status === 'WIP TECH') {
-          wipService++;
-        }
+        const st = (row[serviceIndexMap[8]]||"").toUpperCase();
+        if (st==='COMPLETED'||st==='PRINTED') completed++;
+        else if (st!=='CANCELED') active++;
+        if (st==='WIP'||st==='WIP COMP'||st==='WIP TECH') wip++;
       });
-      
       document.getElementById('dashServiceCount').textContent = serviceData.length;
-      document.getElementById('dashServiceActive').textContent = activeService;
-      document.getElementById('dashServiceCompleted').textContent = completedService;
-      document.getElementById('dashServiceWIP').textContent = wipService;
-      document.getElementById('dashServiceToday').textContent = Math.floor(Math.random() * 8);
-      
-      // Update pengiriman statistics - MODIFIED
+      document.getElementById('dashServiceActive').textContent = active;
+      document.getElementById('dashServiceCompleted').textContent = completed;
+      document.getElementById('dashServiceWIP').textContent = wip;
+      document.getElementById('dashServiceToday').textContent = Math.floor(Math.random()*8);
       document.getElementById('dashPengirimanCount').textContent = pengirimanData.length;
       document.getElementById('dashPengirimanTotal').textContent = pengirimanData.length;
-      document.getElementById('dashPengirimanToday').textContent = Math.floor(Math.random() * 5);
-      document.getElementById('dashPengirimanOverdue').textContent = Math.floor(Math.random() * 3);
-      
-      // Update recent activities
-      updateRecentActivities();
-    }
-
-    function updateRecentActivities() {
-      const activities = [
-        { text: `Master komponen diperbarui`, time: '2 jam lalu' },
-        { text: `${Math.floor(Math.random() * 10)} reservasi baru`, time: '3 jam lalu' },
-        { text: `Service call ditambahkan`, time: '5 jam lalu' },
-        { text: `${Math.floor(Math.random() * 5)} pengiriman diproses`, time: '1 hari lalu' },
-        { text: `Stok komponen diperbarui`, time: '2 hari lalu' }
+      document.getElementById('dashPengirimanToday').textContent = Math.floor(Math.random()*5);
+      document.getElementById('dashPengirimanOverdue').textContent = Math.floor(Math.random()*3);
+      // activity
+      const acts = [
+        { text: 'Master komponen diperbarui', time: '2 jam lalu' },
+        { text: `${Math.floor(Math.random()*10)} reservasi baru`, time: '3 jam lalu' },
+        { text: 'Service call ditambahkan', time: '5 jam lalu' },
+        { text: `${Math.floor(Math.random()*5)} pengiriman diproses`, time: '1 hari lalu' },
+        { text: 'Stok komponen diperbarui', time: '2 hari lalu' }
       ];
-      
-      const activitiesContainer = document.getElementById('recentActivities');
-      activitiesContainer.innerHTML = '';
-      
-      activities.forEach(activity => {
-        const activityItem = document.createElement('div');
-        activityItem.className = 'activity-item';
-        activityItem.innerHTML = `
-          <div>${activity.text}</div>
-          <div class="activity-time">${activity.time}</div>
-        `;
-        activitiesContainer.appendChild(activityItem);
-      });
+      const container = document.getElementById('recentActivities');
+      container.innerHTML = acts.map(a => `<div class="activity-item"><div>${a.text}</div><div class="activity-time">${a.time}</div></div>`).join('');
     }
 
-    // ---- STATISTICS ----
     function updateStatistics() {
-      // Master components statistics
       document.getElementById('masterTotalCount').textContent = masterData.length;
-      
-      // Stock statistics
-      let totalQty = 0;
-      let totalAlloc = 0;
-      let totalAvailable = 0;
-      
-      allData.forEach(row => {
-        totalQty += parseInt(row[stockIndexMap[5]]) || 0;
-        totalAlloc += parseInt(row[stockIndexMap[6]]) || 0;
-        totalAvailable += parseInt(row[stockIndexMap[7]]) || 0;
-      });
-      
+      let totalQty=0,totalAlloc=0,totalAvailable=0;
+      allData.forEach(row => { totalQty += parseInt(row[stockIndexMap[5]])||0; totalAlloc += parseInt(row[stockIndexMap[6]])||0; totalAvailable += parseInt(row[stockIndexMap[7]])||0; });
       document.getElementById('stockTotalCount').textContent = totalQty;
       document.getElementById('stockAllocCount').textContent = totalAlloc;
       document.getElementById('stockAvailableCount').textContent = totalAvailable;
-      
-      // Reservasi statistics - Simplified calculation for Qty Open only
-      let totalOpenQty = 0;       // Qty Open
-      
+      let openQty=0;
       reservasiData.forEach(row => {
-        const qtyReservasi = parseInt(row[reservasiIndexMap[2]]) || 0;
-        const statusPengiriman = (row[reservasiIndexMap[11]] || "").toUpperCase();
-        
-        // Hitung Qty Open (jumlah Qty Reservasi yang statusnya bukan CLOSED)
-        if (statusPengiriman !== 'CLOSED') {
-          totalOpenQty += qtyReservasi;
-        }
+        const qty = parseInt(row[reservasiIndexMap[2]])||0;
+        const status = (row[reservasiIndexMap[11]]||"").toUpperCase();
+        if (status !== 'CLOSED') openQty += qty;
       });
-      
-      // Update tampilan statistik
       document.getElementById('reservasiTotalCount').textContent = reservasiData.length;
-      document.getElementById('reservasiOpenCount').textContent = totalOpenQty;
-      
-      // Service statistics - Updated for all status types
-      let totalCount = 0;
-      let canceledCount = 0;
-      let invoicedCount = 0;
-      let completedCount = 0;
-      let printedCount = 0;
-      let wipCount = 0;
-      let wipCompCount = 0;
-      let wipTechCount = 0;
-      
+      document.getElementById('reservasiOpenCount').textContent = openQty;
+      let total=0,canceled=0,invoiced=0,completed=0,printed=0,wip=0,wipComp=0,wipTech=0;
       serviceData.forEach(row => {
-        const status = row[serviceIndexMap[8]] || "";
-        totalCount++;
-        
-        if (status.toUpperCase() === 'CANCELED') {
-          canceledCount++;
-        } else if (status.toUpperCase() === 'INVOICED') {
-          invoicedCount++;
-        } else if (status.toUpperCase() === 'COMPLETED') {
-          completedCount++;
-        } else if (status.toUpperCase() === 'PRINTED') {
-          printedCount++;
-        } else if (status.toUpperCase() === 'WIP') {
-          wipCount++;
-        } else if (status.toUpperCase() === 'WIP COMP') {
-          wipCompCount++;
-        } else if (status.toUpperCase() === 'WIP TECH') {
-          wipTechCount++;
-        }
+        const st = row[serviceIndexMap[8]]||"";
+        total++;
+        if (st.toUpperCase()==='CANCELED') canceled++;
+        else if (st.toUpperCase()==='INVOICED') invoiced++;
+        else if (st.toUpperCase()==='COMPLETED') completed++;
+        else if (st.toUpperCase()==='PRINTED') printed++;
+        else if (st.toUpperCase()==='WIP') wip++;
+        else if (st.toUpperCase()==='WIP COMP') wipComp++;
+        else if (st.toUpperCase()==='WIP TECH') wipTech++;
       });
-      
-      // Update all status statistics
-      document.getElementById('serviceTotalCount').textContent = totalCount;
-      document.getElementById('serviceCanceledCount').textContent = canceledCount;
-      document.getElementById('serviceInvoicedCount').textContent = invoicedCount;
-      document.getElementById('serviceCompletedCount').textContent = completedCount;
-      document.getElementById('servicePrintedCount').textContent = printedCount;
-      document.getElementById('serviceWipCount').textContent = wipCount;
-      document.getElementById('serviceWipCompCount').textContent = wipCompCount;
-      document.getElementById('serviceWipTechCount').textContent = wipTechCount;
-      
-      // Pengiriman statistics - MODIFIED
+      document.getElementById('serviceTotalCount').textContent = total;
+      document.getElementById('serviceCanceledCount').textContent = canceled;
+      document.getElementById('serviceInvoicedCount').textContent = invoiced;
+      document.getElementById('serviceCompletedCount').textContent = completed;
+      document.getElementById('servicePrintedCount').textContent = printed;
+      document.getElementById('serviceWipCount').textContent = wip;
+      document.getElementById('serviceWipCompCount').textContent = wipComp;
+      document.getElementById('serviceWipTechCount').textContent = wipTech;
       document.getElementById('pengirimanTotalCount').textContent = pengirimanData.length;
     }
 
-    // ---- DATA VALIDATION ----
-    function validateMasterData(data) {
-      const errors = [];
-      data.forEach((row, index) => {
-        if (!row[0]) errors.push(`Baris ${index + 1}: Part Number tidak boleh kosong`);
-        if (!row[1]) errors.push(`Baris ${index + 1}: Description tidak boleh kosong`);
-      });
-      
-      if (errors.length > 0) {
-        showNotification(`Validasi gagal: ${errors.join(', ')}`, 5000);
-        return false;
-      }
-      return true;
-    }
-
-    function validateStockData(data) {
-      const errors = [];
-      data.forEach((row, index) => {
-        if (!row[1]) errors.push(`Baris ${index + 1}: Tipe Lokasi tidak boleh kosong`);
-        if (!row[2]) errors.push(`Baris ${index + 1}: Nama tidak boleh kosong`);
-        if (!row[3]) errors.push(`Baris ${index + 1}: Part tidak boleh kosong`);
-      });
-      
-      if (errors.length > 0) {
-        showNotification(`Validasi gagal: ${errors.join(', ')}`, 5000);
-        return false;
-      }
-      return true;
-    }
-
-    function validatePengirimanData(data) {
-      const errors = [];
-      data.forEach((row, index) => {
-        if (!row[0]) errors.push(`Baris ${index + 1}: Document Number tidak boleh kosong`);
-        if (!row[1]) errors.push(`Baris ${index + 1}: Quantity Delivery Order tidak boleh kosong`);
-        if (!row[2]) errors.push(`Baris ${index + 1}: Base Unit tidak boleh kosong`);
-        if (!row[3]) errors.push(`Baris ${index + 1}: Request Number tidak boleh kosong`);
-      });
-      
-      if (errors.length > 0) {
-        showNotification(`Validasi gagal: ${errors.join(', ')}`, 5000);
-        return false;
-      }
-      return true;
-    }
-
-    // ---- EXPORT TO EXCEL ----
-    function exportStockToExcel() {
-      if (filteredStock.length === 0) {
-        showNotification('Tidak ada data untuk diekspor!', 5000);
-        return;
-      }
-
-      showLoading();
-      
-      try {
-        // Buat workbook baru
-        const wb = XLSX.utils.book_new();
-        
-        // Buat worksheet dari data
-        const ws = XLSX.utils.json_to_sheet(filteredStock.map((row, index) => {
-          return {
-            "No.": index + 1,
-            "Tipe Lokasi": row[stockIndexMap[1]] || "",
-            "Nama": row[stockIndexMap[2]] || "",
-            "Part": row[stockIndexMap[3]] || "",
-            "Deskripsi Part": row[stockIndexMap[4]] || "",
-            "QTY": row[stockIndexMap[5]] || "",
-            "QTY Alloc": row[stockIndexMap[6]] || "",
-            "Available QTY": row[stockIndexMap[7]] || "",
-            "Return To Factory": row[stockIndexMap[8]] || ""
-          };
-        }));
-        
-        // Tambahkan worksheet ke workbook
-        XLSX.utils.book_append_sheet(wb, ws, "Stock Komponen");
-        
-        // Generate nama file dengan timestamp
-        const now = new Date();
-        const timestamp = now.getFullYear() + 
-                        String(now.getMonth() + 1).padStart(2, '0') + 
-                        String(now.getDate()).padStart(2, '0') + '_' +
-                        String(now.getHours()).padStart(2, '0') + 
-                        String(now.getMinutes()).padStart(2, '0');
-        const fileName = `Data_Stock_Komponen_${timestamp}.xlsx`;
-        
-        // Download file
-        XLSX.writeFile(wb, fileName);
-        
-        showNotification('Data berhasil diekspor ke Excel!');
-      } catch (error) {
-        console.error('Export error:', error);
-        showNotification('Gagal mengekspor data ke Excel!', 5000);
-      } finally {
-        hideLoading();
-      }
-    }
-
-    function exportReservasiToExcel() {
-      if (filteredReservasi.length === 0) {
-        showNotification('Tidak ada data untuk diekspor!', 5000);
-        return;
-      }
-
-      showLoading();
-      
-      try {
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(filteredReservasi.map((row, index) => {
-          return {
-            "No.": index + 1,
-            "Catatan": row[reservasiIndexMap[0]] || "",
-            "Part": row[reservasiIndexMap[1]] || "",
-            "Qty Reservasi": row[reservasiIndexMap[2]] || "",
-            "Qty Transaksi": row[reservasiIndexMap[3]] || "",
-            "Qty Close": row[reservasiIndexMap[4]] || "",
-            "Part Demand": row[reservasiIndexMap[5]] || "",
-            "Serial Number": row[reservasiIndexMap[6]] || "",
-            "Return To Factory": row[reservasiIndexMap[7]] || "",
-            "Teknisi Perbaikan": row[reservasiIndexMap[8]] || "",
-            "Analisa SA": row[reservasiIndexMap[9]] || "",
-            "Disetujui Pada": formatDateTime(row[reservasiIndexMap[10]]),
-            "Status Pengiriman": row[reservasiIndexMap[11]] || ""
-          };
-        }));
-        
-        XLSX.utils.book_append_sheet(wb, ws, "Reservasi Komponen");
-        
-        const now = new Date();
-        const timestamp = now.getFullYear() + 
-                        String(now.getMonth() + 1).padStart(2, '0') + 
-                        String(now.getDate()).padStart(2, '0') + '_' +
-                        String(now.getHours()).padStart(2, '0') + 
-                        String(now.getMinutes()).padStart(2, '0');
-        const fileName = `Data_Reservasi_Komponen_${timestamp}.xlsx`;
-        
-        XLSX.writeFile(wb, fileName);
-        
-        showNotification('Data reservasi berhasil diekspor ke Excel!');
-      } catch (error) {
-        console.error('Export error:', error);
-        showNotification('Gagal mengekspor data reservasi ke Excel!', 5000);
-      } finally {
-        hideLoading();
-      }
-    }
-
-    function exportServiceToExcel() {
-      if (filteredService.length === 0) {
-        showNotification('Tidak ada data untuk diekspor!', 5000);
-        return;
-      }
-
-      showLoading();
-      
-      try {
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(filteredService.map((row, index) => {
-          return {
-            "No.": index + 1,
-            "Tanggal Pendaftaran": formatDateOnly(row[serviceIndexMap[0]]),
-            "Nomor Service Call": row[serviceIndexMap[1]] || "",
-            "Jenis Layanan": row[serviceIndexMap[2]] || "",
-            "Jenis Garansi": row[serviceIndexMap[3]] || "",
-            "Tipe Demand": row[serviceIndexMap[4]] || "",
-            "Nomor Seri": row[serviceIndexMap[5]] || "",
-            "Nama Pemilik": row[serviceIndexMap[6]] || "",
-            "Alamat Pemilik": row[serviceIndexMap[7]] || "",
-            "Status Pengerjaan": row[serviceIndexMap[8]] || "",
-            "Nama Teknisi": row[serviceIndexMap[9]] || "",
-            "Keterangan": formatDateTime(row[serviceIndexMap[10]])
-          };
-        }));
-        
-        XLSX.utils.book_append_sheet(wb, ws, "Service Calls");
-        
-        const now = new Date();
-        const timestamp = now.getFullYear() + 
-                        String(now.getMonth() + 1).padStart(2, '0') + 
-                        String(now.getDate()).padStart(2, '0') + '_' +
-                        String(now.getHours()).padStart(2, '0') + 
-                        String(now.getMinutes()).padStart(2, '0');
-        const fileName = `Data_Service_Calls_${timestamp}.xlsx`;
-        
-        XLSX.writeFile(wb, fileName);
-        
-        showNotification('Data service calls berhasil diekspor ke Excel!');
-      } catch (error) {
-        console.error('Export error:', error);
-        showNotification('Gagal mengekspor data service calls ke Excel!', 5000);
-      } finally {
-        hideLoading();
-      }
-    }
-
-    function exportPengirimanToExcel() {
-      if (filteredPengiriman.length === 0) {
-        showNotification('Tidak ada data untuk diekspor!', 5000);
-        return;
-      }
-
-      showLoading();
-      
-      try {
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(filteredPengiriman.map((row, index) => {
-          return {
-            "No": index + 1,
-            "Document Number": row[pengirimanIndexMap[0]] || "",
-            "Quantity Delivery Order": row[pengirimanIndexMap[1]] || "",
-            "Base Unit": row[pengirimanIndexMap[2]] || "",
-            "Request Number": row[pengirimanIndexMap[3]] || "",
-            "Created At": formatDateOnly(row[pengirimanIndexMap[4]]),
-            "Part Supply": row[pengirimanIndexMap[5]] || "",
-            "NAMA SPAREPART": row[pengirimanIndexMap[6]] || ""
-          };
-        }));
-        
-        XLSX.utils.book_append_sheet(wb, ws, "Outstanding Pengiriman");
-        
-        const now = new Date();
-        const timestamp = now.getFullYear() + 
-                        String(now.getMonth() + 1).padStart(2, '0') + 
-                        String(now.getDate()).padStart(2, '0') + '_' +
-                        String(now.getHours()).padStart(2, '0') + 
-                        String(now.getMinutes()).padStart(2, '0');
-        const fileName = `Data_Pengiriman_${timestamp}.xlsx`;
-        
-        XLSX.writeFile(wb, fileName);
-        
-        showNotification('Data pengiriman berhasil diekspor ke Excel!');
-      } catch (error) {
-        console.error('Export error:', error);
-        showNotification('Gagal mengekspor data pengiriman ke Excel!', 5000);
-      } finally {
-        hideLoading();
-      }
-    }
-
-    // ---- LOGO ----
+    // ========== LOGO ==========
     function changeLogo() {
-      const file = document.getElementById("logoInput").files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          document.getElementById("logo").src = e.target.result;
-          localStorage.setItem("dashboardLogo", e.target.result);
-        };
-        reader.readAsDataURL(file);
-      }
+      const file = document.getElementById('logoInput').files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('logo').src = e.target.result;
+        localStorage.setItem('dashboardLogo', e.target.result);
+      };
+      reader.readAsDataURL(file);
     }
 
-    // ---- FUNGSI FORMAT TANGGAL ----
-    function formatDateTime(dateString) {
-      if (!dateString) return "";
-      
-      if (typeof dateString === 'number') {
-        const date = new Date((dateString - 25569) * 86400 * 1000);
-        return formatDateObject(date);
-      }
-      
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) {
-        return dateString;
-      }
-      
-      return formatDateObject(date);
+    // ========== FORMAT TANGGAL ==========
+    function formatDateTime(d) {
+      if (!d) return '';
+      if (typeof d === 'number') d = new Date((d-25569)*86400*1000);
+      const dt = new Date(d);
+      if (isNaN(dt)) return d;
+      return `${String(dt.getDate()).padStart(2,'0')}/${String(dt.getMonth()+1).padStart(2,'0')}/${dt.getFullYear()} ${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')}`;
     }
-    
-    function formatDateObject(date) {
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = date.getFullYear();
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-      
-      return `${day}/${month}/${year} ${hours}:${minutes}`;
-    }
-    
-    function formatDateOnly(dateString) {
-      if (!dateString) return "";
-      
-      if (typeof dateString === 'number') {
-        const date = new Date((dateString - 25569) * 86400 * 1000);
-        return formatDateOnlyObject(date);
-      }
-      
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) {
-        return dateString;
-      }
-      
-      return formatDateOnlyObject(date);
-    }
-    
-    function formatDateOnlyObject(date) {
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = date.getFullYear();
-      
-      return `${day}/${month}/${year}`;
+    function formatDateOnly(d) {
+      if (!d) return '';
+      if (typeof d === 'number') d = new Date((d-25569)*86400*1000);
+      const dt = new Date(d);
+      if (isNaN(dt)) return d;
+      return `${String(dt.getDate()).padStart(2,'0')}/${String(dt.getMonth()+1).padStart(2,'0')}/${dt.getFullYear()}`;
     }
 
-    // ---- VLOOKUP FUNCTION FOR PENGIRIMAN ----
-    function vlookupPartSupply(partSupply) {
-      if (!partSupply || masterData.length === 0) return "";
-      
-      // Cari di master data berdasarkan Part Number
-      for (let i = 0; i < masterData.length; i++) {
-        if (masterData[i][0] === partSupply) {
-          return masterData[i][1] || ""; // Return Description
-        }
-      }
-      
-      return "";
-    }
-
-    function autoFillSparepartName(rowIndex, partSupplyValue) {
-      const table = document.getElementById("pengirimanTable");
-      const rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
-      
-      if (rowIndex >= rows.length) return;
-      
-      const row = rows[rowIndex];
-      const namaSparepartCell = row.cells[6]; // Kolom NAMA SPAREPART
-      
-      // Tampilkan indikator proses
-      const indicator = document.createElement('span');
-      indicator.className = 'vlookup-processing';
-      indicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-      namaSparepartCell.appendChild(indicator);
-      
-      // Simulasikan proses VLOOKUP dengan delay
-      setTimeout(() => {
-        const sparepartName = vlookupPartSupply(partSupplyValue);
-        
-        // Hapus indikator proses
-        if (indicator.parentNode) {
-          indicator.parentNode.removeChild(indicator);
-        }
-        
-        // Update nilai di data array
-        const actualIndex = (currentPengirimanPage - 1) * rowsPerPagePengiriman + rowIndex;
-        if (actualIndex < filteredPengiriman.length) {
-          filteredPengiriman[actualIndex][pengirimanIndexMap[6]] = sparepartName;
-          
-          // Update juga di data asli
-          const originalIndex = pengirimanData.indexOf(filteredPengiriman[actualIndex]);
-          if (originalIndex !== -1) {
-            pengirimanData[originalIndex][pengirimanIndexMap[6]] = sparepartName;
-          }
-          
-          // Simpan perubahan ke localStorage
-          saveToLocalStorage('pengirimanData', pengirimanData);
-        }
-        
-        // Update tampilan
-        namaSparepartCell.textContent = sparepartName;
-        
-        // Tampilkan indikator berhasil
-        const successIndicator = document.createElement('span');
-        successIndicator.className = 'vlookup-indicator';
-        successIndicator.innerHTML = '<i class="fas fa-check"></i>';
-        namaSparepartCell.appendChild(successIndicator);
-        
-        // Hapus indikator setelah 2 detik
-        setTimeout(() => {
-          if (successIndicator.parentNode) {
-            successIndicator.parentNode.removeChild(successIndicator);
-          }
-        }, 2000);
-        
-        // Jika tidak ditemukan, tampilkan indikator error
-        if (!sparepartName) {
-          const errorIndicator = document.createElement('span');
-          errorIndicator.className = 'vlookup-error';
-          errorIndicator.innerHTML = '<i class="fas fa-times"></i>';
-          errorIndicator.title = 'Part Supply tidak ditemukan di data Master Komponen';
-          namaSparepartCell.appendChild(errorIndicator);
-          
-          // Hapus indikator error setelah 3 detik
-          setTimeout(() => {
-            if (errorIndicator.parentNode) {
-              errorIndicator.parentNode.removeChild(errorIndicator);
-            }
-          }, 3000);
-        }
-      }, 500);
-    }
-
-    function autoFillAllSparepartNames() {
-      if (masterData.length === 0) {
-        showNotification('Data Master Komponen kosong. Silakan import data terlebih dahulu.', 5000);
-        return;
-      }
-      
-      if (pengirimanData.length === 0) {
-        showNotification('Data Outstanding Pengiriman kosong. Silakan import data terlebih dahulu.', 5000);
-        return;
-      }
-      
-      showLoading();
-      let processedCount = 0;
-      let totalCount = pengirimanData.length;
-      
-      // Proses semua data
-      pengirimanData.forEach((row, index) => {
-        const partSupply = row[pengirimanIndexMap[5]] || "";
-        if (partSupply) {
-          const sparepartName = vlookupPartSupply(partSupply);
-          row[pengirimanIndexMap[6]] = sparepartName;
-        }
-        processedCount++;
-        
-        // Update progress
-        if (processedCount === totalCount) {
-          // Simpan perubahan
-          saveToLocalStorage('pengirimanData', pengirimanData);
-          
-          // Update filtered data
-          filteredPengiriman = [...pengirimanData];
-          
-          // Render ulang tabel
-          renderPengirimanTable();
-          
-          hideLoading();
-          showNotification(`Berhasil memperbarui ${processedCount} data Nama Sparepart!`);
-        }
-      });
-    }
-
-    // ---- MASTER KOMPONEN ----
-    let masterData = [];
-    let filteredMaster = [];
-    let currentMasterPage = 1;
-    let rowsPerPageMaster = 15;
-
+    // ========== MASTER ==========
+    let masterData=[], filteredMaster=[], currentMasterPage=1, rowsPerPageMaster=15;
     function importMasterExcel() {
       const file = document.getElementById('importMaster').files[0];
       if (!file) return;
-      
       showLoading();
-      
       const reader = new FileReader();
       reader.onload = function(e) {
         try {
           const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, {type: 'array'});
-          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const wb = XLSX.read(data, {type:'array'});
+          const sheet = wb.Sheets[wb.SheetNames[0]];
           const json = XLSX.utils.sheet_to_json(sheet, {header:1});
-
           const headers = ["No.","Part Number","Description"];
           const excelHeaders = json[0].map(h => h.toString().trim());
-          let indexMap = headers.map(h => excelHeaders.indexOf(h));
-
-          const tempData = json.slice(1).filter(r => r.length > 0).map(r => [
-            r[indexMap[1]] || "",
-            r[indexMap[2]] || ""
-          ]);
-
-          if (!validateMasterData(tempData)) {
-            hideLoading();
-            return;
-          }
-
-          masterData = tempData;
+          const idx = headers.map(h => excelHeaders.indexOf(h));
+          const temp = json.slice(1).filter(r=>r.length>0).map(r => [r[idx[1]]||"", r[idx[2]]||""]);
+          if (temp.some(r=>!r[0]||!r[1])) { showNotification('Validasi gagal: Part & Description wajib diisi.',5000); hideLoading(); return; }
+          masterData = temp;
           saveToLocalStorage('masterData', masterData);
-          
           updatePartFilter(masterData);
           filteredMaster = masterData;
           currentMasterPage = 1;
           renderMasterTable();
-          updateStatistics();
-          updateDashboardOverview();
-        } catch (error) {
-          console.error('Import error:', error);
-          showNotification('Gagal mengimpor file Excel!', 5000);
-        } finally {
-          hideLoading();
-        }
+          updateStatistics(); updateDashboardOverview();
+        } catch(err) { showNotification('Gagal import Excel!',5000); }
+        hideLoading();
       };
       reader.readAsArrayBuffer(file);
     }
-
     function updatePartFilter(data) {
-      const select = document.getElementById("filterPart");
-      select.innerHTML = '<option value="all">Semua</option>';
-      const initials = new Set();
-      data.forEach(row => {
-        if (row[0]) initials.add(row[0].toString().charAt(0).toUpperCase());
-      });
-      [...initials].sort().forEach(l => {
-        let opt = document.createElement("option");
-        opt.value = l;
-        opt.textContent = l;
-        select.appendChild(opt);
-      });
+      const sel = document.getElementById('filterPart');
+      sel.innerHTML = '<option value="all">Semua</option>';
+      const set = new Set();
+      data.forEach(r => { if (r[0]) set.add(r[0].toString().charAt(0).toUpperCase()); });
+      [...set].sort().forEach(l => { const opt = document.createElement('option'); opt.value=l; opt.textContent=l; sel.appendChild(opt); });
     }
-
     function renderMasterTable() {
-      const tbody = document.getElementById("masterTable").querySelector("tbody");
-      tbody.innerHTML = "";
-
-      const start = (currentMasterPage - 1) * rowsPerPageMaster;
-      const end = start + rowsPerPageMaster;
-      const pageData = filteredMaster.slice(start, end);
-
-      pageData.forEach((row, i) => {
-        let newRow = tbody.insertRow();
-        
-        let cellNo = newRow.insertCell();
-        cellNo.textContent = start + i + 1;
-        cellNo.className = "text-center";
-        
-        let cellPart = newRow.insertCell();
-        cellPart.textContent = row[0];
-        cellPart.className = "text-left";
-        
-        let cellDesc = newRow.insertCell();
-        cellDesc.textContent = row[1];
-        cellDesc.className = "text-left";
-      });
-
-      document.getElementById("pageInfoMaster").textContent =
-        `Halaman ${currentMasterPage} dari ${Math.ceil(filteredMaster.length / rowsPerPageMaster)}`;
-
-      document.getElementById("prevMaster").disabled = currentMasterPage === 1;
-      document.getElementById("nextMaster").disabled = end >= filteredMaster.length;
+      const tbody = document.querySelector('#masterTable tbody');
+      tbody.innerHTML = '';
+      const start = (currentMasterPage-1)*rowsPerPageMaster;
+      const end = Math.min(start+rowsPerPageMaster, filteredMaster.length);
+      for (let i=start; i<end; i++) {
+        const row = filteredMaster[i];
+        const tr = tbody.insertRow();
+        tr.insertCell().textContent = i+1;
+        tr.insertCell().textContent = row[0]||'';
+        tr.insertCell().textContent = row[1]||'';
+      }
+      document.getElementById('pageInfoMaster').textContent = `Halaman ${currentMasterPage} dari ${Math.ceil(filteredMaster.length/rowsPerPageMaster)||1}`;
+      document.getElementById('prevMaster').disabled = currentMasterPage===1;
+      document.getElementById('nextMaster').disabled = end>=filteredMaster.length;
     }
-
     function applyMasterFilter() {
-      const searchVal = document.getElementById("searchMaster").value.toLowerCase();
-      const filterVal = document.getElementById("filterPart").value;
-
+      const search = document.getElementById('searchMaster').value.toLowerCase();
+      const filter = document.getElementById('filterPart').value;
       filteredMaster = masterData;
-
-      if (filterVal !== "all") {
-        filteredMaster = filteredMaster.filter(r => r[0].toString().toUpperCase().startsWith(filterVal));
-      }
-
-      if (searchVal) {
-        filteredMaster = filteredMaster.filter(r => {
-          return (
-            (r[0] && r[0].toString().toLowerCase().includes(searchVal)) ||
-            (r[1] && r[1].toString().toLowerCase().includes(searchVal))
-          );
-        });
-      }
-
+      if (filter !== 'all') filteredMaster = filteredMaster.filter(r => r[0].toString().toUpperCase().startsWith(filter));
+      if (search) filteredMaster = filteredMaster.filter(r => (r[0]||'').toLowerCase().includes(search) || (r[1]||'').toLowerCase().includes(search));
       currentMasterPage = 1;
       renderMasterTable();
     }
+    function prevMasterPage() { if (currentMasterPage>1) { currentMasterPage--; renderMasterTable(); } }
+    function nextMasterPage() { if (currentMasterPage*rowsPerPageMaster < filteredMaster.length) { currentMasterPage++; renderMasterTable(); } }
+    function changeRowsPerPageMaster() { rowsPerPageMaster = parseInt(document.getElementById('rowsPerPageMaster').value); currentMasterPage=1; renderMasterTable(); }
 
-    function prevMasterPage() {
-      if (currentMasterPage > 1) {
-        currentMasterPage--;
-        renderMasterTable();
-      }
-    }
-
-    function nextMasterPage() {
-      if (currentMasterPage * rowsPerPageMaster < filteredMaster.length) {
-        currentMasterPage++;
-        renderMasterTable();
-      }
-    }
-
-    function changeRowsPerPageMaster() {
-      rowsPerPageMaster = parseInt(document.getElementById("rowsPerPageMaster").value);
-      currentMasterPage = 1;
-      renderMasterTable();
-    }
-
-    // ---- STOCK KOMPONEN ----
-    let stockIndexMap = [];
-    let allData = [];
-    let filteredStock = [];
-    let currentStockPage = 1;
-    let rowsPerPageStock = 15;
-    let sortPartOrder = 'none'; // 'asc', 'desc', or 'none'
-
+    // ========== STOCK ==========
+    let stockIndexMap=[], allData=[], filteredStock=[], currentStockPage=1, rowsPerPageStock=15, sortPartOrder='none';
     function importExcel() {
       const file = document.getElementById('importFile').files[0];
       if (!file) return;
-      
       showLoading();
-      
       const reader = new FileReader();
       reader.onload = function(e) {
         try {
           const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, {type: 'array'});
-          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const wb = XLSX.read(data, {type:'array'});
+          const sheet = wb.Sheets[wb.SheetNames[0]];
           const json = XLSX.utils.sheet_to_json(sheet, {header:1});
-
           const headers = ["No.","Tipe Lokasi","Nama","Part","Deskripsi Part","QTY","QTY Alloc","Available QTY","Return To Factory"];
           const excelHeaders = json[0].map(h => h.toString().trim());
           stockIndexMap = headers.map(h => excelHeaders.indexOf(h));
-
-          const tempData = json.slice(1).filter(r => r.length > 0);
-          
-          if (!validateStockData(tempData)) {
-            hideLoading();
-            return;
-          }
-
-          allData = tempData;
+          const temp = json.slice(1).filter(r=>r.length>0);
+          if (temp.some(r=>!r[1]||!r[2]||!r[3])) { showNotification('Validasi gagal: Lokasi, Nama, Part wajib.',5000); hideLoading(); return; }
+          allData = temp;
           saveToLocalStorage('stockData', allData);
-          
           filteredStock = allData;
-          sortPartOrder = 'none'; // Reset sort order when importing new data
+          sortPartOrder = 'none';
           updateSortButton();
-
           updateFilterOptions(allData);
-          updateNamaFilterOptions(allData); // tambahan untuk filter nama
+          updateNamaFilterOptions(allData);
           currentStockPage = 1;
           renderTable();
-          updateStatistics();
-          updateDashboardOverview();
-        } catch (error) {
-          console.error('Import error:', error);
-          showNotification('Gagal mengimpor file Excel!', 5000);
-        } finally {
-          hideLoading();
-        }
+          updateStatistics(); updateDashboardOverview();
+        } catch(err) { showNotification('Gagal import Excel!',5000); }
+        hideLoading();
       };
       reader.readAsArrayBuffer(file);
     }
-
-    // NEW: Toggle sort function for Part column
-    function toggleSortPart() {
-      // Cycle through: none -> asc -> desc -> none
-      if (sortPartOrder === 'none') {
-        sortPartOrder = 'asc';
-      } else if (sortPartOrder === 'asc') {
-        sortPartOrder = 'desc';
-      } else {
-        sortPartOrder = 'none';
-      }
-      
-      updateSortButton();
-      sortDataByPart();
-      renderTable();
-      
-      // Show notification
-      if (sortPartOrder === 'asc') {
-        showNotification('Data diurutkan berdasarkan Part (A-Z)');
-      } else if (sortPartOrder === 'desc') {
-        showNotification('Data diurutkan berdasarkan Part (Z-A)');
-      } else {
-        showNotification('Urutan direset ke default');
-      }
+    function updateFilterOptions(data) {
+      const sel = document.getElementById('filterLokasi');
+      sel.innerHTML = '<option value="all">Semua</option>';
+      const set = new Set();
+      data.forEach(r => { if (r[stockIndexMap[1]]) set.add(r[stockIndexMap[1]]); });
+      [...set].sort().forEach(v => { const opt=document.createElement('option'); opt.value=v; opt.textContent=v; sel.appendChild(opt); });
     }
-
-    // NEW: Update sort button appearance
-    function updateSortButton() {
-      const btn = document.getElementById('sortPartBtn');
-      const indicator = document.getElementById('sortIndicator');
-      
-      // Remove all classes
-      btn.classList.remove('active', 'desc');
-      
-      if (sortPartOrder === 'asc') {
-        btn.classList.add('active');
-        btn.innerHTML = '<i class="fas fa-sort-alpha-down"></i><span>Urutkan Part</span>';
-        indicator.innerHTML = '▲';
-        indicator.style.display = 'inline';
-      } else if (sortPartOrder === 'desc') {
-        btn.classList.add('active', 'desc');
-        btn.innerHTML = '<i class="fas fa-sort-alpha-up"></i><span>Urutkan Part</span>';
-        indicator.innerHTML = '▼';
-        indicator.style.display = 'inline';
-      } else {
-        btn.innerHTML = '<i class="fas fa-sort-alpha-down"></i><span>Urutkan Part</span>';
-        indicator.style.display = 'none';
-      }
-    }
-
-    // NEW: Sort data by Part column
-    function sortDataByPart() {
-      if (sortPartOrder === 'none') {
-        // Reset to original order
-        filteredStock = [...allData];
-        // Re-apply filters if any
-        applyFilter(false);
-      } else {
-        // Sort by Part column (index 3)
-        filteredStock.sort((a, b) => {
-          const partA = (a[stockIndexMap[3]] || "").toString().toLowerCase();
-          const partB = (b[stockIndexMap[3]] || "").toString().toLowerCase();
-          
-          if (sortPartOrder === 'asc') {
-            return partA.localeCompare(partB);
-          } else {
-            return partB.localeCompare(partA);
-          }
-        });
-      }
-    }
-
-    // ---- FUNGSI FILTER NAMA ----
     function updateNamaFilterOptions(data) {
-      const namaSet = new Set();
-      data.forEach(row => {
-        const val = row[stockIndexMap[2]];
-        if (val) namaSet.add(val);
-      });
-      const select = document.getElementById("filterNama");
-      select.innerHTML = '<option value="all">Semua</option>';
-      [...namaSet].sort().forEach(n => {
-        let opt = document.createElement("option");
-        opt.value = n;
-        opt.textContent = n;
-        select.appendChild(opt);
-      });
+      const sel = document.getElementById('filterNama');
+      sel.innerHTML = '<option value="all">Semua</option>';
+      const set = new Set();
+      data.forEach(r => { if (r[stockIndexMap[2]]) set.add(r[stockIndexMap[2]]); });
+      [...set].sort().forEach(v => { const opt=document.createElement('option'); opt.value=v; opt.textContent=v; sel.appendChild(opt); });
     }
-
-    // Fungsi untuk filter berdasarkan klik pada nama
     function filterByNama(nama) {
       if (!nama) return;
-      const select = document.getElementById("filterNama");
-      // Cari option dengan value nama, jika ada set selected
-      let found = false;
-      for (let opt of select.options) {
-        if (opt.value === nama) {
-          select.value = nama;
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        // Jika nama tidak ada di dropdown (misal data baru), tambahkan sementara
-        let opt = document.createElement("option");
-        opt.value = nama;
-        opt.textContent = nama;
-        opt.selected = true;
-        select.appendChild(opt);
-      }
+      const sel = document.getElementById('filterNama');
+      let found=false;
+      for (let opt of sel.options) { if (opt.value===nama) { sel.value=nama; found=true; break; } }
+      if (!found) { const opt=document.createElement('option'); opt.value=nama; opt.textContent=nama; opt.selected=true; sel.appendChild(opt); }
       applyFilter();
       showNotification(`Menampilkan data untuk Nama: "${nama}"`);
     }
-
-    // ---- RENDER STOCK TABLE dengan klik pada Nama ----
-    function renderTable() {
-      const tbody = document.getElementById("stockTable").querySelector("tbody");
-      tbody.innerHTML = "";
-
-      const start = (currentStockPage - 1) * rowsPerPageStock;
-      const end = start + rowsPerPageStock;
-      const pageData = filteredStock.slice(start, end);
-
-      pageData.forEach((row, i) => {
-        let newRow = tbody.insertRow();
-        
-        let cellNo = newRow.insertCell();
-        cellNo.textContent = start + i + 1;
-        cellNo.className = "text-center";
-        
-        let cellTipe = newRow.insertCell();
-        cellTipe.textContent = row[stockIndexMap[1]] || "";
-        cellTipe.className = "text-center";
-        
-        // Kolom NAMA - sekarang bisa diklik
-        let cellNama = newRow.insertCell();
-        const namaValue = row[stockIndexMap[2]] || "";
-        cellNama.textContent = namaValue;
-        cellNama.className = "text-left nama-clickable";
-        cellNama.title = "Klik untuk filter berdasarkan nama ini";
-        cellNama.onclick = function(e) {
-          e.stopPropagation();
-          filterByNama(namaValue);
-        };
-        
-        // Kolom Part
-        let cellPart = newRow.insertCell();
-        cellPart.textContent = row[stockIndexMap[3]] || "";
-        cellPart.className = "text-left";
-        if (sortPartOrder !== 'none') {
-          cellPart.classList.add('sorted-column');
-        }
-        
-        let cellDesc = newRow.insertCell();
-        cellDesc.textContent = row[stockIndexMap[4]] || "";
-        cellDesc.className = "text-left";
-        
-        let cellQty = newRow.insertCell();
-        cellQty.textContent = row[stockIndexMap[5]] || "";
-        cellQty.className = "text-center";
-        
-        let cellAlloc = newRow.insertCell();
-        cellAlloc.textContent = row[stockIndexMap[6]] || "";
-        cellAlloc.className = "text-center";
-        
-        let cellAvailable = newRow.insertCell();
-        cellAvailable.textContent = row[stockIndexMap[7]] || "";
-        cellAvailable.className = "text-center";
-        
-        let cellReturn = newRow.insertCell();
-        cellReturn.textContent = row[stockIndexMap[8]] || "";
-        cellReturn.className = "text-center";
-      });
-
-      document.getElementById("pageInfo").textContent =
-        `Halaman ${currentStockPage} dari ${Math.ceil(filteredStock.length / rowsPerPageStock)}`;
-
-      document.getElementById("prevBtn").disabled = currentStockPage === 1;
-      document.getElementById("nextBtn").disabled = end >= filteredStock.length;
+    function toggleSortPart() {
+      if (sortPartOrder==='none') sortPartOrder='asc';
+      else if (sortPartOrder==='asc') sortPartOrder='desc';
+      else sortPartOrder='none';
+      updateSortButton();
+      sortDataByPart();
+      renderTable();
+      if (sortPartOrder==='asc') showNotification('Urut Part A-Z');
+      else if (sortPartOrder==='desc') showNotification('Urut Part Z-A');
+      else showNotification('Urutan direset');
     }
-
-    function updateFilterOptions(data) {
-      const lokasiSet = new Set();
-      data.forEach(row => {
-        const val = row[stockIndexMap[1]];
-        if (val) lokasiSet.add(val);
-      });
-
-      const select = document.getElementById("filterLokasi");
-      select.innerHTML = '<option value="all">Semua</option>';
-      lokasiSet.forEach(l => {
-        let opt = document.createElement("option");
-        opt.value = l;
-        opt.textContent = l;
-        select.appendChild(opt);
-      });
+    function updateSortButton() {
+      const btn = document.getElementById('sortPartBtn');
+      const ind = document.getElementById('sortIndicator');
+      btn.classList.remove('active','desc');
+      if (sortPartOrder==='asc') { btn.classList.add('active'); btn.innerHTML='<i class="fas fa-sort-alpha-down"></i><span>Urutkan Part</span>'; ind.innerHTML='▲'; ind.style.display='inline'; }
+      else if (sortPartOrder==='desc') { btn.classList.add('active','desc'); btn.innerHTML='<i class="fas fa-sort-alpha-up"></i><span>Urutkan Part</span>'; ind.innerHTML='▼'; ind.style.display='inline'; }
+      else { btn.innerHTML='<i class="fas fa-sort-alpha-down"></i><span>Urutkan Part</span>'; ind.style.display='none'; }
     }
-
-    function applyFilter(keepPage = true) {
-      const filterLokasi = document.getElementById("filterLokasi").value;
-      const filterNama = document.getElementById("filterNama").value;
-      const searchVal = document.getElementById("searchInput").value.toLowerCase();
-
-      // Start with all data
-      filteredStock = [...allData];
-      
-      // Apply location filter
-      if (filterLokasi !== "all") {
-        filteredStock = filteredStock.filter(r => r[stockIndexMap[1]] == filterLokasi);
-      }
-
-      // Apply nama filter
-      if (filterNama !== "all") {
-        filteredStock = filteredStock.filter(r => (r[stockIndexMap[2]] || "") === filterNama);
-      }
-
-      // Apply search filter
-      if (searchVal) {
-        filteredStock = filteredStock.filter(r => {
-          return (
-            (r[stockIndexMap[2]] && r[stockIndexMap[2]].toString().toLowerCase().includes(searchVal)) ||
-            (r[stockIndexMap[3]] && r[stockIndexMap[3]].toString().toLowerCase().includes(searchVal)) ||
-            (r[stockIndexMap[4]] && r[stockIndexMap[4]].toString().toLowerCase().includes(searchVal))
-          );
+    function sortDataByPart() {
+      if (sortPartOrder==='none') { filteredStock = [...allData]; applyFilter(false); }
+      else {
+        filteredStock.sort((a,b) => {
+          const pa = (a[stockIndexMap[3]]||'').toString().toLowerCase();
+          const pb = (b[stockIndexMap[3]]||'').toString().toLowerCase();
+          return sortPartOrder==='asc' ? pa.localeCompare(pb) : pb.localeCompare(pa);
         });
       }
-
-      // Apply sort if active
-      if (sortPartOrder !== 'none') {
-        sortDataByPart();
-      }
-
-      if (!keepPage) currentStockPage = 1;
-      renderTable();
     }
-
-    // Fungsi untuk menghapus semua filter di stock
-    function clearStockFilters() {
-      document.getElementById("filterLokasi").value = "all";
-      document.getElementById("filterNama").value = "all";
-      document.getElementById("searchInput").value = "";
-      // Reset sort ke none? (opsional) Biarkan sort tetap jika ada
-      // Kita akan reset filter dan terapkan
+    function renderTable() {
+      const tbody = document.querySelector('#stockTable tbody');
+      tbody.innerHTML = '';
+      const start = (currentStockPage-1)*rowsPerPageStock;
+      const end = Math.min(start+rowsPerPageStock, filteredStock.length);
+      for (let i=start; i<end; i++) {
+        const row = filteredStock[i];
+        const tr = tbody.insertRow();
+        tr.insertCell().textContent = i+1;
+        tr.insertCell().textContent = row[stockIndexMap[1]]||'';
+        const cellNama = tr.insertCell();
+        const nama = row[stockIndexMap[2]]||'';
+        cellNama.textContent = nama;
+        cellNama.className = 'nama-clickable';
+        cellNama.title = 'Klik untuk filter nama';
+        cellNama.onclick = (e) => { e.stopPropagation(); filterByNama(nama); };
+        const cellPart = tr.insertCell();
+        cellPart.textContent = row[stockIndexMap[3]]||'';
+        if (sortPartOrder!=='none') cellPart.classList.add('sorted-column');
+        tr.insertCell().textContent = row[stockIndexMap[4]]||'';
+        tr.insertCell().textContent = row[stockIndexMap[5]]||'';
+        tr.insertCell().textContent = row[stockIndexMap[6]]||'';
+        tr.insertCell().textContent = row[stockIndexMap[7]]||'';
+        tr.insertCell().textContent = row[stockIndexMap[8]]||'';
+      }
+      document.getElementById('pageInfo').textContent = `Halaman ${currentStockPage} dari ${Math.ceil(filteredStock.length/rowsPerPageStock)||1}`;
+      document.getElementById('prevBtn').disabled = currentStockPage===1;
+      document.getElementById('nextBtn').disabled = end>=filteredStock.length;
+    }
+    function applyFilter(keepPage=true) {
+      const lokasi = document.getElementById('filterLokasi').value;
+      const nama = document.getElementById('filterNama').value;
+      const search = document.getElementById('searchInput').value.toLowerCase();
       filteredStock = [...allData];
-      if (sortPartOrder !== 'none') {
-        sortDataByPart();
-      }
-      currentStockPage = 1;
-      renderTable();
-      showNotification("Semua filter dihapus!");
-    }
-
-    function prevPage() {
-      if (currentStockPage > 1) {
-        currentStockPage--;
-        renderTable();
-      }
-    }
-
-    function nextPage() {
-      if (currentStockPage * rowsPerPageStock < filteredStock.length) {
-        currentStockPage++;
-        renderTable();
-      }
-    }
-
-    function changeRowsPerPage() {
-      rowsPerPageStock = parseInt(document.getElementById("rowsPerPage").value);
-      currentStockPage = 1;
+      if (lokasi!=='all') filteredStock = filteredStock.filter(r => (r[stockIndexMap[1]]||'') == lokasi);
+      if (nama!=='all') filteredStock = filteredStock.filter(r => (r[stockIndexMap[2]]||'') === nama);
+      if (search) filteredStock = filteredStock.filter(r => (r[stockIndexMap[2]]||'').toLowerCase().includes(search) || (r[stockIndexMap[3]]||'').toLowerCase().includes(search) || (r[stockIndexMap[4]]||'').toLowerCase().includes(search));
+      if (sortPartOrder!=='none') sortDataByPart();
+      if (!keepPage) currentStockPage=1;
       renderTable();
     }
+    function clearStockFilters() {
+      document.getElementById('filterLokasi').value='all';
+      document.getElementById('filterNama').value='all';
+      document.getElementById('searchInput').value='';
+      filteredStock = [...allData];
+      if (sortPartOrder!=='none') sortDataByPart();
+      currentStockPage=1;
+      renderTable();
+      showNotification('Filter dihapus!');
+    }
+    function prevPage() { if (currentStockPage>1) { currentStockPage--; renderTable(); } }
+    function nextPage() { if (currentStockPage*rowsPerPageStock < filteredStock.length) { currentStockPage++; renderTable(); } }
+    function changeRowsPerPage() { rowsPerPageStock = parseInt(document.getElementById('rowsPerPage').value); currentStockPage=1; renderTable(); }
 
-    // ---- RESERVASI ----
-    let reservasiData = [];
-    let reservasiIndexMap = [];
-    let filteredReservasi = [];
-    let currentReservasiPage = 1;
-    let rowsPerPageReservasi = 15;
-
+    // ========== RESERVASI ==========
+    let reservasiData=[], reservasiIndexMap=[], filteredReservasi=[], currentReservasiPage=1, rowsPerPageReservasi=15;
     function importReservasiExcel() {
       const file = document.getElementById('importReservasi').files[0];
       if (!file) return;
-      
       showLoading();
-      
       const reader = new FileReader();
       reader.onload = function(e) {
         try {
           const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, {type: 'array'});
-          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const wb = XLSX.read(data, {type:'array'});
+          const sheet = wb.Sheets[wb.SheetNames[0]];
           const json = XLSX.utils.sheet_to_json(sheet, {header:1});
-
           const headers = ["Catatan","Part","Qty Reservasi","Qty Transaksi","Qty Close","Part Demand","Serial Number","Return To Factory","Teknisi Perbaikan","Analisa SA","Disetujui Pada","Status Pengiriman"];
           const excelHeaders = json[0].map(h => h.toString().trim());
           reservasiIndexMap = headers.map(h => excelHeaders.indexOf(h));
-
-          reservasiData = json.slice(1).filter(r => r.length > 0);
+          reservasiData = json.slice(1).filter(r=>r.length>0);
           saveToLocalStorage('reservasiData', reservasiData);
-          
           filteredReservasi = reservasiData;
-          currentReservasiPage = 1;
-          
+          currentReservasiPage=1;
           updateTeknisiFilter(reservasiData);
           updateStatusPengirimanFilter(reservasiData);
           renderReservasiTable();
-          updateStatistics();
-          updateDashboardOverview();
-        } catch (error) {
-          console.error('Import error:', error);
-          showNotification('Gagal mengimpor file file Excel!', 5000);
-        } finally {
-          hideLoading();
-        }
+          updateStatistics(); updateDashboardOverview();
+        } catch(err) { showNotification('Gagal import Excel!',5000); }
+        hideLoading();
       };
       reader.readAsArrayBuffer(file);
     }
-
     function updateTeknisiFilter(data) {
-      const teknisiSet = new Set();
-      data.forEach(row => {
-        const val = row[reservasiIndexMap[8]];
-        if (val) teknisiSet.add(val);
-      });
-
-      const select = document.getElementById("filterTeknisi");
-      select.innerHTML = '<option value="all">Semua</option>';
-      [...teknisiSet].sort().forEach(t => {
-        let opt = document.createElement("option");
-        opt.value = t;
-        opt.textContent = t;
-        select.appendChild(opt);
-      });
+      const sel = document.getElementById('filterTeknisi');
+      sel.innerHTML = '<option value="all">Semua</option>';
+      const set = new Set();
+      data.forEach(r => { if (r[reservasiIndexMap[8]]) set.add(r[reservasiIndexMap[8]]); });
+      [...set].sort().forEach(v => { const opt=document.createElement('option'); opt.value=v; opt.textContent=v; sel.appendChild(opt); });
     }
-
     function updateStatusPengirimanFilter(data) {
-      const statusSet = new Set();
-      data.forEach(row => {
-        const val = row[reservasiIndexMap[11]];
-        if (val) statusSet.add(val);
-      });
-
-      const select = document.getElementById("filterStatusPengirimanReservasi");
-      select.innerHTML = '<option value="all">Semua</option>';
-      [...statusSet].sort().forEach(s => {
-        let opt = document.createElement("option");
-        opt.value = s;
-        opt.textContent = s;
-        select.appendChild(opt);
-      });
+      const sel = document.getElementById('filterStatusPengirimanReservasi');
+      sel.innerHTML = '<option value="all">Semua</option>';
+      const set = new Set();
+      data.forEach(r => { if (r[reservasiIndexMap[11]]) set.add(r[reservasiIndexMap[11]]); });
+      [...set].sort().forEach(v => { const opt=document.createElement('option'); opt.value=v; opt.textContent=v; sel.appendChild(opt); });
     }
-
     function renderReservasiTable() {
-      const tbody = document.getElementById("reservasiTable").querySelector("tbody");
-      tbody.innerHTML = "";
-
-      const start = (currentReservasiPage - 1) * rowsPerPageReservasi;
-      const end = start + rowsPerPageReservasi;
-      const pageData = filteredReservasi.slice(start, end);
-
-      pageData.forEach((row, i) => {
-        let newRow = tbody.insertRow();
-        
-        let cellCatatan = newRow.insertCell();
-        cellCatatan.textContent = row[reservasiIndexMap[0]] || "";
-        cellCatatan.className = "text-left";
-        
-        let cellPart = newRow.insertCell();
-        cellPart.textContent = row[reservasiIndexMap[1]] || "";
-        cellPart.className = "text-left";
-        
-        let cellQtyReservasi = newRow.insertCell();
-        cellQtyReservasi.textContent = row[reservasiIndexMap[2]] || "";
-        cellQtyReservasi.className = "text-center";
-        
-        let cellQtyTransaksi = newRow.insertCell();
-        cellQtyTransaksi.textContent = row[reservasiIndexMap[3]] || "";
-        cellQtyTransaksi.className = "text-center";
-        
-        let cellQtyClose = newRow.insertCell();
-        cellQtyClose.textContent = row[reservasiIndexMap[4]] || "";
-        cellQtyClose.className = "text-center";
-        
-        let cellPartDemand = newRow.insertCell();
-        cellPartDemand.textContent = row[reservasiIndexMap[5]] || "";
-        cellPartDemand.className = "text-left";
-        
-        let cellSerial = newRow.insertCell();
-        const serialValue = row[reservasiIndexMap[6]] || "";
-        cellSerial.textContent = serialValue;
-        cellSerial.className = "text-left";
-        
-        const filterSerial = document.getElementById("filterSerial").value.trim();
-        if (filterSerial && serialValue.toLowerCase().includes(filterSerial.toLowerCase())) {
-          cellSerial.style.backgroundColor = "#fff3cd";
-          cellSerial.style.fontWeight = "bold";
+      const tbody = document.querySelector('#reservasiTable tbody');
+      tbody.innerHTML = '';
+      const start = (currentReservasiPage-1)*rowsPerPageReservasi;
+      const end = Math.min(start+rowsPerPageReservasi, filteredReservasi.length);
+      for (let i=start; i<end; i++) {
+        const row = filteredReservasi[i];
+        const tr = tbody.insertRow();
+        tr.insertCell().textContent = row[reservasiIndexMap[0]]||'';
+        tr.insertCell().textContent = row[reservasiIndexMap[1]]||'';
+        tr.insertCell().textContent = row[reservasiIndexMap[2]]||'';
+        tr.insertCell().textContent = row[reservasiIndexMap[3]]||'';
+        tr.insertCell().textContent = row[reservasiIndexMap[4]]||'';
+        tr.insertCell().textContent = row[reservasiIndexMap[5]]||'';
+        const serial = row[reservasiIndexMap[6]]||'';
+        const cellSerial = tr.insertCell();
+        cellSerial.textContent = serial;
+        const filterSerial = document.getElementById('filterSerial').value.trim();
+        if (filterSerial && serial.toLowerCase().includes(filterSerial.toLowerCase())) { cellSerial.style.backgroundColor='#fff3cd'; cellSerial.style.fontWeight='bold'; }
+        tr.insertCell().textContent = row[reservasiIndexMap[7]]||'';
+        tr.insertCell().textContent = row[reservasiIndexMap[8]]||'';
+        tr.insertCell().textContent = row[reservasiIndexMap[9]]||'';
+        tr.insertCell().textContent = formatDateTime(row[reservasiIndexMap[10]]);
+        const st = row[reservasiIndexMap[11]]||'';
+        const cellStatus = tr.insertCell();
+        if (st) {
+          const badge = document.createElement('span');
+          badge.className = 'status-badge';
+          const upper = st.toUpperCase();
+          if (upper==='PROCESSING') badge.classList.add('status-processing');
+          else if (upper==='SHIPPED') badge.classList.add('status-shipped');
+          else if (upper==='DELIVERED') badge.classList.add('status-delivered');
+          else if (upper==='RETURNED') badge.classList.add('status-returned-pengiriman');
+          else if (upper==='CLOSED') badge.classList.add('status-closed');
+          else badge.classList.add('status-pending');
+          badge.textContent = st;
+          cellStatus.appendChild(badge);
         }
-        
-        let cellReturn = newRow.insertCell();
-        cellReturn.textContent = row[reservasiIndexMap[7]] || "";
-        cellReturn.className = "text-center";
-        
-        let cellTeknisi = newRow.insertCell();
-        cellTeknisi.textContent = row[reservasiIndexMap[8]] || "";
-        cellTeknisi.className = "text-left";
-        
-        let cellAnalisa = newRow.insertCell();
-        cellAnalisa.textContent = row[reservasiIndexMap[9]] || "";
-        cellAnalisa.className = "text-left";
-        
-        let cellDisetujui = newRow.insertCell();
-        const tanggalValue = row[reservasiIndexMap[10]] || "";
-        cellDisetujui.textContent = formatDateTime(tanggalValue);
-        cellDisetujui.className = "text-center";
-        
-        // Kolom Status Pengiriman
-        let cellStatusPengiriman = newRow.insertCell();
-        const statusValue = row[reservasiIndexMap[11]] || "";
-        cellStatusPengiriman.className = "text-left";
-        
-        if (statusValue) {
-          const statusBadge = document.createElement('span');
-          statusBadge.className = 'status-badge';
-          
-          const statusUpper = statusValue.toUpperCase();
-          if (statusUpper === 'PROCESSING') {
-            statusBadge.classList.add('status-processing');
-          } else if (statusUpper === 'SHIPPED') {
-            statusBadge.classList.add('status-shipped');
-          } else if (statusUpper === 'DELIVERED') {
-            statusBadge.classList.add('status-delivered');
-          } else if (statusUpper === 'RETURNED') {
-            statusBadge.classList.add('status-returned-pengiriman');
-          } else if (statusUpper === 'CLOSED') {
-            statusBadge.classList.add('status-closed');
-          } else {
-            statusBadge.classList.add('status-pending');
-          }
-          
-          statusBadge.textContent = statusValue;
-          cellStatusPengiriman.innerHTML = '';
-          cellStatusPengiriman.appendChild(statusBadge);
-        }
-      });
-
-      document.getElementById("pageInfoReservasi").textContent =
-        `Halaman ${currentReservasiPage} dari ${Math.ceil(filteredReservasi.length / rowsPerPageReservasi)}`;
-
-      document.getElementById("prevReservasi").disabled = currentReservasiPage === 1;
-      document.getElementById("nextReservasi").disabled = end >= filteredReservasi.length;
+      }
+      document.getElementById('pageInfoReservasi').textContent = `Halaman ${currentReservasiPage} dari ${Math.ceil(filteredReservasi.length/rowsPerPageReservasi)||1}`;
+      document.getElementById('prevReservasi').disabled = currentReservasiPage===1;
+      document.getElementById('nextReservasi').disabled = end>=filteredReservasi.length;
     }
-
     function applyReservasiFilter() {
-      const searchVal = document.getElementById("searchReservasi").value.toLowerCase();
-      const filterTeknisi = document.getElementById("filterTeknisi").value;
-      const filterStatusPengiriman = document.getElementById("filterStatusPengirimanReservasi").value;
-      const filterSerial = document.getElementById("filterSerial").value.toLowerCase().trim();
-
+      const search = document.getElementById('searchReservasi').value.toLowerCase();
+      const teknisi = document.getElementById('filterTeknisi').value;
+      const status = document.getElementById('filterStatusPengirimanReservasi').value;
+      const serial = document.getElementById('filterSerial').value.toLowerCase().trim();
       filteredReservasi = reservasiData;
-
-      if (filterTeknisi !== "all") {
-        filteredReservasi = filteredReservasi.filter(r => {
-          const teknisi = r[reservasiIndexMap[8]] || "";
-          return teknisi === filterTeknisi;
-        });
-      }
-
-      if (filterStatusPengiriman !== "all") {
-        filteredReservasi = filteredReservasi.filter(r => {
-          const status = (r[reservasiIndexMap[11]] || "").toUpperCase();
-          return status === filterStatusPengiriman.toUpperCase();
-        });
-      }
-
-      if (filterSerial) {
-        filteredReservasi = filteredReservasi.filter(r => {
-          const serial = r[reservasiIndexMap[6]] || "";
-          return serial.toLowerCase().includes(filterSerial);
-        });
-      }
-
-      if (searchVal) {
-        filteredReservasi = filteredReservasi.filter(r => {
-          return (
-            (r[reservasiIndexMap[0]] && r[reservasiIndexMap[0]].toString().toLowerCase().includes(searchVal)) ||
-            (r[reservasiIndexMap[1]] && r[reservasiIndexMap[1]].toString().toLowerCase().includes(searchVal))
-          );
-        });
-      }
-
-      currentReservasiPage = 1;
+      if (teknisi!=='all') filteredReservasi = filteredReservasi.filter(r => (r[reservasiIndexMap[8]]||'') === teknisi);
+      if (status!=='all') filteredReservasi = filteredReservasi.filter(r => (r[reservasiIndexMap[11]]||'').toUpperCase() === status.toUpperCase());
+      if (serial) filteredReservasi = filteredReservasi.filter(r => (r[reservasiIndexMap[6]]||'').toLowerCase().includes(serial));
+      if (search) filteredReservasi = filteredReservasi.filter(r => (r[reservasiIndexMap[0]]||'').toLowerCase().includes(search) || (r[reservasiIndexMap[1]]||'').toLowerCase().includes(search));
+      currentReservasiPage=1;
       renderReservasiTable();
     }
-
     function clearReservasiFilters() {
-      document.getElementById("searchReservasi").value = "";
-      document.getElementById("filterTeknisi").value = "all";
-      document.getElementById("filterStatusPengirimanReservasi").value = "all";
-      document.getElementById("filterSerial").value = "";
-      
+      document.getElementById('searchReservasi').value='';
+      document.getElementById('filterTeknisi').value='all';
+      document.getElementById('filterStatusPengirimanReservasi').value='all';
+      document.getElementById('filterSerial').value='';
       filteredReservasi = reservasiData;
-      currentReservasiPage = 1;
+      currentReservasiPage=1;
       renderReservasiTable();
-      
-      showNotification("Filter berhasil dihapus!");
+      showNotification('Filter dihapus!');
     }
+    function prevReservasiPage() { if (currentReservasiPage>1) { currentReservasiPage--; renderReservasiTable(); } }
+    function nextReservasiPage() { if (currentReservasiPage*rowsPerPageReservasi < filteredReservasi.length) { currentReservasiPage++; renderReservasiTable(); } }
+    function changeRowsPerPageReservasi() { rowsPerPageReservasi = parseInt(document.getElementById('rowsPerPageReservasi').value); currentReservasiPage=1; renderReservasiTable(); }
 
-    function prevReservasiPage() {
-      if (currentReservasiPage > 1) {
-        currentReservasiPage--;
-        renderReservasiTable();
-      }
-    }
-
-    function nextReservasiPage() {
-      if (currentReservasiPage * rowsPerPageReservasi < filteredReservasi.length) {
-        currentReservasiPage++;
-        renderReservasiTable();
-      }
-    }
-
-    function changeRowsPerPageReservasi() {
-      rowsPerPageReservasi = parseInt(document.getElementById("rowsPerPageReservasi").value);
-      currentReservasiPage = 1;
-      renderReservasiTable();
-    }
-
-    // ---- SERVICE CALLS ----
-    let serviceData = [];
-    let serviceIndexMap = [];
-    let filteredService = [];
-    let currentServicePage = 1;
-    let rowsPerPageService = 15;
-
+    // ========== SERVICE ==========
+    let serviceData=[], serviceIndexMap=[], filteredService=[], currentServicePage=1, rowsPerPageService=15;
     function importServiceExcel() {
       const file = document.getElementById('importService').files[0];
       if (!file) return;
-      
       showLoading();
-      
       const reader = new FileReader();
       reader.onload = function(e) {
         try {
           const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, {type: 'array'});
-          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const wb = XLSX.read(data, {type:'array'});
+          const sheet = wb.Sheets[wb.SheetNames[0]];
           const json = XLSX.utils.sheet_to_json(sheet, {header:1});
-
           const headers = ["Tanggal Pendaftaran","Nomor Service Call","Jenis Layanan","Jenis Garansi","Tipe Demand","Nomor Seri","Nama Pemilik","Alamat Pemilik","Status Pengerjaan","Nama Teknisi","Keterangan"];
           const excelHeaders = json[0].map(h => h.toString().trim());
           serviceIndexMap = headers.map(h => excelHeaders.indexOf(h));
-
-          serviceData = json.slice(1).filter(r => r.length > 0);
+          serviceData = json.slice(1).filter(r=>r.length>0);
           saveToLocalStorage('serviceData', serviceData);
-          
           filteredService = serviceData;
-          currentServicePage = 1;
+          currentServicePage=1;
           renderServiceTable();
-          updateStatistics();
-          updateDashboardOverview();
-        } catch (error) {
-          console.error('Import error:', error);
-          showNotification('Gagal mengimpor file Excel!', 5000);
-        } finally {
-          hideLoading();
-        }
+          updateStatistics(); updateDashboardOverview();
+        } catch(err) { showNotification('Gagal import Excel!',5000); }
+        hideLoading();
       };
       reader.readAsArrayBuffer(file);
     }
-
     function renderServiceTable() {
-      const tbody = document.getElementById("serviceTable").querySelector("tbody");
-      tbody.innerHTML = "";
-
-      const start = (currentServicePage - 1) * rowsPerPageService;
-      const end = start + rowsPerPageService;
-      const pageData = filteredService.slice(start, end);
-
-      pageData.forEach((row, i) => {
-        let newRow = tbody.insertRow();
-        
-        let cellTanggal = newRow.insertCell();
-        const tanggalValue = row[serviceIndexMap[0]] || "";
-        cellTanggal.textContent = formatDateOnly(tanggalValue);
-        cellTanggal.className = "text-left";
-        
-        let cellNomor = newRow.insertCell();
-        cellNomor.textContent = row[serviceIndexMap[1]] || "";
-        cellNomor.className = "text-left";
-        
-        let cellLayanan = newRow.insertCell();
-        cellLayanan.textContent = row[serviceIndexMap[2]] || "";
-        cellLayanan.className = "text-left";
-        
-        let cellGaransi = newRow.insertCell();
-        cellGaransi.textContent = row[serviceIndexMap[3]] || "";
-        cellGaransi.className = "text-left";
-        
-        let cellDemand = newRow.insertCell();
-        cellDemand.textContent = row[serviceIndexMap[4]] || "";
-        cellDemand.className = "text-left";
-        
-        let cellSeri = newRow.insertCell();
-        cellSeri.textContent = row[serviceIndexMap[5]] || "";
-        cellSeri.className = "text-left";
-        
-        let cellPemilik = newRow.insertCell();
-        cellPemilik.textContent = row[serviceIndexMap[6]] || "";
-        cellPemilik.className = "text-left";
-        
-        let cellAlamat = newRow.insertCell();
-        cellAlamat.textContent = row[serviceIndexMap[7]] || "";
-        cellAlamat.className = "text-left";
-        
-        let cellStatus = newRow.insertCell();
-        const statusValue = row[serviceIndexMap[8]] || "";
-        cellStatus.className = "text-left";
-        
-        if (statusValue) {
-          const statusBadge = document.createElement('span');
-          statusBadge.className = 'status-badge';
-          
-          const statusUpper = statusValue.toUpperCase();
-          if (statusUpper === 'CANCELED') {
-            statusBadge.classList.add('status-canceled');
-          } else if (statusUpper === 'INVOICED') {
-            statusBadge.classList.add('status-invoiced');
-          } else if (statusUpper === 'COMPLETED') {
-            statusBadge.classList.add('status-completed');
-          } else if (statusUpper === 'PRINTED') {
-            statusBadge.classList.add('status-printed');
-          } else if (statusUpper === 'WIP') {
-            statusBadge.classList.add('status-wip');
-          } else if (statusUpper === 'WIP COMP') {
-            statusBadge.classList.add('status-wip-comp');
-          } else if (statusUpper === 'WIP TECH') {
-            statusBadge.classList.add('status-wip-tech');
-          } else {
-            statusBadge.classList.add('status-pending');
-          }
-          
-          statusBadge.textContent = statusValue;
-          cellStatus.innerHTML = '';
-          cellStatus.appendChild(statusBadge);
+      const tbody = document.querySelector('#serviceTable tbody');
+      tbody.innerHTML = '';
+      const start = (currentServicePage-1)*rowsPerPageService;
+      const end = Math.min(start+rowsPerPageService, filteredService.length);
+      for (let i=start; i<end; i++) {
+        const row = filteredService[i];
+        const tr = tbody.insertRow();
+        tr.insertCell().textContent = formatDateOnly(row[serviceIndexMap[0]]);
+        tr.insertCell().textContent = row[serviceIndexMap[1]]||'';
+        tr.insertCell().textContent = row[serviceIndexMap[2]]||'';
+        tr.insertCell().textContent = row[serviceIndexMap[3]]||'';
+        tr.insertCell().textContent = row[serviceIndexMap[4]]||'';
+        tr.insertCell().textContent = row[serviceIndexMap[5]]||'';
+        tr.insertCell().textContent = row[serviceIndexMap[6]]||'';
+        tr.insertCell().textContent = row[serviceIndexMap[7]]||'';
+        const st = row[serviceIndexMap[8]]||'';
+        const cellStatus = tr.insertCell();
+        if (st) {
+          const badge = document.createElement('span');
+          badge.className = 'status-badge';
+          const upper = st.toUpperCase();
+          if (upper==='CANCELED') badge.classList.add('status-canceled');
+          else if (upper==='INVOICED') badge.classList.add('status-invoiced');
+          else if (upper==='COMPLETED') badge.classList.add('status-completed');
+          else if (upper==='PRINTED') badge.classList.add('status-printed');
+          else if (upper==='WIP') badge.classList.add('status-wip');
+          else if (upper==='WIP COMP') badge.classList.add('status-wip-comp');
+          else if (upper==='WIP TECH') badge.classList.add('status-wip-tech');
+          else badge.classList.add('status-pending');
+          badge.textContent = st;
+          cellStatus.appendChild(badge);
         }
-        
-        let cellTeknisi = newRow.insertCell();
-        const teknisiValue = row[serviceIndexMap[9]] || "";
-        cellTeknisi.textContent = teknisiValue;
-        cellTeknisi.className = "text-left";
-        
-        const filterTeknisi = document.getElementById("filterTeknisiService").value;
-        if (filterTeknisi !== "all" && teknisiValue === filterTeknisi) {
-          cellTeknisi.style.backgroundColor = "#fff3cd";
-          cellTeknisi.style.fontWeight = "bold";
-        }
-        
-        let cellSerah = newRow.insertCell();
-        const serahValue = row[serviceIndexMap[10]] || "";
-        cellSerah.textContent = formatDateTime(serahValue);
-        cellSerah.className = "text-left";
-      });
-
-      document.getElementById("pageInfoService").textContent =
-        `Halaman ${currentServicePage} dari ${Math.ceil(filteredService.length / rowsPerPageService)}`;
-
-      document.getElementById("prevService").disabled = currentServicePage === 1;
-      document.getElementById("nextService").disabled = end >= filteredService.length;
+        tr.insertCell().textContent = row[serviceIndexMap[9]]||'';
+        tr.insertCell().textContent = formatDateTime(row[serviceIndexMap[10]]);
+      }
+      document.getElementById('pageInfoService').textContent = `Halaman ${currentServicePage} dari ${Math.ceil(filteredService.length/rowsPerPageService)||1}`;
+      document.getElementById('prevService').disabled = currentServicePage===1;
+      document.getElementById('nextService').disabled = end>=filteredService.length;
     }
-
     function applyServiceFilter() {
-      const searchVal = document.getElementById("searchService").value.toLowerCase();
-      const filterStatus = document.getElementById("filterStatus").value;
-      const filterTeknisi = document.getElementById("filterTeknisiService").value;
-
+      const search = document.getElementById('searchService').value.toLowerCase();
+      const status = document.getElementById('filterStatus').value;
+      const teknisi = document.getElementById('filterTeknisiService').value;
       filteredService = serviceData;
-
-      if (filterStatus !== "all") {
-        filteredService = filteredService.filter(r => {
-          const status = r[serviceIndexMap[8]] || "";
-          return status.toUpperCase() === filterStatus;
-        });
-      }
-
-      if (filterTeknisi !== "all") {
-        filteredService = filteredService.filter(r => {
-          const teknisi = r[serviceIndexMap[9]] || "";
-          return teknisi === filterTeknisi;
-        });
-      }
-
-      if (searchVal) {
-        filteredService = filteredService.filter(r => {
-          return (
-            (r[serviceIndexMap[1]] && r[serviceIndexMap[1]].toString().toLowerCase().includes(searchVal)) ||
-            (r[serviceIndexMap[6]] && r[serviceIndexMap[6]].toString().toLowerCase().includes(searchVal))
-          );
-        });
-      }
-
-      currentServicePage = 1;
+      if (status!=='all') filteredService = filteredService.filter(r => (r[serviceIndexMap[8]]||'').toUpperCase() === status);
+      if (teknisi!=='all') filteredService = filteredService.filter(r => (r[serviceIndexMap[9]]||'') === teknisi);
+      if (search) filteredService = filteredService.filter(r => (r[serviceIndexMap[1]]||'').toLowerCase().includes(search) || (r[serviceIndexMap[6]]||'').toLowerCase().includes(search));
+      currentServicePage=1;
       renderServiceTable();
     }
-
     function clearServiceFilters() {
-      document.getElementById("searchService").value = "";
-      document.getElementById("filterStatus").value = "all";
-      document.getElementById("filterTeknisiService").value = "all";
-      
+      document.getElementById('searchService').value='';
+      document.getElementById('filterStatus').value='all';
+      document.getElementById('filterTeknisiService').value='all';
       filteredService = serviceData;
-      currentServicePage = 1;
+      currentServicePage=1;
       renderServiceTable();
-      
-      showNotification("Filter berhasil dihapus!");
+      showNotification('Filter dihapus!');
     }
+    function prevServicePage() { if (currentServicePage>1) { currentServicePage--; renderServiceTable(); } }
+    function nextServicePage() { if (currentServicePage*rowsPerPageService < filteredService.length) { currentServicePage++; renderServiceTable(); } }
+    function changeRowsPerPageService() { rowsPerPageService = parseInt(document.getElementById('rowsPerPageService').value); currentServicePage=1; renderServiceTable(); }
 
-    function prevServicePage() {
-      if (currentServicePage > 1) {
-        currentServicePage--;
-        renderServiceTable();
-      }
-    }
-
-    function nextServicePage() {
-      if (currentServicePage * rowsPerPageService < filteredService.length) {
-        currentServicePage++;
-        renderServiceTable();
-      }
-    }
-
-    function changeRowsPerPageService() {
-      rowsPerPageService = parseInt(document.getElementById("rowsPerPageService").value);
-      currentServicePage = 1;
-      renderServiceTable();
-    }
-
-    // ---- OUTSTANDING PENGIRIMAN - MODIFIED ----
-    let pengirimanData = [];
-    let pengirimanIndexMap = [];
-    let filteredPengiriman = [];
-    let currentPengirimanPage = 1;
-    let rowsPerPagePengiriman = 15;
-
+    // ========== PENGIRIMAN ==========
+    let pengirimanData=[], pengirimanIndexMap=[], filteredPengiriman=[], currentPengirimanPage=1, rowsPerPagePengiriman=15;
     function importPengirimanExcel() {
       const file = document.getElementById('importPengiriman').files[0];
       if (!file) return;
-      
       showLoading();
-      
       const reader = new FileReader();
       reader.onload = function(e) {
         try {
           const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, {type: 'array'});
-          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const wb = XLSX.read(data, {type:'array'});
+          const sheet = wb.Sheets[wb.SheetNames[0]];
           const json = XLSX.utils.sheet_to_json(sheet, {header:1});
-
           const headers = ["Document Number","Quantity Delivery Order","Base Unit","Request Number","Created At","Part Supply","NAMA SPAREPART"];
           const excelHeaders = json[0].map(h => h.toString().trim());
           pengirimanIndexMap = headers.map(h => excelHeaders.indexOf(h));
-
-          const tempData = json.slice(1).filter(r => r.length > 0);
-          
-          if (!validatePengirimanData(tempData)) {
-            hideLoading();
-            return;
-          }
-
-          pengirimanData = tempData;
+          const temp = json.slice(1).filter(r=>r.length>0);
+          if (temp.some(r=>!r[0]||!r[1]||!r[2]||!r[3])) { showNotification('Validasi gagal: Document, Qty, Unit, Request wajib.',5000); hideLoading(); return; }
+          pengirimanData = temp;
           saveToLocalStorage('pengirimanData', pengirimanData);
-          
           filteredPengiriman = pengirimanData;
-          currentPengirimanPage = 1;
+          currentPengirimanPage=1;
           renderPengirimanTable();
-          updateStatistics();
-          updateDashboardOverview();
-        } catch (error) {
-          console.error('Import error:', error);
-          showNotification('Gagal mengimpor file Excel!', 5000);
-        } finally {
-          hideLoading();
-        }
+          updateStatistics(); updateDashboardOverview();
+        } catch(err) { showNotification('Gagal import Excel!',5000); }
+        hideLoading();
       };
       reader.readAsArrayBuffer(file);
     }
-
+    function vlookupPartSupply(part) {
+      if (!part || !masterData.length) return '';
+      for (let i=0; i<masterData.length; i++) {
+        if (masterData[i][0] === part) return masterData[i][1]||'';
+      }
+      return '';
+    }
+    function autoFillSparepartName(rowIndex, partSupply) {
+      const table = document.getElementById('pengirimanTable');
+      const rows = table.tBodies[0].rows;
+      if (rowIndex >= rows.length) return;
+      const cell = rows[rowIndex].cells[6];
+      const indicator = document.createElement('span');
+      indicator.className = 'vlookup-processing';
+      indicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      cell.appendChild(indicator);
+      setTimeout(() => {
+        const name = vlookupPartSupply(partSupply);
+        if (indicator.parentNode) indicator.parentNode.removeChild(indicator);
+        const actualIndex = (currentPengirimanPage-1)*rowsPerPagePengiriman + rowIndex;
+        if (actualIndex < filteredPengiriman.length) {
+          filteredPengiriman[actualIndex][pengirimanIndexMap[6]] = name;
+          const orig = pengirimanData.indexOf(filteredPengiriman[actualIndex]);
+          if (orig!==-1) pengirimanData[orig][pengirimanIndexMap[6]] = name;
+          saveToLocalStorage('pengirimanData', pengirimanData);
+        }
+        cell.textContent = name;
+        const ok = document.createElement('span');
+        ok.className = 'vlookup-indicator';
+        ok.innerHTML = '<i class="fas fa-check"></i>';
+        cell.appendChild(ok);
+        setTimeout(() => { if (ok.parentNode) ok.parentNode.removeChild(ok); }, 2000);
+        if (!name) {
+          const err = document.createElement('span');
+          err.className = 'vlookup-error';
+          err.innerHTML = '<i class="fas fa-times"></i>';
+          err.title = 'Part Supply tidak ditemukan di Master';
+          cell.appendChild(err);
+          setTimeout(() => { if (err.parentNode) err.parentNode.removeChild(err); }, 3000);
+        }
+      }, 300);
+    }
+    function autoFillAllSparepartNames() {
+      if (!masterData.length) { showNotification('Master Komponen kosong!',5000); return; }
+      if (!pengirimanData.length) { showNotification('Data Pengiriman kosong!',5000); return; }
+      showLoading();
+      let count = 0;
+      pengirimanData.forEach((row, idx) => {
+        const part = row[pengirimanIndexMap[5]]||'';
+        if (part) row[pengirimanIndexMap[6]] = vlookupPartSupply(part);
+        count++;
+        if (count === pengirimanData.length) {
+          saveToLocalStorage('pengirimanData', pengirimanData);
+          filteredPengiriman = [...pengirimanData];
+          renderPengirimanTable();
+          hideLoading();
+          showNotification(`Berhasil update ${count} data Nama Sparepart!`);
+        }
+      });
+    }
     function renderPengirimanTable() {
-      const tbody = document.getElementById("pengirimanTable").querySelector("tbody");
-      tbody.innerHTML = "";
-
-      const start = (currentPengirimanPage - 1) * rowsPerPagePengiriman;
-      const end = start + rowsPerPagePengiriman;
-      const pageData = filteredPengiriman.slice(start, end);
-      const searchVal = document.getElementById("searchPengiriman").value.toLowerCase().trim();
-
-      pageData.forEach((row, i) => {
-        let newRow = tbody.insertRow();
-        
-        // Kolom Document Number
-        let cellDocNumber = newRow.insertCell();
-        const docNumberValue = row[pengirimanIndexMap[0]] || "";
-        cellDocNumber.textContent = docNumberValue;
-        cellDocNumber.className = "text-left";
-        
-        // Highlight jika sesuai pencarian
-        if (searchVal && docNumberValue.toLowerCase().includes(searchVal)) {
-          cellDocNumber.style.backgroundColor = "#fff3cd";
-          cellDocNumber.style.fontWeight = "bold";
-        }
-        
-        // Kolom Quantity Delivery Order
-        let cellQty = newRow.insertCell();
-        cellQty.textContent = row[pengirimanIndexMap[1]] || "";
-        cellQty.className = "text-center";
-        
-        // Kolom Base Unit
-        let cellBaseUnit = newRow.insertCell();
-        cellBaseUnit.textContent = row[pengirimanIndexMap[2]] || "";
-        cellBaseUnit.className = "text-left";
-        
-        // Kolom Request Number
-        let cellReqNumber = newRow.insertCell();
-        const reqNumberValue = row[pengirimanIndexMap[3]] || "";
-        cellReqNumber.textContent = reqNumberValue;
-        cellReqNumber.className = "text-left";
-        
-        // Highlight jika sesuai pencarian
-        if (searchVal && reqNumberValue.toLowerCase().includes(searchVal)) {
-          cellReqNumber.style.backgroundColor = "#fff3cd";
-          cellReqNumber.style.fontWeight = "bold";
-        }
-        
-        // Kolom Created At
-        let cellCreatedAt = newRow.insertCell();
-        const createdAtValue = row[pengirimanIndexMap[4]] || "";
-        cellCreatedAt.textContent = formatDateOnly(createdAtValue);
-        cellCreatedAt.className = "text-left";
-        
-        // Kolom Part Supply - Editable
-        let cellPartSupply = newRow.insertCell();
-        const partSupplyValue = row[pengirimanIndexMap[5]] || "";
-        cellPartSupply.textContent = partSupplyValue;
-        cellPartSupply.className = "text-left editable";
-        cellPartSupply.contentEditable = true;
-        
-        // Highlight jika sesuai pencarian
-        if (searchVal && partSupplyValue.toLowerCase().includes(searchVal)) {
-          cellPartSupply.style.backgroundColor = "#fff3cd";
-          cellPartSupply.style.fontWeight = "bold";
-        }
-        
-        // Tambahkan event listener untuk VLOOKUP otomatis
-        cellPartSupply.addEventListener('blur', function() {
-          const newValue = this.textContent.trim();
-          if (newValue !== partSupplyValue) {
-            // Update nilai di data array
-            const actualIndex = (currentPengirimanPage - 1) * rowsPerPagePengiriman + i;
-            if (actualIndex < filteredPengiriman.length) {
-              filteredPengiriman[actualIndex][pengirimanIndexMap[5]] = newValue;
-              
-              // Update juga di data asli
-              const originalIndex = pengirimanData.indexOf(filteredPengiriman[actualIndex]);
-              if (originalIndex !== -1) {
-                pengirimanData[originalIndex][pengirimanIndexMap[5]] = newValue;
-              }
-              
-              // Simpan perubahan ke localStorage
+      const tbody = document.querySelector('#pengirimanTable tbody');
+      tbody.innerHTML = '';
+      const start = (currentPengirimanPage-1)*rowsPerPagePengiriman;
+      const end = Math.min(start+rowsPerPagePengiriman, filteredPengiriman.length);
+      const searchVal = document.getElementById('searchPengiriman').value.toLowerCase().trim();
+      for (let i=start; i<end; i++) {
+        const row = filteredPengiriman[i];
+        const tr = tbody.insertRow();
+        const doc = row[pengirimanIndexMap[0]]||'';
+        const cellDoc = tr.insertCell();
+        cellDoc.textContent = doc;
+        if (searchVal && doc.toLowerCase().includes(searchVal)) { cellDoc.style.backgroundColor='#fff3cd'; cellDoc.style.fontWeight='bold'; }
+        tr.insertCell().textContent = row[pengirimanIndexMap[1]]||'';
+        tr.insertCell().textContent = row[pengirimanIndexMap[2]]||'';
+        const req = row[pengirimanIndexMap[3]]||'';
+        const cellReq = tr.insertCell();
+        cellReq.textContent = req;
+        if (searchVal && req.toLowerCase().includes(searchVal)) { cellReq.style.backgroundColor='#fff3cd'; cellReq.style.fontWeight='bold'; }
+        tr.insertCell().textContent = formatDateOnly(row[pengirimanIndexMap[4]]);
+        const partSupply = row[pengirimanIndexMap[5]]||'';
+        const cellPart = tr.insertCell();
+        cellPart.textContent = partSupply;
+        cellPart.className = 'editable';
+        cellPart.contentEditable = true;
+        if (searchVal && partSupply.toLowerCase().includes(searchVal)) { cellPart.style.backgroundColor='#fff3cd'; cellPart.style.fontWeight='bold'; }
+        cellPart.addEventListener('blur', function() {
+          const val = this.textContent.trim();
+          if (val !== partSupply) {
+            const idx = (currentPengirimanPage-1)*rowsPerPagePengiriman + i;
+            if (idx < filteredPengiriman.length) {
+              filteredPengiriman[idx][pengirimanIndexMap[5]] = val;
+              const orig = pengirimanData.indexOf(filteredPengiriman[idx]);
+              if (orig!==-1) pengirimanData[orig][pengirimanIndexMap[5]] = val;
               saveToLocalStorage('pengirimanData', pengirimanData);
-              
-              // Lakukan VLOOKUP untuk update NAMA SPAREPART
-              autoFillSparepartName(i, newValue);
+              autoFillSparepartName(i, val);
             }
           }
         });
-        
-        // Kolom NAMA SPAREPART - Dapat diisi otomatis
-        let cellNamaSparepart = newRow.insertCell();
-        const namaSparepartValue = row[pengirimanIndexMap[6]] || "";
-        cellNamaSparepart.textContent = namaSparepartValue;
-        cellNamaSparepart.className = "text-left";
-        
-        // Tambahkan tombol auto-fill jika nama sparepart kosong
-        if (!namaSparepartValue && partSupplyValue) {
-          const autoFillBtn = document.createElement('button');
-          autoFillBtn.className = 'autofill-btn';
-          autoFillBtn.innerHTML = '<i class="fas fa-search"></i>';
-          autoFillBtn.title = 'Cari nama sparepart berdasarkan Part Supply';
-          autoFillBtn.onclick = function() {
-            autoFillSparepartName(i, partSupplyValue);
-          };
-          cellNamaSparepart.appendChild(autoFillBtn);
+        const nama = row[pengirimanIndexMap[6]]||'';
+        const cellNama = tr.insertCell();
+        cellNama.textContent = nama;
+        if (!nama && partSupply) {
+          const btn = document.createElement('button');
+          btn.className = 'autofill-btn';
+          btn.innerHTML = '<i class="fas fa-search"></i>';
+          btn.title = 'Cari nama sparepart';
+          btn.onclick = function() { autoFillSparepartName(i, partSupply); };
+          cellNama.appendChild(btn);
         }
-      });
-
-      document.getElementById("pageInfoPengiriman").textContent =
-        `Halaman ${currentPengirimanPage} dari ${Math.ceil(filteredPengiriman.length / rowsPerPagePengiriman)}`;
-
-      document.getElementById("prevPengiriman").disabled = currentPengirimanPage === 1;
-      document.getElementById("nextPengiriman").disabled = end >= filteredPengiriman.length;
+      }
+      document.getElementById('pageInfoPengiriman').textContent = `Halaman ${currentPengirimanPage} dari ${Math.ceil(filteredPengiriman.length/rowsPerPagePengiriman)||1}`;
+      document.getElementById('prevPengiriman').disabled = currentPengirimanPage===1;
+      document.getElementById('nextPengiriman').disabled = end>=filteredPengiriman.length;
     }
-
     function applyPengirimanFilter() {
-      const searchVal = document.getElementById("searchPengiriman").value.toLowerCase();
-
+      const search = document.getElementById('searchPengiriman').value.toLowerCase();
       filteredPengiriman = pengirimanData;
-
-      if (searchVal) {
-        filteredPengiriman = filteredPengiriman.filter(r => {
-          return (
-            (r[pengirimanIndexMap[0]] && r[pengirimanIndexMap[0]].toString().toLowerCase().includes(searchVal)) ||
-            (r[pengirimanIndexMap[3]] && r[pengirimanIndexMap[3]].toString().toLowerCase().includes(searchVal)) ||
-            (r[pengirimanIndexMap[5]] && r[pengirimanIndexMap[5]].toString().toLowerCase().includes(searchVal))
-          );
-        });
-      }
-
-      currentPengirimanPage = 1;
+      if (search) filteredPengiriman = filteredPengiriman.filter(r => (r[pengirimanIndexMap[0]]||'').toLowerCase().includes(search) || (r[pengirimanIndexMap[3]]||'').toLowerCase().includes(search) || (r[pengirimanIndexMap[5]]||'').toLowerCase().includes(search));
+      currentPengirimanPage=1;
       renderPengirimanTable();
     }
-
     function clearPengirimanFilters() {
-      document.getElementById("searchPengiriman").value = "";
-      
+      document.getElementById('searchPengiriman').value='';
       filteredPengiriman = pengirimanData;
-      currentPengirimanPage = 1;
+      currentPengirimanPage=1;
       renderPengirimanTable();
-      
-      showNotification("Filter berhasil dihapus!");
+      showNotification('Filter dihapus!');
+    }
+    function prevPengirimanPage() { if (currentPengirimanPage>1) { currentPengirimanPage--; renderPengirimanTable(); } }
+    function nextPengirimanPage() { if (currentPengirimanPage*rowsPerPagePengiriman < filteredPengiriman.length) { currentPengirimanPage++; renderPengirimanTable(); } }
+    function changeRowsPerPagePengiriman() { rowsPerPagePengiriman = parseInt(document.getElementById('rowsPerPagePengiriman').value); currentPengirimanPage=1; renderPengirimanTable(); }
+
+    // ========== EKSPORT ==========
+    function exportStockToExcel() {
+      if (!filteredStock.length) { showNotification('Tidak ada data!',5000); return; }
+      showLoading();
+      try {
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(filteredStock.map((r,i) => ({
+          "No.": i+1,
+          "Tipe Lokasi": r[stockIndexMap[1]]||'',
+          "Nama": r[stockIndexMap[2]]||'',
+          "Part": r[stockIndexMap[3]]||'',
+          "Deskripsi Part": r[stockIndexMap[4]]||'',
+          "QTY": r[stockIndexMap[5]]||'',
+          "QTY Alloc": r[stockIndexMap[6]]||'',
+          "Available QTY": r[stockIndexMap[7]]||'',
+          "Return To Factory": r[stockIndexMap[8]]||''
+        })));
+        XLSX.utils.book_append_sheet(wb, ws, "Stock Komponen");
+        XLSX.writeFile(wb, `Data_Stock_${new Date().toISOString().slice(0,10)}.xlsx`);
+        showNotification('Export berhasil!');
+      } catch(e) { showNotification('Gagal export!',5000); }
+      hideLoading();
+    }
+    function exportReservasiToExcel() {
+      if (!filteredReservasi.length) { showNotification('Tidak ada data!',5000); return; }
+      showLoading();
+      try {
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(filteredReservasi.map((r,i) => ({
+          "No.": i+1,
+          "Catatan": r[reservasiIndexMap[0]]||'',
+          "Part": r[reservasiIndexMap[1]]||'',
+          "Qty Reservasi": r[reservasiIndexMap[2]]||'',
+          "Qty Transaksi": r[reservasiIndexMap[3]]||'',
+          "Qty Close": r[reservasiIndexMap[4]]||'',
+          "Part Demand": r[reservasiIndexMap[5]]||'',
+          "Serial Number": r[reservasiIndexMap[6]]||'',
+          "Return To Factory": r[reservasiIndexMap[7]]||'',
+          "Teknisi Perbaikan": r[reservasiIndexMap[8]]||'',
+          "Analisa SA": r[reservasiIndexMap[9]]||'',
+          "Disetujui Pada": formatDateTime(r[reservasiIndexMap[10]]),
+          "Status Pengiriman": r[reservasiIndexMap[11]]||''
+        })));
+        XLSX.utils.book_append_sheet(wb, ws, "Reservasi");
+        XLSX.writeFile(wb, `Data_Reservasi_${new Date().toISOString().slice(0,10)}.xlsx`);
+        showNotification('Export berhasil!');
+      } catch(e) { showNotification('Gagal export!',5000); }
+      hideLoading();
+    }
+    function exportServiceToExcel() {
+      if (!filteredService.length) { showNotification('Tidak ada data!',5000); return; }
+      showLoading();
+      try {
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(filteredService.map((r,i) => ({
+          "No.": i+1,
+          "Tanggal Pendaftaran": formatDateOnly(r[serviceIndexMap[0]]),
+          "Nomor Service Call": r[serviceIndexMap[1]]||'',
+          "Jenis Layanan": r[serviceIndexMap[2]]||'',
+          "Jenis Garansi": r[serviceIndexMap[3]]||'',
+          "Tipe Demand": r[serviceIndexMap[4]]||'',
+          "Nomor Seri": r[serviceIndexMap[5]]||'',
+          "Nama Pemilik": r[serviceIndexMap[6]]||'',
+          "Alamat Pemilik": r[serviceIndexMap[7]]||'',
+          "Status Pengerjaan": r[serviceIndexMap[8]]||'',
+          "Nama Teknisi": r[serviceIndexMap[9]]||'',
+          "Keterangan": formatDateTime(r[serviceIndexMap[10]])
+        })));
+        XLSX.utils.book_append_sheet(wb, ws, "Service Calls");
+        XLSX.writeFile(wb, `Data_Service_${new Date().toISOString().slice(0,10)}.xlsx`);
+        showNotification('Export berhasil!');
+      } catch(e) { showNotification('Gagal export!',5000); }
+      hideLoading();
+    }
+    function exportPengirimanToExcel() {
+      if (!filteredPengiriman.length) { showNotification('Tidak ada data!',5000); return; }
+      showLoading();
+      try {
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(filteredPengiriman.map((r,i) => ({
+          "No": i+1,
+          "Document Number": r[pengirimanIndexMap[0]]||'',
+          "Quantity Delivery Order": r[pengirimanIndexMap[1]]||'',
+          "Base Unit": r[pengirimanIndexMap[2]]||'',
+          "Request Number": r[pengirimanIndexMap[3]]||'',
+          "Created At": formatDateOnly(r[pengirimanIndexMap[4]]),
+          "Part Supply": r[pengirimanIndexMap[5]]||'',
+          "NAMA SPAREPART": r[pengirimanIndexMap[6]]||''
+        })));
+        XLSX.utils.book_append_sheet(wb, ws, "Pengiriman");
+        XLSX.writeFile(wb, `Data_Pengiriman_${new Date().toISOString().slice(0,10)}.xlsx`);
+        showNotification('Export berhasil!');
+      } catch(e) { showNotification('Gagal export!',5000); }
+      hideLoading();
     }
 
-    function prevPengirimanPage() {
-      if (currentPengirimanPage > 1) {
-        currentPengirimanPage--;
-        renderPengirimanTable();
-      }
-    }
-
-    function nextPengirimanPage() {
-      if (currentPengirimanPage * rowsPerPagePengiriman < filteredPengiriman.length) {
-        currentPengirimanPage++;
-        renderPengirimanTable();
-      }
-    }
-
-    function changeRowsPerPagePengiriman() {
-      rowsPerPagePengiriman = parseInt(document.getElementById("rowsPerPagePengiriman").value);
-      currentPengirimanPage = 1;
-      renderPengirimanTable();
-    }
-
-    // ---- DATA LOADING ----
+    // ========== LOAD DATA ==========
     function loadDataFromStorage() {
-      const savedLogo = localStorage.getItem("dashboardLogo");
-      if (savedLogo) document.getElementById("logo").src = savedLogo;
-      
+      const logo = localStorage.getItem('dashboardLogo');
+      if (logo) document.getElementById('logo').src = logo;
       masterData = loadFromLocalStorage('masterData');
       filteredMaster = masterData;
       updatePartFilter(masterData);
       renderMasterTable();
-      
       allData = loadFromLocalStorage('stockData');
       filteredStock = allData;
       updateFilterOptions(allData);
       updateNamaFilterOptions(allData);
       renderTable();
-      
       reservasiData = loadFromLocalStorage('reservasiData');
       filteredReservasi = reservasiData;
       updateTeknisiFilter(reservasiData);
       updateStatusPengirimanFilter(reservasiData);
       renderReservasiTable();
-      
       serviceData = loadFromLocalStorage('serviceData');
       filteredService = serviceData;
       renderServiceTable();
-      
       pengirimanData = loadFromLocalStorage('pengirimanData');
       filteredPengiriman = pengirimanData;
       renderPengirimanTable();
@@ -3052,6 +1673,8 @@
       loadDataFromStorage();
       updateStatistics();
       updateDashboardOverview();
+      // tampilkan dashboard default
+      showPage('dashboard');
     };
   </script>
 </body>
