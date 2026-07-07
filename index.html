@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>📦 Order Komponen + WhatsApp Teknisi</title>
+    <title>📦 Order Komponen System</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
@@ -15,9 +15,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js">
     </script>
     <style>
-        /* ============================================================
-           ROOT & THEME
-        ============================================================ */
+        /* ===== CSS LENGKAP ===== */
         :root,
         [data-theme="dark"] {
             --bg-primary: #0b1120;
@@ -54,7 +52,6 @@
             --spinner-accent-track: rgba(0, 212, 170, 0.2);
             --radius: 8px;
             --radius-lg: 14px;
-            --wa-color: #25d366;
         }
         [data-theme="light"] {
             --bg-primary: #f0f4f8;
@@ -91,11 +88,7 @@
             --spinner-accent-track: rgba(13, 148, 136, 0.2);
             --radius: 8px;
             --radius-lg: 14px;
-            --wa-color: #25d366;
         }
-        /* ============================================================
-           RESET & BASE
-        ============================================================ */
         *,
         *::before,
         *::after {
@@ -158,9 +151,7 @@
             outline-offset: 2px;
         }
 
-        /* ============================================================
-           AUTH
-        ============================================================ */
+        /* ===== AUTH ===== */
         .auth-screen {
             position: fixed;
             inset: 0;
@@ -431,9 +422,7 @@
             min-height: 14px;
         }
 
-        /* ============================================================
-           NAVBAR
-        ============================================================ */
+        /* ===== NAVBAR ===== */
         .user-menu {
             position: relative;
         }
@@ -699,9 +688,7 @@
             opacity: 0;
         }
 
-        /* ============================================================
-           MAIN
-        ============================================================ */
+        /* ===== MAIN ===== */
         .main-container {
             position: relative;
             z-index: 1;
@@ -718,6 +705,7 @@
             padding: 5px;
             margin-bottom: 1.5rem;
             width: fit-content;
+            flex-wrap: wrap;
         }
         .main-tab {
             display: flex;
@@ -765,9 +753,7 @@
             display: block;
         }
 
-        /* ============================================================
-           STATS
-        ============================================================ */
+        /* ===== STATS ===== */
         .stats-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -876,9 +862,7 @@
             margin-top: 2px;
         }
 
-        /* ============================================================
-           FORM
-        ============================================================ */
+        /* ===== FORM ===== */
         .form-section-title {
             font-size: 0.75rem;
             font-weight: 700;
@@ -958,9 +942,7 @@
             min-height: 70px;
         }
 
-        /* ============================================================
-           BUTTONS
-        ============================================================ */
+        /* ===== BUTTONS ===== */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -1029,10 +1011,28 @@
             transform: translateY(-1px);
             background: linear-gradient(135deg, #228b4f, #1d6f42);
         }
+        .btn-upload {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #fff;
+            border: 1px solid rgba(37, 99, 235, 0.4);
+            box-shadow: 0 0 16px rgba(37, 99, 235, 0.2);
+        }
+        .btn-upload:hover {
+            box-shadow: 0 0 28px rgba(37, 99, 235, 0.4);
+            transform: translateY(-1px);
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+        .btn-delete-all {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: var(--danger);
+        }
+        .btn-delete-all:hover {
+            background: rgba(239, 68, 68, 0.25);
+            border-color: var(--danger);
+        }
 
-        /* ============================================================
-           TABLE
-        ============================================================ */
+        /* ===== TABLE ===== */
         .table-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -1210,9 +1210,7 @@
             }
         }
 
-        /* ============================================================
-           STATUS BADGE
-        ============================================================ */
+        /* ===== STATUS BADGE ===== */
         .status-badge {
             display: inline-flex;
             align-items: center;
@@ -1274,9 +1272,7 @@
             background: #60a5fa;
         }
 
-        /* ============================================================
-           ACTION BUTTONS (TAMBAH TOMBOL WA)
-        ============================================================ */
+        /* ===== ACTION ===== */
         .action-btns {
             display: flex;
             gap: 5px;
@@ -1310,19 +1306,8 @@
             cursor: not-allowed;
             pointer-events: none;
         }
-        /* TOMBOL WHATSAPP */
-        .action-btn.whatsapp {
-            color: var(--wa-color);
-            border-color: var(--wa-color);
-        }
-        .action-btn.whatsapp:hover {
-            background: rgba(37, 211, 102, 0.1);
-            border-color: #128c7e;
-        }
 
-        /* ============================================================
-           SKELETON / EMPTY / MODAL / TOAST
-        ============================================================ */
+        /* ===== SKELETON ===== */
         .table-loading-skeleton {
             padding: 2rem;
             text-align: center;
@@ -1352,6 +1337,7 @@
             }
         }
 
+        /* ===== EMPTY ===== */
         .empty-state {
             padding: 3rem 2rem;
             text-align: center;
@@ -1367,6 +1353,7 @@
             font-size: 0.85rem;
         }
 
+        /* ===== MODAL ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -1460,6 +1447,7 @@
             justify-content: flex-end;
             flex-shrink: 0;
         }
+
         .editable-label {
             display: flex;
             align-items: center;
@@ -1471,6 +1459,7 @@
             opacity: 0.7;
         }
 
+        /* ===== TOAST ===== */
         .toast-container {
             position: fixed;
             top: 80px;
@@ -1542,6 +1531,7 @@
             }
         }
 
+        /* ===== SPINNER ===== */
         .spinner {
             width: 18px;
             height: 18px;
@@ -1575,6 +1565,7 @@
             border-top-color: var(--accent);
         }
 
+        /* ===== SUCCESS OVERLAY ===== */
         .success-overlay {
             display: none;
             position: fixed;
@@ -1638,6 +1629,7 @@
             margin-bottom: 1.25rem;
         }
 
+        /* ===== TABLE FOOTER ===== */
         .table-footer {
             padding: 0.85rem 1.5rem;
             border-top: 1px solid var(--border);
@@ -1651,9 +1643,7 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* ============================================================
-           RESPONSIVE
-        ============================================================ */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .navbar {
                 padding: 0 1rem;
@@ -1708,13 +1698,68 @@
                 font-size: 0.78rem;
             }
         }
+
+        /* ===== MASTER KOMPONEN ===== */
+        .master-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .master-actions .btn {
+            flex: 0 1 auto;
+        }
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        .master-modal .modal {
+            max-width: 500px;
+        }
+        .upload-progress {
+            display: none;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        .upload-progress.active {
+            display: block;
+        }
+        .upload-progress .progress-bar {
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border);
+            overflow: hidden;
+            margin-top: 4px;
+        }
+        .upload-progress .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), #00a88a);
+            transition: width 0.3s ease;
+        }
+        .upload-progress .progress-text {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
     </style>
 </head>
 <body>
 
-    <!-- ============================================================
-    AUTH
-    ============================================================ -->
+    <!-- ==================== AUTH ==================== -->
     <div class="auth-screen" id="authScreen">
         <div class="auth-card">
             <div class="auth-logo">
@@ -1764,9 +1809,7 @@
         </div>
     </div>
 
-    <!-- ============================================================
-    APP
-    ============================================================ -->
+    <!-- ==================== APP ==================== -->
     <div class="app-wrapper" id="appWrapper">
         <nav class="navbar">
             <div class="navbar-inner">
@@ -1791,6 +1834,7 @@
             <div class="main-tabs">
                 <button class="main-tab active" onclick="switchMainTab('aktif', this)"><i class="fas fa-tasks"></i> Order Aktif <span class="tab-count" id="tabCountAktif">0</span></button>
                 <button class="main-tab" onclick="switchMainTab('riwayat', this)"><i class="fas fa-history"></i> Riwayat Order <span class="tab-count" id="tabCountRiwayat">0</span></button>
+                <button class="main-tab" onclick="switchMainTab('master', this)"><i class="fas fa-cubes"></i> Master Komponen <span class="tab-count" id="tabCountMaster">0</span></button>
             </div>
 
             <!-- ===== TAB AKTIF ===== -->
@@ -1839,6 +1883,8 @@
                                     <th>Nama Konsumen</th>
                                     <th>No. HP</th>
                                     <th>Tgl Order</th>
+                                    <th>TGL TERIMA PART</th>
+                                    <th>Jumlah</th>
                                     <th>Order ke Pabrik</th>
                                     <th>Keterangan</th>
                                     <th>Aksi</th>
@@ -1884,6 +1930,8 @@
                                     <th>Nama Konsumen</th>
                                     <th>No. HP</th>
                                     <th>Tgl Order</th>
+                                    <th>TGL TERIMA PART</th>
+                                    <th>Jumlah</th>
                                     <th>Order ke Pabrik</th>
                                     <th>Keterangan</th>
                                     <th>Aksi</th>
@@ -1896,12 +1944,54 @@
                     <div class="table-footer" id="riwayatFooter" style="display:none;"><span>Menampilkan <strong class="row-count" id="riwayatCount">0</strong> riwayat order</span><span style="display:flex;align-items:center;gap:6px;"><span class="sync-dot" style="width:6px;height:6px;"></span> Realtime</span></div>
                 </div>
             </div>
+
+            <!-- ===== TAB MASTER KOMPONEN ===== -->
+            <div class="tab-panel" id="panelMaster">
+                <div class="master-actions">
+                    <button class="btn btn-primary btn-sm" onclick="openMasterModal()"><i class="fas fa-plus"></i> Tambah Manual</button>
+                    <div class="file-input-wrapper">
+                        <button class="btn btn-upload btn-sm" id="uploadMasterBtn"><i class="fas fa-upload"></i> Upload Excel</button>
+                        <input type="file" accept=".xlsx,.xls" onchange="uploadMasterExcel(event)" />
+                    </div>
+                    <button class="btn btn-download btn-sm" onclick="downloadMasterExcel()" id="downloadMasterBtn"><i class="fas fa-file-excel"></i> Download Excel</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteAllMaster()" id="deleteAllBtn"><i class="fas fa-trash-alt"></i> Hapus Semua</button>
+                    <!-- Progress indicator -->
+                    <div class="upload-progress" id="uploadProgress">
+                        <div class="progress-text">
+                            <span id="progressLabel">Mengupload...</span>
+                            <span id="progressPercent">0%</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                    </div>
+                </div>
+                <div class="table-card">
+                    <div class="table-toolbar">
+                        <h2><i class="fas fa-cubes" style="color:var(--info);"></i> Master Komponen</h2>
+                        <div class="toolbar-right">
+                            <div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="Cari part..." id="searchMaster" oninput="renderMasterTable()" /></div>
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="data-table" id="masterTableEl">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Part Number</th>
+                                    <th>Description</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="masterBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="empty-state" id="emptyMaster" style="display:none;"><i class="fas fa-database"></i><p>Belum ada data master.</p></div>
+                    <div class="table-footer" id="masterFooter"><span>Total <strong class="row-count" id="masterCount">0</strong> item</span></div>
+                </div>
+            </div>
         </main>
     </div>
 
-    <!-- ============================================================
-    MODAL INPUT
-    ============================================================ -->
+    <!-- ==================== MODAL INPUT ==================== -->
     <div class="modal-overlay" id="inputModal">
         <div class="modal modal-lg" style="position:relative;">
             <div class="loading-overlay" id="formLoading"><div class="spinner"></div></div>
@@ -1918,8 +2008,12 @@
                     <div class="form-grid">
                         <div class="form-group"><label class="form-label">Type (IDNO) <span class="required">*</span></label><input class="form-input" type="text" name="TYPE (IDNO)" required /></div>
                         <div class="form-group"><label class="form-label">No. Serie</label><input class="form-input" type="text" name="NO. SERIE" /></div>
-                        <div class="form-group"><label class="form-label">No Gudang</label><input class="form-input" type="text" name="NO GUDANG" /></div>
-                        <div class="form-group"><label class="form-label">Nama Part <span class="required">*</span></label><input class="form-input" type="text" name="NAMA PART" required /></div>
+                        <div class="form-group"><label class="form-label">No Gudang <span style="color:var(--text-muted);font-weight:400;font-size:0.7rem;">(Part Number)</span></label>
+                            <input class="form-input" type="text" name="NO GUDANG" id="inputNoGudang" />
+                        </div>
+                        <div class="form-group"><label class="form-label">Nama Part <span class="required">*</span></label>
+                            <input class="form-input" type="text" name="NAMA PART" id="inputNamaPart" required />
+                        </div>
                         <div class="form-group"><label class="form-label">QTY <span class="required">*</span></label><input class="form-input" type="number" name="QTY" min="1" required /></div>
                         <div class="form-group"><label class="form-label">Prod. <span class="required">*</span></label><select class="form-select" name="PROD." required><option value="">-- Pilih --</option><option value="AV">AV</option><option value="HA">HA</option><option value="EV">EV</option></select></div>
                         <div class="form-group"><label class="form-label">Layanan <span class="required">*</span></label><select class="form-select" name="LAYANAN" required><option value="">-- Pilih --</option><option value="KONSUMEN LANGSUNG">KONSUMEN LANGSUNG</option><option value="KUNJUNGAN TOKO">KUNJUNGAN TOKO</option><option value="KUNJUNGAN CALL">KUNJUNGAN CALL</option><option value="KUNJUNGAN LUAR KOTA">KUNJUNGAN LUAR KOTA</option><option value="LUAR KOTA PSR FLORES">LUAR KOTA PSR FLORES</option></select></div>
@@ -1938,9 +2032,28 @@
         </div>
     </div>
 
-    <!-- ============================================================
-    MODAL EDIT
-    ============================================================ -->
+    <!-- ==================== MODAL MASTER ==================== -->
+    <div class="modal-overlay master-modal" id="masterModal">
+        <div class="modal">
+            <div class="modal-header"><h3><i class="fas fa-cube"></i> Tambah Master Komponen</h3><button class="modal-close" onclick="closeMasterModal()"><i class="fas fa-times"></i></button></div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Part Number <span class="required">*</span></label>
+                    <input class="form-input" type="text" id="masterPartNumber" placeholder="Contoh: IC-1234" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description <span class="required">*</span></label>
+                    <input class="form-input" type="text" id="masterDescription" placeholder="Nama/deskripsi part" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-sm" onclick="closeMasterModal()">Batal</button>
+                <button class="btn btn-primary btn-sm" onclick="saveMasterItem()" id="masterSaveBtn"><i class="fas fa-save"></i> Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL EDIT ==================== -->
     <div class="modal-overlay" id="editModal">
         <div class="modal">
             <div class="modal-header"><h3><i class="fas fa-edit"></i> Edit Order</h3><button class="modal-close" onclick="closeEditModal()"><i class="fas fa-times"></i></button></div>
@@ -1949,29 +2062,49 @@
                 <div style="background:rgba(128,128,128,0.1);border-radius:var(--radius);padding:0.85rem 1rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
                     <span style="font-size:0.78rem;color:var(--text-secondary);" id="modalPartInfo"></span>
                 </div>
-                <div class="form-group"><label class="form-label">Status <span class="required">*</span></label>
+
+                <!-- STATUS - semua user bisa ubah -->
+                <div class="form-group">
+                    <label class="form-label">Status</label>
                     <select class="form-select" id="modalStatus">
                         <option value="PENDING">PENDING</option>
                         <option value="PROSES">PROSES</option>
                         <option value="READY">READY</option>
                         <option value="FINISH">FINISH</option>
                     </select>
-                    <small style="color:var(--text-muted);font-size:0.65rem;">User hanya bisa mengubah status order.</small>
                 </div>
-                <div style="border-top:1px solid var(--border);padding-top:1rem;margin-top:0.5rem;">
-                    <div style="font-size:0.7rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.75rem;">Field Admin</div>
+
+                <!-- FIELD LAIN - selalu terlihat, tapi dinonaktifkan untuk non-admin -->
+                <div id="adminOnlyFields">
                     <div class="form-group">
-                        <label class="form-label"><span class="editable-label"><i class="fas fa-lock" style="color:var(--info);font-size:0.6rem;"></i> Tgl Order</span></label>
-                        <input class="form-input" type="date" id="modalTglOrder" readonly style="background:var(--bg-card);cursor:not-allowed;opacity:0.7;" />
+                        <label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Tgl Order</span></label>
+                        <input class="form-input" type="date" id="modalTglOrder" />
                     </div>
                     <div class="form-group">
-                        <label class="form-label"><span class="editable-label"><i class="fas fa-lock" style="color:var(--info);font-size:0.6rem;"></i> Order ke Pabrik</span></label>
-                        <input class="form-input" type="text" id="modalOrderPabrik" readonly style="background:var(--bg-card);cursor:not-allowed;opacity:0.7;" />
+                        <label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> TGL TERIMA PART</span></label>
+                        <input class="form-input" type="date" id="modalTglTerimaPart" onchange="editHitungJumlahHari()" />
                     </div>
                     <div class="form-group">
-                        <label class="form-label"><span class="editable-label"><i class="fas fa-lock" style="color:var(--info);font-size:0.6rem;"></i> Keterangan</span></label>
-                        <textarea class="form-textarea" id="modalKeterangan" readonly style="background:var(--bg-card);cursor:not-allowed;opacity:0.7;"></textarea>
+                        <label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Jumlah</span></label>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <input class="form-input" type="number" id="modalJumlah" readonly style="background:var(--bg-card);cursor:default;font-weight:700;color:var(--accent);flex:1;" />
+                            <span style="color:var(--text-secondary);font-weight:600;font-size:0.85rem;">hari</span>
+                        </div>
                     </div>
+                    <div class="form-group">
+                        <label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Order ke Pabrik</span></label>
+                        <input class="form-input" type="text" id="modalOrderPabrik" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Keterangan</span></label>
+                        <textarea class="form-textarea" id="modalKeterangan"></textarea>
+                    </div>
+                </div>
+
+                <!-- Pesan untuk non-admin -->
+                <div id="userOnlyMessage" style="display:none;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);border-radius:var(--radius);padding:12px 16px;color:var(--info);font-size:0.85rem;">
+                    <i class="fas fa-info-circle" style="margin-right:8px;"></i>
+                    Anda hanya dapat mengubah <strong>Status</strong>. Field lainnya hanya dapat diedit oleh <strong>Admin</strong>.
                 </div>
             </div>
             <div class="modal-footer">
@@ -1981,38 +2114,17 @@
         </div>
     </div>
 
-    <!-- ============================================================
-    SUCCESS OVERLAY
-    ============================================================ -->
+    <!-- ==================== SUCCESS OVERLAY ==================== -->
     <div class="success-overlay" id="successOverlay">
         <div class="success-card"><div class="success-icon"><i class="fas fa-check"></i></div><h3>Berhasil Disimpan!</h3><p>Data order baru tersimpan dengan status PENDING.</p><button class="btn btn-primary" onclick="closeSuccess()"><i class="fas fa-check"></i> Selesai</button></div>
     </div>
 
-    <!-- ============================================================
-    TOAST
-    ============================================================ -->
+    <!-- ==================== TOAST ==================== -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- ============================================================
-    SCRIPT
-    ============================================================ -->
+    <!-- ==================== SCRIPT ==================== -->
     <script>
-        // ============================================================
-        // 1. KONFIGURASI WHATSAPP TEKNISI (HARDCODED)
-        // ============================================================
-        var TEKNISI_WA = {
-            'YANDRI OTTU': '6282313098943', // Ganti dengan nomor asli
-            'HARMINDO LAMMA': '6281234567891',
-            'INOSENCIUS FA\'OT': '6281234567892',
-            'RIZALDI ABDULLAH': '6281234567893',
-            'KRISTIAN OPENG': '6281234567894',
-            'MUHAMMAD FAUZI': '6281234567895'
-        };
-        var DEFAULT_WHATSAPP = '6281234567890'; // Nomor admin fallback
-
-        // ============================================================
-        // 2. FIREBASE
-        // ============================================================
+        // ===== FIREBASE =====
         var firebaseConfig = {
             apiKey: "AIzaSyC-xFWRqV21RDdsxhLuP5jUfvDiPVPT5yQ",
             authDomain: "serveronline62-6deca.firebaseapp.com",
@@ -2024,24 +2136,30 @@
         firebase.initializeApp(firebaseConfig);
         var db = firebase.firestore(),
             auth = firebase.auth(),
-            ORDERS_COL = 'orders';
+            ORDERS_COL = 'orders',
+            MASTER_COL = 'master_komponen';
 
         var ADMIN_EMAIL = 'admin@app.local';
         var isAdmin = false;
 
-        // ============================================================
-        // 3. INDEXEDDB (CACHE)
-        // ============================================================
+        // ===== INDEXEDDB =====
         var CACHE_DB = 'OrderKomponenCache',
-            CACHE_STORE = 'orders';
+            CACHE_STORE = 'orders',
+            MASTER_CACHE_STORE = 'master';
         var idbInstance = null;
 
         function openIDB() {
             if (idbInstance) return Promise.resolve(idbInstance);
             return new Promise(function(res, rej) {
-                var r = indexedDB.open(CACHE_DB, 1);
+                var r = indexedDB.open(CACHE_DB, 2);
                 r.onupgradeneeded = function(e) {
-                    e.target.result.createObjectStore(CACHE_STORE, { keyPath: '_docId' });
+                    var db2 = e.target.result;
+                    if (!db2.objectStoreNames.contains(CACHE_STORE)) {
+                        db2.createObjectStore(CACHE_STORE, { keyPath: '_docId' });
+                    }
+                    if (!db2.objectStoreNames.contains(MASTER_CACHE_STORE)) {
+                        db2.createObjectStore(MASTER_CACHE_STORE, { keyPath: '_docId' });
+                    }
                 };
                 r.onsuccess = function(e) {
                     idbInstance = e.target.result;
@@ -2053,20 +2171,22 @@
             });
         }
 
-        function cacheToLocal(d) {
+        function cacheToLocal(d, store) {
+            store = store || CACHE_STORE;
             openIDB().then(function(idb) {
-                var tx = idb.transaction(CACHE_STORE, 'readwrite'),
-                    s = tx.objectStore(CACHE_STORE);
+                var tx = idb.transaction(store, 'readwrite'),
+                    s = tx.objectStore(store);
                 s.clear();
                 d.forEach(function(i) { s.put(i); });
             }).catch(function() {});
         }
 
-        function loadFromCache() {
+        function loadFromCache(store) {
+            store = store || CACHE_STORE;
             return openIDB().then(function(idb) {
                 return new Promise(function(res, rej) {
-                    var tx = idb.transaction(CACHE_STORE, 'readonly'),
-                        s = tx.objectStore(CACHE_STORE),
+                    var tx = idb.transaction(store, 'readonly'),
+                        s = tx.objectStore(store),
                         r = s.getAll();
                     r.onsuccess = function() { res(r.result || []); };
                     r.onerror = function() { rej([]); };
@@ -2074,22 +2194,30 @@
             }).catch(function() { return []; });
         }
 
-        function removeCacheItem(id) {
+        function removeCacheItem(id, store) {
+            store = store || CACHE_STORE;
             openIDB().then(function(idb) {
-                idb.transaction(CACHE_STORE, 'readwrite').objectStore(CACHE_STORE).delete(id);
+                idb.transaction(store, 'readwrite').objectStore(store).delete(id);
             }).catch(function() {});
         }
 
-        // ============================================================
-        // 4. STATE
-        // ============================================================
+        function clearCache(store) {
+            store = store || CACHE_STORE;
+            openIDB().then(function(idb) {
+                idb.transaction(store, 'readwrite').objectStore(store).clear();
+            }).catch(function() {});
+        }
+
+        // ===== STATE =====
         var allOrders = [],
+            allMaster = [],
             currentFilter = 'all',
             newRowIndices = new Set(),
             searchDebounceTimer = null,
             searchRiwayatTimer = null,
             isFirstLoad = true,
             realtimeUnsubscribe = null,
+            masterUnsubscribe = null,
             currentMainTab = 'aktif';
 
         function getAktifOrders() {
@@ -2100,53 +2228,27 @@
             return allOrders.filter(function(o) { return (o['STATUS'] || '').toUpperCase() === 'FINISH'; });
         }
 
-        // ============================================================
-        // 5. FUNGSI WHATSAPP (BARU: KIRIM KE TEKNISI)
-        // ============================================================
-        function sendWhatsApp(docId) {
-            var order = allOrders.find(function(x) { return x._docId === docId; });
-            if (!order) { showToast('Data tidak ditemukan.', 'error'); return; }
-
-            // Ambil nama teknisi dari data order
-            var teknisi = order['TEKNISI'] || '';
-            // Cari nomor WhatsApp teknisi di mapping
-            var nomor = TEKNISI_WA[teknisi];
-            if (!nomor) {
-                // Jika tidak ditemukan, gunakan nomor default admin
-                nomor = DEFAULT_WHATSAPP;
-                showToast('Teknisi "' + teknisi + '" tidak terdaftar, kirim ke admin.', 'warning');
+        // ===== FUNGSI HITUNG JUMLAH HARI =====
+        function editHitungJumlahHari() {
+            if (!isAdmin) return;
+            var tglTerima = document.getElementById('modalTglTerimaPart').value;
+            var docId = document.getElementById('modalRowIndex').value;
+            var order = allOrders.find(function(o) { return o._docId === docId; });
+            if (!order) return;
+            var tglPengajuan = order['TGL PENGAJUAN ORD'] || '';
+            var target = document.getElementById('modalJumlah');
+            if (!tglPengajuan || !tglTerima) {
+                target.value = '';
+                return;
             }
-
-            // Bersihkan nomor (hapus karakter non-digit)
-            nomor = nomor.replace(/\D/g, '');
-            // Pastikan format internasional (62 untuk Indonesia)
-            if (!nomor.startsWith('62') && !nomor.startsWith('+')) {
-                nomor = '62' + nomor;
-            }
-            nomor = nomor.replace(/^\+/, '');
-
-            // Buat pesan otomatis (detail order)
-            var pesan = '*Order Komponen*\n\n';
-            pesan += 'No. Pengajuan: ' + (order['No. Pengajuan'] || '-') + '\n';
-            pesan += 'No Gudang: ' + (order['No Gudang'] || '-') + '\n';
-            pesan += 'Nama Part: ' + (order['NAMA PART'] || '-') + '\n';
-            pesan += 'Type (IDNO): ' + (order['Type (IDNO)'] || '-') + '\n';
-             pesan += 'No. Serie: ' + (order['No. Serie'] || '-') + '\n';
-            pesan += 'Konsumen: ' + (order['NAMA KONSUMEN'] || '-') + '\n';
-            pesan += 'Status: ' + (order['STATUS'] || 'PENDING') + '\n';
-            pesan += 'Teknisi: ' + (order['TEKNISI'] || '-') + '\n';
-            pesan += 'Tgl Pengajuan: ' + formatDateDisplay(order['TGL PENGAJUAN ORD'] || '') + '\n';
-            pesan += 'QTY: ' + (order['QTY'] || '0') + '\n';
-            pesan += 'Layanan: ' + (order['LAYANAN'] || '-');
-
-            // Buka WhatsApp
-            var url = 'https://wa.me/' + nomor + '?text=' + encodeURIComponent(pesan);
-            window.open(url, '_blank');
+            var d1 = new Date(tglPengajuan);
+            var d2 = new Date(tglTerima);
+            var diffTime = Math.abs(d2 - d1);
+            var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            target.value = diffDays;
         }
 
-        // ============================================================
-        // 6. AUTH
-        // ============================================================
+        // ===== AUTH FUNCTIONS =====
         function switchAuthTab(t, b) {
             document.querySelectorAll('.auth-tab').forEach(function(x) { x.classList.remove('active'); });
             document.querySelectorAll('.auth-form').forEach(function(x) { x.classList.remove('active'); });
@@ -2243,22 +2345,30 @@
             closeUserDD();
             if (realtimeUnsubscribe) { realtimeUnsubscribe();
                 realtimeUnsubscribe = null; }
+            if (masterUnsubscribe) { masterUnsubscribe();
+                masterUnsubscribe = null; }
             auth.signOut().then(function() {
                 allOrders = [];
+                allMaster = [];
                 newRowIndices.clear();
                 isFirstLoad = true;
                 isAdmin = false;
                 document.getElementById('tableBody').innerHTML = '';
                 document.getElementById('riwayatBody').innerHTML = '';
+                document.getElementById('masterBody').innerHTML = '';
                 document.getElementById('dataTableEl').style.display = 'none';
                 document.getElementById('riwayatTableEl').style.display = 'none';
+                document.getElementById('masterTableEl').style.display = 'table';
                 document.getElementById('tableSkeleton').style.display = 'flex';
                 document.getElementById('emptyState').style.display = 'none';
                 document.getElementById('tableFooter').style.display = 'none';
                 document.getElementById('emptyRiwayat').style.display = 'none';
                 document.getElementById('riwayatFooter').style.display = 'none';
-                ['statTotal', 'statPending', 'statProses', 'statReady', 'statRiwayat', 'tabCountAktif', 'tabCountRiwayat']
-                    .forEach(function(id) { document.getElementById(id).textContent = '0'; });
+                document.getElementById('emptyMaster').style.display = 'block';
+                document.getElementById('masterFooter').style.display = 'none';
+                ['statTotal', 'statPending', 'statProses', 'statReady', 'statRiwayat', 'tabCountAktif', 'tabCountRiwayat',
+                    'tabCountMaster'
+                ].forEach(function(id) { document.getElementById(id).textContent = '0'; });
                 document.getElementById('loginForm').reset();
                 document.getElementById('registerForm').reset();
                 document.getElementById('pwStrBar').style.width = '0';
@@ -2324,7 +2434,9 @@
             document.querySelectorAll('.main-tab').forEach(function(t) { t.classList.remove('active'); });
             document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
             btn.classList.add('active');
-            document.getElementById(tab === 'aktif' ? 'panelAktif' : 'panelRiwayat').classList.add('active');
+            document.getElementById(tab === 'aktif' ? 'panelAktif' : tab === 'riwayat' ? 'panelRiwayat' :
+                'panelMaster').classList.add('active');
+            if (tab === 'master') renderMasterTable();
         }
 
         auth.onAuthStateChanged(function(user) {
@@ -2337,8 +2449,10 @@
                     window._appStarted = true;
                     setDefaultDate();
                     startDataEngine();
+                    startMasterEngine();
                 } else {
                     renderAll();
+                    renderMasterTable();
                 }
             } else {
                 document.getElementById('authScreen').classList.remove('hidden');
@@ -2347,11 +2461,9 @@
             }
         });
 
-        // ============================================================
-        // 7. ENGINE / REALTIME
-        // ============================================================
+        // ===== ENGINE ORDERS =====
         async function startDataEngine() {
-            var cached = await loadFromCache();
+            var cached = await loadFromCache(CACHE_STORE);
             if (cached.length > 0) {
                 cached.sort(function(a, b) {
                     var ta = a.createdAt ? (a.createdAt.seconds || 0) : 0,
@@ -2387,7 +2499,7 @@
                     showToast(nc + ' order baru!', 'info');
                 }
                 isFirstLoad = false;
-                cacheToLocal(data);
+                cacheToLocal(data, CACHE_STORE);
                 renderAll();
                 updateSyncTime();
                 setTimeout(function() { newRowIndices.clear(); }, 5000);
@@ -2403,9 +2515,407 @@
             updateAllStats();
         }
 
-        // ============================================================
-        // 8. THEME
-        // ============================================================
+        // ===== ENGINE MASTER =====
+        async function startMasterEngine() {
+            var cached = await loadFromCache(MASTER_CACHE_STORE);
+            if (cached.length > 0) {
+                cached.sort(function(a, b) {
+                    var ta = a.createdAt ? (a.createdAt.seconds || 0) : 0,
+                        tb = b.createdAt ? (b.createdAt.seconds || 0) : 0;
+                    return ta - tb;
+                });
+                cached.forEach(function(o, i) { o._rowIndex = i; });
+                allMaster = cached;
+                renderMasterTable();
+            }
+            masterUnsubscribe = db.collection(MASTER_COL).orderBy('createdAt', 'asc').onSnapshot(function(snap) {
+                var data = [];
+                var idx = 0;
+                snap.forEach(function(doc) {
+                    var o = doc.data();
+                    o._rowIndex = idx;
+                    o._docId = doc.id;
+                    data.push(o);
+                    idx++;
+                });
+                allMaster = data;
+                cacheToLocal(data, MASTER_CACHE_STORE);
+                renderMasterTable();
+            }, function(er) {
+                if (cached.length === 0) showToast('Gagal muat master: ' + er.message, 'error');
+            });
+        }
+
+        // ===== MASTER FUNCTIONS =====
+        function renderMasterTable() {
+            var tb = document.getElementById('masterBody'),
+                es = document.getElementById('emptyMaster'),
+                ft = document.getElementById('masterFooter');
+            var search = (document.getElementById('searchMaster').value || '').toLowerCase();
+            var filtered = allMaster.filter(function(o) {
+                return (o.partNumber || '').toLowerCase().includes(search) ||
+                    (o.description || '').toLowerCase().includes(search);
+            });
+            if (filtered.length === 0) {
+                tb.innerHTML = '';
+                es.style.display = 'block';
+                ft.style.display = 'none';
+                document.getElementById('tabCountMaster').textContent = allMaster.length;
+                document.getElementById('masterCount').textContent = '0';
+                return;
+            }
+            es.style.display = 'none';
+            ft.style.display = 'flex';
+            document.getElementById('masterCount').textContent = filtered.length;
+            document.getElementById('tabCountMaster').textContent = allMaster.length;
+
+            var h = '';
+            for (var i = 0; i < filtered.length; i++) {
+                var o = filtered[i];
+                var canEdit = isAdmin;
+                h += '<tr>' +
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td style="font-weight:600;color:var(--accent);">' + escapeHtml(o.partNumber || '') + '</td>' +
+                    '<td class="name-cell">' + escapeHtml(o.description || '') + '</td>' +
+                    '<td><div class="action-btns">' +
+                    (canEdit ? '<button class="action-btn" onclick="editMasterItem(\'' + o._docId +
+                    '\')"><i class="fas fa-pen"></i></button>' :
+                        '<button class="action-btn locked" title="Hanya Admin"><i class="fas fa-pen"></i></button>') +
+                    (canEdit ? '<button class="action-btn delete" onclick="deleteMasterItem(\'' + o._docId +
+                    '\')"><i class="fas fa-trash"></i></button>' :
+                        '<button class="action-btn locked" title="Hanya Admin"><i class="fas fa-trash"></i></button>') +
+                    '</div></td>' +
+                    '</tr>';
+            }
+            tb.innerHTML = h;
+        }
+
+        function openMasterModal() {
+            if (!isAdmin) { showToast('Hanya Admin yang bisa menambah master.', 'warning'); return; }
+            document.getElementById('masterPartNumber').value = '';
+            document.getElementById('masterDescription').value = '';
+            document.getElementById('masterModal').classList.add('active');
+        }
+
+        function closeMasterModal() {
+            document.getElementById('masterModal').classList.remove('active');
+        }
+
+        function saveMasterItem() {
+            var partNumber = document.getElementById('masterPartNumber').value.trim();
+            var description = document.getElementById('masterDescription').value.trim();
+            if (!partNumber) { showToast('Part Number wajib diisi.', 'error'); return; }
+            if (!description) { showToast('Description wajib diisi.', 'error'); return; }
+            var btn = document.getElementById('masterSaveBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner"></div>';
+            db.collection(MASTER_COL).add({
+                partNumber: partNumber,
+                description: description,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(function() {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> Simpan';
+                closeMasterModal();
+                showToast('Master berhasil ditambahkan!', 'success');
+            }).catch(function(er) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> Simpan';
+                showToast('Error: ' + er.message, 'error');
+            });
+        }
+
+        function editMasterItem(docId) {
+            if (!isAdmin) { showToast('Hanya Admin yang bisa mengedit.', 'warning'); return; }
+            var o = allMaster.find(function(x) { return x._docId === docId; });
+            if (!o) return;
+            var newPart = prompt('Part Number:', o.partNumber || '');
+            if (newPart === null) return;
+            var newDesc = prompt('Description:', o.description || '');
+            if (newDesc === null) return;
+            if (!newPart.trim() || !newDesc.trim()) { showToast('Kedua field wajib diisi.', 'error'); return; }
+            db.collection(MASTER_COL).doc(docId).update({
+                partNumber: newPart.trim(),
+                description: newDesc.trim()
+            }).then(function() {
+                showToast('Master berhasil diupdate!', 'success');
+            }).catch(function(er) {
+                showToast('Error: ' + er.message, 'error');
+            });
+        }
+
+        function deleteMasterItem(docId) {
+            if (!isAdmin) { showToast('Hanya Admin yang bisa menghapus.', 'warning'); return; }
+            if (!confirm('Yakin hapus item ini?')) return;
+            db.collection(MASTER_COL).doc(docId).delete().then(function() {
+                removeCacheItem(docId, MASTER_CACHE_STORE);
+                showToast('Item dihapus!', 'success');
+            }).catch(function(er) {
+                showToast('Error: ' + er.message, 'error');
+            });
+        }
+
+        // ===== DELETE ALL MASTER =====
+        function deleteAllMaster() {
+            if (!isAdmin) { showToast('Hanya Admin yang bisa menghapus semua data.', 'warning'); return; }
+            if (allMaster.length === 0) { showToast('Tidak ada data master untuk dihapus.', 'warning'); return; }
+
+            // Konfirmasi pertama
+            if (!confirm('⚠️ PERINGATAN!\n\nAnda akan menghapus SEMUA data master komponen (' + allMaster.length +
+                    ' item).\n\nTindakan ini TIDAK DAPAT DIURUNGKAN.\n\nYakin ingin melanjutkan?')) {
+                return;
+            }
+
+            // Konfirmasi kedua (verifikasi)
+            var verify = prompt('Ketik "HAPUS" untuk mengonfirmasi penghapusan semua data:');
+            if (verify !== 'HAPUS') {
+                showToast('Penghapusan dibatalkan.', 'info');
+                return;
+            }
+
+            var btn = document.getElementById('deleteAllBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner"></div>';
+
+            // Ambil semua ID dokumen
+            var docIds = allMaster.map(function(o) { return o._docId; });
+            var total = docIds.length;
+            var batchSize = 500;
+            var batches = Math.ceil(total / batchSize);
+            var processed = 0;
+            var errors = 0;
+
+            function processDeleteBatch(batchIndex) {
+                var start = batchIndex * batchSize;
+                var end = Math.min(start + batchSize, total);
+                var batch = db.batch();
+                for (var i = start; i < end; i++) {
+                    var ref = db.collection(MASTER_COL).doc(docIds[i]);
+                    batch.delete(ref);
+                }
+                return batch.commit().then(function() {
+                    processed += (end - start);
+                    if (processed < total) {
+                        return processDeleteBatch(batchIndex + 1);
+                    } else {
+                        return Promise.resolve();
+                    }
+                }).catch(function(er) {
+                    errors++;
+                    // Lanjut ke batch berikutnya
+                    if (processed < total) {
+                        return processDeleteBatch(batchIndex + 1);
+                    } else {
+                        return Promise.resolve();
+                    }
+                });
+            }
+
+            processDeleteBatch(0).then(function() {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-trash-alt"></i> Hapus Semua';
+                // Clear cache lokal
+                clearCache(MASTER_CACHE_STORE);
+                if (errors > 0) {
+                    showToast('Penghapusan selesai dengan ' + errors + ' error.', 'warning');
+                } else {
+                    showToast('✅ Semua data master berhasil dihapus! (' + total + ' item)', 'success');
+                }
+            }).catch(function(er) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-trash-alt"></i> Hapus Semua';
+                showToast('Gagal menghapus: ' + er.message, 'error');
+            });
+        }
+
+        // ===== UPLOAD MASTER EXCEL =====
+        function uploadMasterExcel(event) {
+            if (!isAdmin) { showToast('Hanya Admin yang bisa upload.', 'warning'); return; }
+            var file = event.target.files[0];
+            if (!file) return;
+
+            var progressEl = document.getElementById('uploadProgress');
+            var fill = document.getElementById('progressFill');
+            var percent = document.getElementById('progressPercent');
+            var label = document.getElementById('progressLabel');
+
+            progressEl.classList.add('active');
+            fill.style.width = '0%';
+            percent.textContent = '0%';
+            label.textContent = 'Membaca file...';
+
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    var data = new Uint8Array(e.target.result);
+                    var workbook = XLSX.read(data, { type: 'array' });
+                    var sheet = workbook.Sheets[workbook.SheetNames[0]];
+                    var json = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+
+                    var header = json[0] || [];
+                    var colPart = -1,
+                        colDesc = -1;
+                    for (var i = 0; i < header.length; i++) {
+                        var h = String(header[i] || '').toLowerCase().trim();
+                        if (h.includes('part') || h.includes('part number') || h.includes('kode') || h.includes('no')) colPart =
+                            i;
+                        if (h.includes('deskripsi') || h.includes('description') || h.includes('nama') || h.includes(
+                            'part name')) colDesc = i;
+                    }
+                    if (colPart === -1 || colDesc === -1) {
+                        showToast('Format tidak sesuai. Pastikan kolom Part Number dan Description ada.', 'error');
+                        progressEl.classList.remove('active');
+                        return;
+                    }
+
+                    var items = [];
+                    for (var r = 1; r < json.length; r++) {
+                        var row = json[r];
+                        var part = String(row[colPart] || '').trim();
+                        var desc = String(row[colDesc] || '').trim();
+                        if (part && desc) {
+                            items.push({ partNumber: part, description: desc });
+                        }
+                    }
+
+                    if (items.length === 0) {
+                        showToast('Tidak ada data valid ditemukan.', 'warning');
+                        progressEl.classList.remove('active');
+                        return;
+                    }
+
+                    label.textContent = 'Mengupload ' + items.length + ' item...';
+                    var total = items.length;
+                    var batchSize = 500;
+                    var batches = Math.ceil(total / batchSize);
+                    var processed = 0;
+                    var errors = 0;
+
+                    function processBatch(batchIndex) {
+                        var start = batchIndex * batchSize;
+                        var end = Math.min(start + batchSize, total);
+                        var batch = db.batch();
+                        for (var j = start; j < end; j++) {
+                            var ref = db.collection(MASTER_COL).doc();
+                            batch.set(ref, {
+                                partNumber: items[j].partNumber,
+                                description: items[j].description,
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                        }
+                        return batch.commit().then(function() {
+                            processed += (end - start);
+                            var pct = Math.round((processed / total) * 100);
+                            fill.style.width = pct + '%';
+                            percent.textContent = pct + '%';
+                            label.textContent = 'Proses ' + processed + '/' + total;
+                            if (processed < total) {
+                                return processBatch(batchIndex + 1);
+                            } else {
+                                return Promise.resolve();
+                            }
+                        }).catch(function(er) {
+                            errors++;
+                            if (processed < total) {
+                                return processBatch(batchIndex + 1);
+                            } else {
+                                return Promise.resolve();
+                            }
+                        });
+                    }
+
+                    processBatch(0).then(function() {
+                        if (errors > 0) {
+                            showToast('Upload selesai dengan ' + errors + ' error.', 'warning');
+                        } else {
+                            showToast('Upload berhasil! ' + total + ' item ditambahkan.', 'success');
+                        }
+                        progressEl.classList.remove('active');
+                    }).catch(function(er) {
+                        showToast('Gagal upload: ' + er.message, 'error');
+                        progressEl.classList.remove('active');
+                    });
+
+                } catch (er) {
+                    showToast('Gagal baca file: ' + er.message, 'error');
+                    progressEl.classList.remove('active');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+            event.target.value = '';
+        }
+
+        // ===== DOWNLOAD MASTER EXCEL =====
+        function downloadMasterExcel() {
+            if (allMaster.length === 0) { showToast('Tidak ada data master.', 'error'); return; }
+
+            var btn = document.getElementById('downloadMasterBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner"></div>';
+
+            setTimeout(function() {
+                try {
+                    var rows = [
+                        ['No', 'Part Number', 'Description']
+                    ];
+                    var data = allMaster;
+                    for (var i = 0; i < data.length; i++) {
+                        rows.push([i + 1, data[i].partNumber || '', data[i].description || '']);
+                    }
+
+                    var wb = XLSX.utils.book_new();
+                    var ws = XLSX.utils.aoa_to_sheet(rows);
+                    XLSX.utils.book_append_sheet(wb, ws, 'Master Komponen');
+
+                    var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array', bookSST: true });
+                    var blob = new Blob([wbout], { type: 'application/octet-stream' });
+                    var link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    var t = new Date(),
+                        ds = t.getFullYear() + '' + String(t.getMonth() + 1).padStart(2, '0') + String(t.getDate())
+                        .padStart(2, '0');
+                    link.download = 'Master_Komponen_' + ds + '.xlsx';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    setTimeout(function() { URL.revokeObjectURL(link.href); }, 100);
+
+                    showToast('Download berhasil! (' + data.length + ' item)', 'success');
+                } catch (er) {
+                    showToast('Gagal download: ' + er.message, 'error');
+                }
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-file-excel"></i> Download Excel';
+            }, 50);
+        }
+
+        // ===== INTEGRASI NO GUDANG -> NAMA PART =====
+        document.addEventListener('DOMContentLoaded', function() {
+            var noGudang = document.getElementById('inputNoGudang');
+            var namaPart = document.getElementById('inputNamaPart');
+            if (noGudang && namaPart) {
+                noGudang.addEventListener('input', function() {
+                    var val = this.value.trim();
+                    if (!val) {
+                        namaPart.value = '';
+                        namaPart.style.borderColor = '';
+                        return;
+                    }
+                    var found = allMaster.find(function(o) {
+                        return (o.partNumber || '').toLowerCase() === val.toLowerCase();
+                    });
+                    if (found) {
+                        namaPart.value = found.description || '';
+                        namaPart.style.borderColor = 'var(--success)';
+                    } else {
+                        namaPart.value = '';
+                        namaPart.style.borderColor = 'var(--warning)';
+                    }
+                });
+            }
+        });
+
+        // ===== THEME =====
         function toggleTheme() {
             var h = document.documentElement,
                 c = h.getAttribute('data-theme'),
@@ -2456,9 +2966,7 @@
             searchRiwayatTimer = setTimeout(renderRiwayatTable, 150);
         }
 
-        // ============================================================
-        // 9. MODAL INPUT
-        // ============================================================
+        // ===== MODAL INPUT =====
         function openInputModal() { resetForm();
             document.getElementById('inputModal').classList.add('active'); }
 
@@ -2473,6 +2981,8 @@
         function resetForm() {
             document.getElementById('orderForm').reset();
             setDefaultDate();
+            document.getElementById('inputNamaPart').value = '';
+            document.getElementById('inputNamaPart').style.borderColor = '';
         }
 
         function setDefaultDate() {
@@ -2503,6 +3013,7 @@
                     });
         }
 
+        // ===== HANDLE SUBMIT =====
         function handleSubmit(e) {
             e.preventDefault();
             var f = document.getElementById('orderForm'),
@@ -2515,13 +3026,15 @@
                 ],
                 fl = { 'TEKNISI': 'Teknisi', 'TGL PENGAJUAN ORD': 'Tgl Pengajuan', 'TYPE (IDNO)': 'Type (IDNO)',
                     'NAMA PART': 'Nama Part', 'QTY': 'QTY', 'PROD.': 'Prod.', 'LAYANAN': 'Layanan',
-                    'NAMA KONSUMEN': 'Nama Konsumen',
-                    'NO. HP': 'No. HP'
+                    'NAMA KONSUMEN': 'Nama Konsumen', 'NO. HP': 'No. HP'
                 };
             for (var i = 0; i < rf.length; i++) {
                 if (!d[rf[i]]) { showToast('"' + (fl[rf[i]] || rf[i]) + '" wajib diisi!', 'error'); return; }
             }
             if (parseInt(d['QTY']) < 1) { showToast('QTY harus minimal 1!', 'error'); return; }
+
+            var tglTerima = '';
+            var jumlah = '';
 
             var sb = document.getElementById('submitBtn'),
                 fl2 = document.getElementById('formLoading');
@@ -2547,7 +3060,9 @@
                     'NO. HP': d['NO. HP'],
                     'Tgl Order': '',
                     'No. Order': orderNo,
-                    'ORDER KE PABRIK': '',
+                    'TGL TERIMA PART': tglTerima,
+                    'JUMLAH': jumlah,
+                    'ORDER KE PABRIK': d['ORDER KE PABRIK'] || '',
                     'Keterangan Pemenuhan': '',
                     'createdAt': firebase.firestore.FieldValue.serverTimestamp(),
                     'createdBy': user ? user.email : '',
@@ -2567,10 +3082,95 @@
             });
         }
 
-        // ============================================================
-        // 10. INLINE EDIT: Order ke Pabrik
-        // ============================================================
+        // ===== INLINE EDIT: Tgl Terima Part =====
+        function editTglTerimaPart(docId, td) {
+            if (!isAdmin) {
+                showToast('Hanya Admin yang bisa mengedit TGL TERIMA PART.', 'warning');
+                return;
+            }
+            if (td.querySelector('input')) return;
+            var currentValue = td.textContent.trim();
+            var displayValue = (currentValue === '-' ? '' : currentValue);
+            if (displayValue && displayValue.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
+                var parts = displayValue.split('/');
+                displayValue = parts[2] + '-' + parts[1] + '-' + parts[0];
+            }
+            var input = document.createElement('input');
+            input.type = 'date';
+            input.value = displayValue;
+            input.className = 'form-input';
+            input.style.width = '100%';
+            input.style.minWidth = '120px';
+            input.style.background = 'var(--bg-input)';
+            input.style.border = '1px solid var(--border-focus)';
+            input.style.borderRadius = 'var(--radius)';
+            input.style.padding = '4px 8px';
+            input.style.fontFamily = 'inherit';
+            input.style.fontSize = '0.75rem';
+            input.style.color = 'var(--text-primary)';
+            td.textContent = '';
+            td.appendChild(input);
+            input.focus();
+            input.select();
+
+            var save = function() {
+                var newValue = input.value;
+                var order = allOrders.find(function(o) { return o._docId === docId; });
+                var tglPengajuan = order ? order['TGL PENGAJUAN ORD'] : '';
+
+                if (newValue === currentValue || (newValue === '' && currentValue === '-')) {
+                    td.textContent = currentValue || '-';
+                    return;
+                }
+
+                var jumlah = '';
+                if (tglPengajuan && newValue) {
+                    var d1 = new Date(tglPengajuan);
+                    var d2 = new Date(newValue);
+                    var diffTime = Math.abs(d2 - d1);
+                    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    jumlah = String(diffDays);
+                }
+
+                var updates = {
+                    'TGL TERIMA PART': newValue,
+                    'JUMLAH': jumlah
+                };
+                db.collection(ORDERS_COL).doc(docId).update(updates)
+                    .then(function() {
+                        showToast('TGL TERIMA PART & Jumlah berhasil diupdate!', 'success');
+                        var formatted = newValue ? formatDateDisplay(newValue) : '-';
+                        td.textContent = formatted;
+                        if (order) {
+                            order['TGL TERIMA PART'] = newValue;
+                            order['JUMLAH'] = jumlah;
+                        }
+                        renderAll();
+                    })
+                    .catch(function(err) {
+                        showToast('Gagal update: ' + err.message, 'error');
+                        td.textContent = currentValue || '-';
+                    });
+            };
+
+            var cancel = function() {
+                td.textContent = currentValue || '-';
+            };
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') { e.preventDefault();
+                    input.blur(); }
+                if (e.key === 'Escape') { cancel(); }
+            });
+            input.addEventListener('blur', save);
+        }
+
+        // ===== INLINE EDIT: Order ke Pabrik =====
         function editOrderPabrik(docId, td) {
+            if (!isAdmin) {
+                showToast('Hanya Admin yang bisa mengedit Order ke Pabrik.', 'warning');
+                return;
+            }
             if (td.querySelector('input')) return;
             var currentValue = td.textContent.trim();
             var displayValue = (currentValue === '-' ? '' : currentValue);
@@ -2624,9 +3224,7 @@
             input.addEventListener('blur', save);
         }
 
-        // ============================================================
-        // 11. RENDER AKTIF (DENGAN TOMBOL WA)
-        // ============================================================
+        // ===== RENDER AKTIF =====
         function renderAktifTable() {
             var tb = document.getElementById('tableBody'),
                 es = document.getElementById('emptyState'),
@@ -2664,9 +3262,13 @@
                     ri = o._rowIndex,
                     isNew = newRowIndices.has(ri),
                     to = o['Tgl Order'] || '',
+                    ttp = o['TGL TERIMA PART'] || '',
+                    jml = o['JUMLAH'] || '',
                     op = o['ORDER KE PABRIK'] || '',
                     k = o['Keterangan Pemenuhan'] || '',
                     da = 'onclick="openEditModal(\'' + o._docId + '\')"';
+
+                var jmlDisplay = jml ? escapeHtml(jml) + ' hari' : '-';
 
                 h += '<tr class="' + (isNew ? 'new-row' : '') + '">' +
                     '<td>' + (i + 1) + '</td>' +
@@ -2685,16 +3287,16 @@
                     '<td class="name-cell">' + escapeHtml(o['NAMA KONSUMEN'] || '') + '</td>' +
                     '<td>' + escapeHtml(o['NO. HP'] || '') + '</td>' +
                     '<td class="editable-cell" ' + da + '>' + formatDateDisplay(to) + '</td>' +
+                    '<td class="editable-cell" ondblclick="editTglTerimaPart(\'' + o._docId +
+                    '\', this)" title="Double‑klik untuk edit (Admin only)" style="cursor:text;">' +
+                    formatDateDisplay(ttp) + '</td>' +
+                    '<td style="font-weight:700;color:var(--accent);">' + jmlDisplay + '</td>' +
                     '<td class="editable-cell" ondblclick="editOrderPabrik(\'' + o._docId +
-                    '\', this)" title="Double‑klik untuk edit" style="cursor:text;">' +
+                    '\', this)" title="Double‑klik untuk edit (Admin only)" style="cursor:text;">' +
                     escapeHtml(op || '-') + '</td>' +
                     '<td class="editable-cell" ' + da + '>' + escapeHtml(k || '-') + '</td>' +
-                    '<td><div class="action-btns">' +
-                    '<button class="action-btn" ' + da + '><i class="fas fa-pen"></i></button>' +
-                    '<button class="action-btn whatsapp" onclick="sendWhatsApp(\'' + o._docId +
-                    '\')" title="Kirim WhatsApp ke Teknisi"><i class="fab fa-whatsapp"></i></button>' +
-                    '<button class="action-btn locked" title="Hanya FINISH bisa dihapus"><i class="fas fa-trash"></i></button>' +
-                    '</div></td>' +
+                    '<td><div class="action-btns"><button class="action-btn" ' + da +
+                    '><i class="fas fa-pen"></i></button><button class="action-btn locked" title="Hanya FINISH bisa dihapus"><i class="fas fa-trash"></i></button></div></td>' +
                     '</tr>';
             }
             tb.innerHTML = h;
@@ -2706,9 +3308,7 @@
             }
         }
 
-        // ============================================================
-        // 12. RENDER RIWAYAT (DENGAN TOMBOL WA UNTUK ADMIN)
-        // ============================================================
+        // ===== RENDER RIWAYAT =====
         function renderRiwayatTable() {
             var tb = document.getElementById('riwayatBody'),
                 es = document.getElementById('emptyRiwayat'),
@@ -2748,8 +3348,12 @@
             for (var i = 0; i < fd.length; i++) {
                 var o = fd[i],
                     to = o['Tgl Order'] || '',
+                    ttp = o['TGL TERIMA PART'] || '',
+                    jml = o['JUMLAH'] || '',
                     op = o['ORDER KE PABRIK'] || '',
                     k = o['Keterangan Pemenuhan'] || '';
+
+                var jmlDisplay = jml ? escapeHtml(jml) + ' hari' : '-';
 
                 h += '<tr>' +
                     '<td>' + (i + 1) + '</td>' +
@@ -2770,32 +3374,30 @@
                         to) +
                     '</td>' +
                     '<td class="' + cellClass + '" ' +
-                    (canEdit ?
-                        'ondblclick="editOrderPabrik(\'' + o._docId + '\', this)" title="Double‑klik untuk edit"' :
+                    (canEdit ? 'ondblclick="editTglTerimaPart(\'' + o._docId + '\', this)" title="Double‑klik untuk edit (Admin only)"' :
+                        '') +
+                    ' style="' + (canEdit ? 'cursor:text;' : '') + '">' +
+                    formatDateDisplay(ttp) + '</td>' +
+                    '<td style="font-weight:700;color:var(--info);">' + jmlDisplay + '</td>' +
+                    '<td class="' + cellClass + '" ' +
+                    (canEdit ? 'ondblclick="editOrderPabrik(\'' + o._docId + '\', this)" title="Double‑klik untuk edit (Admin only)"' :
                         '') +
                     ' style="' + (canEdit ? 'cursor:text;' : '') + '">' +
                     escapeHtml(op || '-') + '</td>' +
                     '<td class="' + cellClass + '" ' + editAction + o._docId + editActionClose + '>' + escapeHtml(k ||
                         '-') +
                     '</td>' +
-                    '<td><div class="action-btns">' +
-                    '<button class="action-btn' + btnEditClass + '" ' + editAction + o._docId + editActionClose +
-                    btnEditTitle +
-                    '><i class="fas fa-pen"></i></button>' +
-                    (canEdit ? '<button class="action-btn whatsapp" onclick="sendWhatsApp(\'' + o._docId +
-                        '\')" title="Kirim WhatsApp ke Teknisi"><i class="fab fa-whatsapp"></i></button>' : '') +
-                    '<button class="action-btn delete' + btnDelClass + '" ' + delAction + o._docId + delActionClose +
-                    btnDelTitle +
-                    '><i class="fas fa-trash"></i></button>' +
-                    '</div></td>' +
+                    '<td><div class="action-btns"><button class="action-btn' + btnEditClass + '" ' + editAction + o
+                    ._docId +
+                    editActionClose + btnEditTitle + '><i class="fas fa-pen"></i></button><button class="action-btn delete' +
+                    btnDelClass + '" ' + delAction + o._docId + delActionClose + btnDelTitle +
+                    '><i class="fas fa-trash"></i></button></div></td>' +
                     '</tr>';
             }
             tb.innerHTML = h;
         }
 
-        // ============================================================
-        // 13. STATS
-        // ============================================================
+        // ===== STATS =====
         function updateAllStats() {
             var aktif = getAktifOrders(),
                 riwayat = getRiwayatOrders();
@@ -2806,12 +3408,12 @@
             animateCounter('statProses', aktif.filter(function(o) { return (o['STATUS'] || '').toUpperCase() ===
                     'PROSES'; })
                 .length);
-            animateCounter('statReady', aktif.filter(function(o) { return (o['STATUS'] || '').toUpperCase() ===
-                    'READY'; })
+            animateCounter('statReady', aktif.filter(function(o) { return (o['STATUS'] || '').toUpperCase() === 'READY'; })
                 .length);
             animateCounter('statRiwayat', riwayat.length);
             document.getElementById('tabCountAktif').textContent = aktif.length;
             document.getElementById('tabCountRiwayat').textContent = riwayat.length;
+            document.getElementById('tabCountMaster').textContent = allMaster.length;
         }
 
         function animateCounter(id, t) {
@@ -2827,76 +3429,82 @@
             }, 30);
         }
 
-        // ============================================================
-        // 14. EDIT MODAL
-        // ============================================================
+        // ===== EDIT MODAL =====
         function openEditModal(docId) {
             var o = allOrders.find(function(x) { return x._docId === docId; });
             if (!o) return;
-
-            var isAdminUser = isAdmin;
+            if ((o['STATUS'] || '').toUpperCase() === 'FINISH' && !isAdmin) {
+                showToast('Hanya Admin yang bisa mengubah data riwayat.', 'warning');
+                return;
+            }
 
             document.getElementById('modalRowIndex').value = docId;
-
             document.getElementById('modalStatus').value = (o['STATUS'] || 'PENDING').toUpperCase();
 
-            var tglOrderInput = document.getElementById('modalTglOrder');
-            var orderPabrikInput = document.getElementById('modalOrderPabrik');
-            var keteranganInput = document.getElementById('modalKeterangan');
+            var adminFields = document.getElementById('adminOnlyFields');
+            var userMsg = document.getElementById('userOnlyMessage');
 
-            if (isAdminUser) {
-                tglOrderInput.value = o['Tgl Order'] || '';
-                tglOrderInput.readOnly = false;
-                tglOrderInput.style.background = 'var(--bg-input)';
-                tglOrderInput.style.cursor = 'text';
-                tglOrderInput.style.opacity = '1';
+            var tglOrderEl = document.getElementById('modalTglOrder');
+            var tglTerimaEl = document.getElementById('modalTglTerimaPart');
+            var jumlahEl = document.getElementById('modalJumlah');
+            var orderPabrikEl = document.getElementById('modalOrderPabrik');
+            var keteranganEl = document.getElementById('modalKeterangan');
 
-                orderPabrikInput.value = o['ORDER KE PABRIK'] || '';
-                orderPabrikInput.readOnly = false;
-                orderPabrikInput.style.background = 'var(--bg-input)';
-                orderPabrikInput.style.cursor = 'text';
-                orderPabrikInput.style.opacity = '1';
-
-                keteranganInput.value = o['Keterangan Pemenuhan'] || '';
-                keteranganInput.readOnly = false;
-                keteranganInput.style.background = 'var(--bg-input)';
-                keteranganInput.style.cursor = 'text';
-                keteranganInput.style.opacity = '1';
-            } else {
-                tglOrderInput.value = o['Tgl Order'] || '';
-                tglOrderInput.readOnly = true;
-                tglOrderInput.style.background = 'var(--bg-card)';
-                tglOrderInput.style.cursor = 'not-allowed';
-                tglOrderInput.style.opacity = '0.7';
-
-                orderPabrikInput.value = o['ORDER KE PABRIK'] || '';
-                orderPabrikInput.readOnly = true;
-                orderPabrikInput.style.background = 'var(--bg-card)';
-                orderPabrikInput.style.cursor = 'not-allowed';
-                orderPabrikInput.style.opacity = '0.7';
-
-                keteranganInput.value = o['Keterangan Pemenuhan'] || '';
-                keteranganInput.readOnly = true;
-                keteranganInput.style.background = 'var(--bg-card)';
-                keteranganInput.style.cursor = 'not-allowed';
-                keteranganInput.style.opacity = '0.7';
-            }
+            tglOrderEl.value = o['Tgl Order'] || '';
+            tglTerimaEl.value = o['TGL TERIMA PART'] || '';
+            jumlahEl.value = o['JUMLAH'] || '';
+            orderPabrikEl.value = o['ORDER KE PABRIK'] || '';
+            keteranganEl.value = o['Keterangan Pemenuhan'] || '';
 
             document.getElementById('modalPartInfo').textContent = (o['NAMA PART'] || '-') + ' | ' + (o['NAMA KONSUMEN'] ||
                 '-');
+
+            if (isAdmin) {
+                adminFields.style.display = 'block';
+                userMsg.style.display = 'none';
+                tglOrderEl.disabled = false;
+                tglTerimaEl.disabled = false;
+                jumlahEl.readOnly = true;
+                orderPabrikEl.disabled = false;
+                keteranganEl.disabled = false;
+            } else {
+                adminFields.style.display = 'block';
+                userMsg.style.display = 'block';
+                tglOrderEl.disabled = true;
+                tglTerimaEl.disabled = true;
+                jumlahEl.readOnly = true;
+                orderPabrikEl.disabled = true;
+                keteranganEl.disabled = true;
+            }
+
             document.getElementById('editModal').classList.add('active');
         }
 
         function submitUpdate() {
             var docId = document.getElementById('modalRowIndex').value;
-            var isAdminUser = isAdmin;
+            var status = document.getElementById('modalStatus').value;
 
             var updates = {
-                'STATUS': document.getElementById('modalStatus').value
+                'STATUS': status
             };
 
-            if (isAdminUser) {
+            if (isAdmin) {
+                var tglTerima = document.getElementById('modalTglTerimaPart').value;
+                var order = allOrders.find(function(o) { return o._docId === docId; });
+                var tglPengajuan = order ? order['TGL PENGAJUAN ORD'] : '';
+
+                var jumlah = document.getElementById('modalJumlah').value;
+                if (tglPengajuan && tglTerima) {
+                    var d1 = new Date(tglPengajuan);
+                    var d2 = new Date(tglTerima);
+                    var diffTime = Math.abs(d2 - d1);
+                    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    jumlah = String(diffDays);
+                }
+
                 updates['Tgl Order'] = document.getElementById('modalTglOrder').value;
+                updates['TGL TERIMA PART'] = tglTerima;
+                updates['JUMLAH'] = jumlah;
                 updates['ORDER KE PABRIK'] = document.getElementById('modalOrderPabrik').value;
                 updates['Keterangan Pemenuhan'] = document.getElementById('modalKeterangan').value;
             }
@@ -2904,6 +3512,7 @@
             var sb = document.getElementById('modalSaveBtn');
             sb.disabled = true;
             sb.innerHTML = '<div class="spinner"></div>';
+
             db.collection(ORDERS_COL).doc(docId).update(updates).then(function() {
                 sb.disabled = false;
                 sb.innerHTML = '<i class="fas fa-save"></i> Simpan';
@@ -2921,9 +3530,7 @@
             });
         }
 
-        // ============================================================
-        // 15. DELETE
-        // ============================================================
+        // ===== DELETE =====
         function confirmDelete(docId) {
             if (!isAdmin) { showToast('Hanya Admin yang bisa menghapus data riwayat.', 'warning'); return; }
             var o = allOrders.find(function(x) { return x._docId === docId; });
@@ -2947,16 +3554,14 @@
 
         function deleteOrderAction(docId) {
             db.collection(ORDERS_COL).doc(docId).delete().then(function() {
-                removeCacheItem(docId);
+                removeCacheItem(docId, CACHE_STORE);
                 showToast('Berhasil dihapus!', 'success');
             }).catch(function(er) {
                 showToast('Error: ' + er.message, 'error');
             });
         }
 
-        // ============================================================
-        // 16. EXCEL
-        // ============================================================
+        // ===== EXCEL =====
         function downloadExcel(src) {
             var fd = src === 'riwayat' ? getRiwayatOrders() : getFilteredAktif();
             if (fd.length === 0) { showToast('Tidak ada data!', 'error'); return; }
@@ -2967,16 +3572,18 @@
                 var eh = ['No', 'Status', 'Teknisi', 'Tgl Pengajuan',
                     'No. Service', 'Type (IDNO)', 'No. Serie', 'No Gudang',
                     'Nama Part', 'QTY', 'Prod.', 'Layanan', 'Nama Konsumen', 'No. HP',
-                    'Tgl Order', 'Order ke Pabrik', 'Keterangan'
+                    'Tgl Order', 'TGL TERIMA PART', 'Jumlah', 'Order ke Pabrik', 'Keterangan'
                 ];
                 var rows = fd.map(function(o, i) {
-                    return [i + 1, o['STATUS'] || '', o['TEKNISI'] || '', formatDateDisplay(o[
-                            'TGL PENGAJUAN ORD'] || ''),
-                        o['NO. SERVICE CASE'] || '', o['TYPE (IDNO)'] || '', o['NO. SERIE'] || '', o[
-                            'NO GUDANG'] || '',
-                        o['NAMA PART'] || '', o['QTY'] || '', o['PROD.'] || '', o['LAYANAN'] || '',
-                        o['NAMA KONSUMEN'] || '', o['NO. HP'] || '', formatDateDisplay(o['Tgl Order'] ||
+                    var jml = o['JUMLAH'] || '';
+                    var jmlDisplay = jml ? jml + ' hari' : '';
+                    return [i + 1, o['STATUS'] || '', o['TEKNISI'] || '', formatDateDisplay(o['TGL PENGAJUAN ORD'] ||
                             ''),
+                        o['NO. SERVICE CASE'] || '', o['TYPE (IDNO)'] || '', o['NO. SERIE'] || '', o['NO GUDANG'] ||
+                        '',
+                        o['NAMA PART'] || '', o['QTY'] || '', o['PROD.'] || '', o['LAYANAN'] || '',
+                        o['NAMA KONSUMEN'] || '', o['NO. HP'] || '', formatDateDisplay(o['Tgl Order'] || ''),
+                        formatDateDisplay(o['TGL TERIMA PART'] || ''), jmlDisplay,
                         o['ORDER KE PABRIK'] || '', o['Keterangan Pemenuhan'] || ''
                     ];
                 });
@@ -3015,9 +3622,7 @@
             renderAktifTable();
         }
 
-        // ============================================================
-        // 17. TOAST & SYNC TIME
-        // ============================================================
+        // ===== TOAST =====
         function showToast(m, t) {
             var c = document.getElementById('toastContainer'),
                 ic = { success: 'fas fa-check-circle', error: 'fas fa-exclamation-circle', info: 'fas fa-info-circle',
@@ -3039,14 +3644,13 @@
             if (el) el.textContent = 'Sync: ' + t;
         }
 
-        // ============================================================
-        // 18. KEYBOARD SHORTCUTS
-        // ============================================================
+        // ===== KEYBOARD SHORTCUTS =====
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeInputModal();
                 closeEditModal();
                 closeDeleteModal();
+                closeMasterModal();
                 closeUserDD();
                 var so = document.getElementById('successOverlay');
                 if (so.classList.contains('active')) so.classList.remove('active');
@@ -3054,10 +3658,9 @@
         });
         document.getElementById('inputModal').addEventListener('click', function(e) { if (e.target === this) closeInputModal(); });
         document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
+        document.getElementById('masterModal').addEventListener('click', function(e) { if (e.target === this) closeMasterModal(); });
 
-        console.log('✅ Aplikasi siap dengan WhatsApp ke Teknisi (hardcoded)');
-        console.log('ℹ️ Ganti mapping TEKNISI_WA dengan nomor asli masing-masing teknisi.');
+        console.log('✅ Aplikasi siap - User hanya bisa ubah status, Admin edit semua field. Master Komponen dengan tombol Hapus Semua.');
     </script>
-
 </body>
 </html>
