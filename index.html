@@ -2156,7 +2156,7 @@
         // Format: 'NAMA TEKNISI': '628xxxxxxxxxx' (tanpa tanda +, tanpa spasi)
         // Ganti dengan nomor WhatsApp asli masing-masing teknisi
         var TEKNISI_WA_MAP = {
-            'YANDRI OTTU': '6285333071119',
+            'YANDRI OTTU': '628123456789',
             'HARMINDO LAMMA': '628987654321',
             'INOSENCIUS FA\'OT': '628111222333',
             'RIZALDI ABDULLAH': '628222333444',
@@ -3246,7 +3246,7 @@
             input.addEventListener('blur', save);
         }
 
-        // ===== FUNGSI KIRIM NOTIFIKASI WHATSAPP (FORMAT BARU) =====
+        // ===== FUNGSI KIRIM NOTIFIKASI WHATSAPP (DENGAN NO. SERVICE) =====
         function sendWaNotification(docId) {
             var order = allOrders.find(function(o) { return o._docId === docId; });
             if (!order) {
@@ -3266,12 +3266,15 @@
                 return;
             }
 
-            // ===== FORMAT PESAN SESUAI PERMINTAAN =====
+            // Ambil No. Service, jika kosong gunakan No. Order sebagai fallback
+            var noService = order['NO. SERVICE CASE'] || order['No. Order'] || '-';
+
+            // ===== FORMAT PESAN DENGAN NO. SERVICE =====
             var msg = '📋 *NOTIFIKASI ORDER KOMPONEN*\n\n';
             msg += 'Kepada Yth. *' + teknisi + '*\n\n';
             msg += 'Berikut informasi order baru:\n';
             msg += '━━━━━━━━━━━━━━━━━━━━\n';
-            msg += '🆔 No. Order : ' + (order['No. Order'] || '-') + '\n';
+            msg += '🆔 No. Service : ' + noService + '\n';
             msg += '📦 Part      : ' + (order['NAMA PART'] || '-') + '\n';
             msg += '👤 Konsumen  : ' + (order['NAMA KONSUMEN'] || '-') + '\n';
             msg += '📞 HP        : ' + (order['NO. HP'] || '-') + '\n';
@@ -3730,13 +3733,13 @@
         document.getElementById('masterModal').addEventListener('click', function(e) { if (e.target === this) closeMasterModal(); });
 
         console.log('✅ Aplikasi siap - User hanya bisa ubah status, Admin edit semua field. Master Komponen dengan tombol Hapus Semua.');
-        console.log('📱 Format WhatsApp baru aktif!');
+        console.log('📱 Format WhatsApp sekarang menampilkan No. Service (jika ada), fallback ke No. Order.');
         console.log('📋 Template pesan:');
         console.log('📋 *NOTIFIKASI ORDER KOMPONEN*');
         console.log('Kepada Yth. *NAMA TEKNISI*');
         console.log('Berikut informasi order baru:');
         console.log('━━━━━━━━━━━━━━━━━━━━');
-        console.log('🆔 No. Order : ...');
+        console.log('🆔 No. Service : ... (atau No. Order jika kosong)');
         console.log('📦 Part      : ...');
         console.log('👤 Konsumen  : ...');
         console.log('📞 HP        : ...');
