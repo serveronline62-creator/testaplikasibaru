@@ -2127,8 +2127,11 @@
 
             // Buat pesan otomatis (detail order)
             var pesan = '*Order Komponen*\n\n';
-            pesan += 'No. Order: ' + (order['No. Order'] || '-') + '\n';
+            pesan += 'No. Pengajuan: ' + (order['No. Pengajuan'] || '-') + '\n';
+            pesan += 'No Gudang: ' + (order['No Gudang'] || '-') + '\n';
             pesan += 'Nama Part: ' + (order['NAMA PART'] || '-') + '\n';
+            pesan += 'Type (IDNO): ' + (order['Type (IDNO)'] || '-') + '\n';
+             pesan += 'No. Serie: ' + (order['No. Serie'] || '-') + '\n';
             pesan += 'Konsumen: ' + (order['NAMA KONSUMEN'] || '-') + '\n';
             pesan += 'Status: ' + (order['STATUS'] || 'PENDING') + '\n';
             pesan += 'Teknisi: ' + (order['TEKNISI'] || '-') + '\n';
