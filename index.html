@@ -845,15 +845,13 @@
             background: #1a1a1a;
         }
         .call-overlay .call-video-container video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
             background: #000;
         }
         .call-overlay .call-video-container #remoteVideo {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            background: #111;
         }
         .call-overlay .call-video-container #localVideo {
             position: absolute;
@@ -1713,7 +1711,7 @@
         let isMuted = false;
         let isVideoOff = false;
         let incomingCallId = null;
-        let currentFacingMode = 'user'; // 'user' atau 'environment'
+        let currentFacingMode = 'user';
 
         // ============================================================
         // 6. CALL HISTORY TRACKING
@@ -2927,11 +2925,17 @@
         function closeCall() {
             stopRingtone();
             if (localStream) {
-                localStream.getTracks().forEach(track => track.stop());
+                localStream.getTracks().forEach(track => {
+                    track.stop();
+                    track.enabled = false;
+                });
                 localStream = null;
             }
             if (remoteStream) {
-                remoteStream.getTracks().forEach(track => track.stop());
+                remoteStream.getTracks().forEach(track => {
+                    track.stop();
+                    track.enabled = false;
+                });
                 remoteStream = null;
             }
             if (peerConnection) {
@@ -3015,19 +3019,16 @@
             }
 
             pc.ontrack = (event) => {
-                if (!remoteStream) {
-                    remoteStream = new MediaStream();
-                }
-                event.streams[0].getTracks().forEach(track => {
-                    remoteStream.addTrack(track);
-                });
-                remoteVideo.srcObject = remoteStream;
-                callStatusDisplay.textContent = '📞 Tersambung';
-                stopRingtone();
+                console.log('📹 ontrack event received:', event.streams.length);
+                if (event.streams && event.streams[0]) {
+                    remoteVideo.srcObject = event.streams[0];
+                    callStatusDisplay.textContent = '📞 Tersambung';
+                    stopRingtone();
 
-                if (activeCallRecord && activeCallRecord.callId) {
-                    callConnectedTime = Date.now();
-                    updateCallRecord(activeCallRecord.callId, { status: 'answered' });
+                    if (activeCallRecord && activeCallRecord.callId) {
+                        callConnectedTime = Date.now();
+                        updateCallRecord(activeCallRecord.callId, { status: 'answered' });
+                    }
                 }
             };
 
@@ -3042,6 +3043,7 @@
 
             pc.oniceconnectionstatechange = () => {
                 const state = pc.iceConnectionState;
+                console.log('🔄 ICE State:', state);
                 if (state === 'connected' && activeCallRecord && activeCallRecord.callId) {
                     callConnectedTime = Date.now();
                     updateCallRecord(activeCallRecord.callId, { status: 'answered' });
@@ -3056,11 +3058,15 @@
                 }
             };
 
+            pc.onconnectionstatechange = () => {
+                console.log('🔗 Connection State:', pc.connectionState);
+            };
+
             return pc;
         }
 
         // ============================================================
-        // 23. SWITCH CAMERA (Fitur Baru)
+        // 23. SWITCH CAMERA
         // ============================================================
         async function switchCamera() {
             if (!localStream || !isVideoCall) {
@@ -3071,6 +3077,10 @@
             if (videoTracks.length === 0) {
                 return;
             }
+
+            // Simpan status audio
+            const audioTracks = localStream.getAudioTracks();
+            const wasMuted = isMuted;
 
             // Matikan track video saat ini
             videoTracks.forEach(track => {
@@ -3083,7 +3093,7 @@
 
             try {
                 const newStream = await navigator.mediaDevices.getUserMedia({
-                    audio: true,
+                    audio: wasMuted ? false : true,
                     video: {
                         facingMode: currentFacingMode,
                         width: { ideal: 640 },
@@ -3100,16 +3110,22 @@
                     localStream.addTrack(track);
                 });
 
-                // Perbarui audio track jika ada
+                // Update audio track
                 if (newAudioTracks.length > 0) {
                     // Hapus audio track lama
-                    localStream.getAudioTracks().forEach(track => {
-                        localStream.removeTrack(track);
-                        track.stop();
+                    audioTracks.forEach(track => {
+                        if (localStream.getTracks().includes(track)) {
+                            localStream.removeTrack(track);
+                            track.stop();
+                        }
                     });
                     newAudioTracks.forEach(track => {
                         localStream.addTrack(track);
                     });
+                    // Terapkan mute jika sebelumnya muted
+                    if (wasMuted) {
+                        newAudioTracks.forEach(track => { track.enabled = false; });
+                    }
                 }
 
                 // Perbarui video local
@@ -3122,9 +3138,13 @@
                     if (videoSender && newVideoTracks.length > 0) {
                         await videoSender.replaceTrack(newVideoTracks[0]);
                     }
+                    // Update audio sender
+                    const audioSender = senders.find(s => s.track && s.track.kind === 'audio');
+                    if (audioSender && newAudioTracks.length > 0) {
+                        await audioSender.replaceTrack(newAudioTracks[0]);
+                    }
                 }
 
-                // Update status
                 callStatusDisplay.textContent = `📷 Kamera ${currentFacingMode === 'user' ? 'Depan' : 'Belakang'}`;
                 setTimeout(() => {
                     if (callStatusDisplay.textContent.includes('Kamera')) {
@@ -3134,22 +3154,20 @@
 
             } catch (error) {
                 console.warn('Gagal mengganti kamera:', error);
-                // Kembalikan ke mode sebelumnya jika gagal
                 currentFacingMode = (currentFacingMode === 'user') ? 'environment' : 'user';
 
-                // Coba gunakan track video yang sudah ada
                 try {
                     const fallbackStream = await navigator.mediaDevices.getUserMedia({
                         audio: true,
                         video: { facingMode: currentFacingMode }
                     });
-                    // Update stream
                     const videoTracks = fallbackStream.getVideoTracks();
                     videoTracks.forEach(track => {
-                        // Hapus track lama
                         localStream.getVideoTracks().forEach(t => {
-                            localStream.removeTrack(t);
-                            t.stop();
+                            if (localStream.getTracks().includes(t)) {
+                                localStream.removeTrack(t);
+                                t.stop();
+                            }
                         });
                         localStream.addTrack(track);
                     });
@@ -3511,7 +3529,6 @@
             }
         });
 
-        // Tombol switch camera
         switchCameraBtn.addEventListener('click', switchCamera);
 
         // ============================================================
@@ -3558,9 +3575,8 @@
 
         listenForIncomingCalls();
 
-        console.log('💬 Ja\'O Chating & Call + Ikon Modern siap!');
+        console.log('💬 Ja\'O Chating & Call dengan perbaikan video siap!');
         console.log('📸 Fitur ganti kamera depan/belakang tersedia!');
-        console.log('📋 Gunakan ikon Font Awesome untuk tampilan lebih segar.');
     </script>
 </body>
 </html>
