@@ -415,7 +415,7 @@
             margin: 4px 12px;
         }
 
-        /* ----- MESSAGE AREA (sama seperti sebelumnya) ----- */
+        /* ----- MESSAGE AREA ----- */
         .messages-wrapper {
             flex: 1;
             overflow-y: auto;
@@ -873,12 +873,6 @@
         }
         .input-row input[type="text"]:focus {
             box-shadow: 0 0 0 2px #00a884;
-        }
-        .input-row input[type="text"].name-input {
-            flex: 0 0 100px;
-            font-weight: 500;
-            background: #f8f8f8;
-            display: none;
         }
         .input-row button.send-btn {
             padding: 10px 18px;
@@ -1505,12 +1499,6 @@
                 font-size: 14px;
                 padding: 8px 12px;
             }
-            .input-row input[type="text"].name-input {
-                flex: 0 0 80px;
-                font-size: 14px;
-                padding: 8px 12px;
-                display: none;
-            }
             .input-row input[type="text"].msg-input {
                 font-size: 14px;
                 padding: 8px 12px;
@@ -1853,14 +1841,39 @@
         const usersRef = database.ref('users');
 
         // ============================================================
-        // 2. VARIABEL GLOBAL
+        // 2. WEBRTC KONFIGURASI
+        // ============================================================
+        const rtcConfig = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' }
+            ]
+        };
+
+        // ============================================================
+        // 3. VARIABEL GLOBAL
         // ============================================================
         let currentUser = null;
         let currentUsername = '';
         let isLoggedIn = false;
 
+        // Call variables
+        let localStream = null;
+        let remoteStream = null;
+        let peerConnection = null;
+        let currentCallId = null;
+        let isCaller = false;
+        let isVideoCall = false;
+        let isMuted = false;
+        let isVideoOff = false;
+        let incomingCallId = null;
+        let currentFacingMode = 'user';
+        let activeCallRecord = null;
+        let callStartTime = 0;
+        let callConnectedTime = 0;
+
         // ============================================================
-        // 3. DOM ELEMEN LOGIN
+        // 4. DOM ELEMEN LOGIN
         // ============================================================
         const loginScreen = document.getElementById('loginScreen');
         const loginUsername = document.getElementById('loginUsername');
@@ -1870,7 +1883,7 @@
         const activeUsersContainer = document.getElementById('activeUsersContainer');
 
         // ============================================================
-        // 4. DOM ELEMEN CHAT (seperti sebelumnya)
+        // 5. DOM ELEMEN CHAT
         // ============================================================
         const container = document.getElementById('messageContainer');
         const emptyState = document.getElementById('emptyState');
@@ -1930,37 +1943,17 @@
         const clearHistoryBtn = document.getElementById('clearHistoryBtn');
 
         // ============================================================
-        // 5. VARIABEL CALL
-        // ============================================================
-        let localStream = null;
-        let remoteStream = null;
-        let peerConnection = null;
-        let currentCallId = null;
-        let isCaller = false;
-        let isVideoCall = false;
-        let isMuted = false;
-        let isVideoOff = false;
-        let incomingCallId = null;
-        let currentFacingMode = 'user';
-        let activeCallRecord = null;
-        let callStartTime = 0;
-        let callConnectedTime = 0;
-
-        // ============================================================
         // 6. LOGIN SYSTEM
         // ============================================================
 
-        // Cek apakah user sudah login sebelumnya
         function checkSavedLogin() {
             const saved = localStorage.getItem('jao_chat_user');
             if (saved) {
                 try {
                     const data = JSON.parse(saved);
                     if (data.username && data.timestamp) {
-                        // Cek apakah login masih valid (misal 7 hari)
                         const daysDiff = (Date.now() - data.timestamp) / (1000 * 60 * 60 * 24);
                         if (daysDiff < 7) {
-                            // Coba login otomatis
                             loginAsUser(data.username);
                             return true;
                         }
@@ -1986,26 +1979,20 @@
             currentUser = username;
             isLoggedIn = true;
             
-            // Update UI
             const initial = username.charAt(0).toUpperCase();
             userAvatar.textContent = initial;
             headerUsername.textContent = '@' + username;
             
-            // Tampilkan chat, sembunyikan login
             loginScreen.style.display = 'none';
             document.getElementById('appContainer').classList.add('show');
             
-            // Set user di Firebase
             usersRef.child(username).set({
                 username: username,
                 lastActive: Date.now(),
                 online: true
             }).catch(err => console.warn('Gagal update user:', err));
             
-            // Simpan login
             saveLogin(username);
-            
-            // Inisialisasi chat
             initChat();
             messageInput.focus();
         }
@@ -2026,16 +2013,13 @@
                 return;
             }
 
-            // Sembunyikan error
             loginError.classList.remove('show');
             loginUsername.classList.remove('error');
             
-            // Tampilkan loading
             loginBtn.disabled = true;
             loginLoading.classList.add('show');
             
             try {
-                // Cek apakah username sudah digunakan
                 const snapshot = await usersRef.child(username).once('value');
                 if (snapshot.exists()) {
                     loginError.textContent = 'Username "' + username + '" sudah digunakan! Silakan pilih yang lain.';
@@ -2046,7 +2030,6 @@
                     return;
                 }
                 
-                // Login berhasil
                 loginAsUser(username);
                 
             } catch (error) {
@@ -2058,14 +2041,12 @@
             }
         }
 
-        // Event listener login
         loginBtn.addEventListener('click', handleLogin);
         loginUsername.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 handleLogin();
             }
-            // Hapus error saat mengetik
             if (loginError.classList.contains('show')) {
                 loginError.classList.remove('show');
                 loginUsername.classList.remove('error');
@@ -2077,7 +2058,6 @@
         // ============================================================
         logoutBtn.addEventListener('click', () => {
             if (confirm('Yakin ingin keluar?')) {
-                // Update status offline
                 if (currentUsername) {
                     usersRef.child(currentUsername).update({
                         online: false,
@@ -2085,22 +2065,18 @@
                     }).catch(() => {});
                 }
                 
-                // Hapus session
                 clearSavedLogin();
                 isLoggedIn = false;
                 currentUser = null;
                 currentUsername = '';
                 
-                // Sembunyikan chat, tampilkan login
                 document.getElementById('appContainer').classList.remove('show');
                 loginScreen.style.display = 'flex';
                 
-                // Reset chat listeners
                 messagesRef.off();
                 callsRef.off();
                 callHistoryRef.off();
                 
-                // Bersihkan container
                 container.innerHTML = '';
                 emptyState.style.display = 'flex';
                 lastDisplayedDateKey = null;
@@ -2124,7 +2100,6 @@
                     }
                 });
                 
-                // Urutkan berdasarkan lastActive terbaru
                 users.sort((a, b) => (b.lastActive || 0) - (a.lastActive || 0));
                 
                 if (users.length === 0) {
@@ -2144,19 +2119,11 @@
                     `;
                 });
                 activeUsersContainer.innerHTML = html;
-                
-                // Klik user untuk mengisi username di input (bisa langsung chat)
-                document.querySelectorAll('.user-item').forEach(item => {
-                    item.addEventListener('click', () => {
-                        // Bisa digunakan untuk fitur chat langsung dengan user tersebut
-                        // Untuk sekarang, kita fokus ke login
-                    });
-                });
             });
         }
 
         // ============================================================
-        // 9. FUNGSI BANTU (Chat) - Sama seperti sebelumnya
+        // 9. FUNGSI BANTU
         // ============================================================
         function formatTime(timestamp) {
             if (!timestamp) return '--:--';
@@ -2197,8 +2164,7 @@
 
         function getDateKey(timestamp) {
             const d = new Date(timestamp);
-            return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate())
-            .padStart(2, '0');
+            return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
         }
 
         function getFileIcon(mimeType, fileName) {
@@ -2237,7 +2203,172 @@
         }
 
         // ============================================================
-        // 10. UPLOAD FILE (Chat)
+        // 10. REPLY & CONTEXT MENU
+        // ============================================================
+        let replyTo = null;
+
+        function setReply(key, text, name) {
+            replyTo = { key, text, name };
+            replySender.textContent = name;
+            replyPreview.textContent = text;
+            replyIndicator.classList.add('show');
+            messageInput.focus();
+        }
+
+        function clearReply() {
+            replyTo = null;
+            replyIndicator.classList.remove('show');
+        }
+        cancelReplyBtn.addEventListener('click', clearReply);
+
+        let currentMessageKey = null;
+        let currentMessageElement = null;
+        let currentMessageData = null;
+
+        function showContextMenu(event, key, element, data) {
+            event.preventDefault();
+            currentMessageKey = key;
+            currentMessageElement = element;
+            currentMessageData = data;
+            let x = event.clientX || event.touches?.[0]?.clientX || 0;
+            let y = event.clientY || event.touches?.[0]?.clientY || 0;
+            if (x === 0 && y === 0) {
+                const rect = element.getBoundingClientRect();
+                x = rect.left + rect.width / 2;
+                y = rect.top + rect.height / 2;
+            }
+            contextMenu.style.left = x + 'px';
+            contextMenu.style.top = y + 'px';
+            contextMenu.classList.add('show');
+            const menuRect = contextMenu.getBoundingClientRect();
+            if (menuRect.right > window.innerWidth) {
+                contextMenu.style.left = (window.innerWidth - menuRect.width - 10) + 'px';
+            }
+            if (menuRect.bottom > window.innerHeight) {
+                contextMenu.style.top = (window.innerHeight - menuRect.height - 10) + 'px';
+            }
+        }
+
+        function hideContextMenu() {
+            contextMenu.classList.remove('show');
+            currentMessageKey = null;
+            currentMessageElement = null;
+            currentMessageData = null;
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!contextMenu.contains(e.target)) { hideContextMenu(); }
+        });
+
+        menuReply.addEventListener('click', () => {
+            if (currentMessageData) {
+                setReply(currentMessageKey, currentMessageData.text, currentMessageData.name);
+                hideContextMenu();
+            }
+        });
+
+        menuForward.addEventListener('click', () => {
+            if (currentMessageData) {
+                const name = getSenderName();
+                const newRef = messagesRef.push();
+                const payload = {
+                    name: name,
+                    text: currentMessageData.text || '',
+                    timestamp: Date.now(),
+                    read: false
+                };
+                if (currentMessageData.imageUrl) payload.imageUrl = currentMessageData.imageUrl;
+                if (currentMessageData.fileUrl) {
+                    payload.fileUrl = currentMessageData.fileUrl;
+                    payload.fileName = currentMessageData.fileName;
+                    payload.fileSize = currentMessageData.fileSize;
+                    payload.fileMime = currentMessageData.fileMime;
+                }
+                newRef.set(payload).catch(err => {
+                    alert('Gagal meneruskan pesan.');
+                });
+                hideContextMenu();
+            }
+        });
+
+        menuDelete.addEventListener('click', () => {
+            if (currentMessageKey && currentMessageElement) {
+                const el = currentMessageElement;
+                el.style.transition = 'opacity 0.2s';
+                el.style.opacity = '0';
+                setTimeout(() => { el.remove();
+                    updateEmptyState();
+                    cleanupDateSeparators(); }, 200);
+                hideContextMenu();
+            }
+        });
+
+        menuUnsend.addEventListener('click', () => {
+            if (currentMessageKey) {
+                if (confirm('Batalkan pesan ini untuk semua orang?')) {
+                    messagesRef.child(currentMessageKey).remove().then(() => { hideContextMenu(); }).catch(err => {
+                        alert('Gagal membatalkan pesan.');
+                        hideContextMenu();
+                    });
+                } else { hideContextMenu(); }
+            }
+        });
+
+        // ============================================================
+        // 11. HEADER DROPDOWN
+        // ============================================================
+        headerMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            headerDropdown.classList.toggle('show');
+        });
+        document.addEventListener('click', (e) => {
+            if (!headerDropdown.contains(e.target) && e.target !== headerMenuBtn) {
+                headerDropdown.classList.remove('show');
+            }
+        });
+        clearAllChat.addEventListener('click', () => {
+            if (confirm('Hapus semua pesan? Tindakan tidak dapat dibatalkan.')) {
+                messagesRef.remove().then(() => {
+                    document.querySelectorAll('.message').forEach(el => el.remove());
+                    document.querySelectorAll('.date-separator').forEach(el => el.remove());
+                    updateEmptyState();
+                    notifiedKeys.clear();
+                    lastDisplayedDateKey = null;
+                    headerDropdown.classList.remove('show');
+                }).catch(err => {
+                    alert('Gagal hapus semua pesan.');
+                });
+            }
+        });
+
+        clearAllHistory.addEventListener('click', () => {
+            headerDropdown.classList.remove('show');
+            if (confirm('Hapus semua riwayat panggilan?')) {
+                callHistoryRef.remove().then(() => {
+                    renderCallHistory();
+                }).catch(err => {
+                    alert('Gagal hapus riwayat.');
+                });
+            }
+        });
+
+        // ============================================================
+        // 12. CLEANUP DATE SEPARATORS
+        // ============================================================
+        function cleanupDateSeparators() {
+            document.querySelectorAll('.date-separator').forEach(sep => {
+                let next = sep.nextElementSibling,
+                    hasAfter = false;
+                while (next) { if (next.classList.contains('message')) { hasAfter = true; break; } next = next.nextElementSibling; }
+                let prev = sep.previousElementSibling,
+                    hasBefore = false;
+                while (prev) { if (prev.classList.contains('message')) { hasBefore = true; break; } prev = prev.previousElementSibling; }
+                if (!hasAfter && !hasBefore) sep.remove();
+            });
+        }
+
+        // ============================================================
+        // 13. UPLOAD FILE
         // ============================================================
         const IMGUR_CLIENT_ID = '546c25a59c58ad7';
         const GOFILE_API_TOKEN = 'YOUR_API_TOKEN';
@@ -2291,174 +2422,7 @@
         }
 
         // ============================================================
-        // 11. REPLY & CONTEXT MENU (sama seperti sebelumnya)
-        // ============================================================
-        let replyTo = null;
-
-        function setReply(key, text, name) {
-            replyTo = { key, text, name };
-            replySender.textContent = name;
-            replyPreview.textContent = text;
-            replyIndicator.classList.add('show');
-            messageInput.focus();
-        }
-
-        function clearReply() {
-            replyTo = null;
-            replyIndicator.classList.remove('show');
-        }
-        cancelReplyBtn.addEventListener('click', clearReply);
-
-        let currentMessageKey = null;
-        let currentMessageElement = null;
-        let currentMessageData = null;
-
-        function showContextMenu(event, key, element, data) {
-            event.preventDefault();
-            currentMessageKey = key;
-            currentMessageElement = element;
-            currentMessageData = data;
-            let x = event.clientX || event.touches?.[0]?.clientX || 0;
-            let y = event.clientY || event.touches?.[0]?.clientY || 0;
-            if (x === 0 && y === 0) {
-                const rect = element.getBoundingClientRect();
-                x = rect.left + rect.width / 2;
-                y = rect.top + rect.height / 2;
-            }
-            contextMenu.style.left = x + 'px';
-            contextMenu.style.top = y + 'px';
-            contextMenu.classList.add('show');
-            const menuRect = contextMenu.getBoundingClientRect();
-            if (menuRect.right > window.innerWidth) {
-                contextMenu.style.left = (window.innerWidth - menuRect.width - 10) + 'px';
-            }
-            if (menuRect.bottom > window.innerHeight) {
-                contextMenu.style.top = (window.innerHeight - menuRect.height - 10) + 'px';
-            }
-        }
-
-        function hideContextMenu() {
-            contextMenu.classList.remove('show');
-            currentMessageKey = null;
-            currentMessageElement = null;
-            currentMessageData = null;
-        }
-
-        menuReply.addEventListener('click', () => {
-            if (currentMessageData) {
-                setReply(currentMessageKey, currentMessageData.text, currentMessageData.name);
-                hideContextMenu();
-            }
-        });
-
-        menuForward.addEventListener('click', () => {
-            if (currentMessageData) {
-                const name = getSenderName();
-                const newRef = messagesRef.push();
-                const payload = {
-                    name: name,
-                    text: currentMessageData.text || '',
-                    timestamp: Date.now(),
-                    read: false
-                };
-                if (currentMessageData.imageUrl) payload.imageUrl = currentMessageData.imageUrl;
-                if (currentMessageData.fileUrl) {
-                    payload.fileUrl = currentMessageData.fileUrl;
-                    payload.fileName = currentMessageData.fileName;
-                    payload.fileSize = currentMessageData.fileSize;
-                    payload.fileMime = currentMessageData.fileMime;
-                }
-                newRef.set(payload).then(() => { playOutgoingSound(); }).catch(err => {
-                    alert('Gagal meneruskan pesan.');
-                });
-                hideContextMenu();
-            }
-        });
-
-        menuDelete.addEventListener('click', () => {
-            if (currentMessageKey && currentMessageElement) {
-                const el = currentMessageElement;
-                el.style.transition = 'opacity 0.2s';
-                el.style.opacity = '0';
-                setTimeout(() => { el.remove();
-                    updateEmptyState();
-                    cleanupDateSeparators(); }, 200);
-                hideContextMenu();
-            }
-        });
-
-        menuUnsend.addEventListener('click', () => {
-            if (currentMessageKey) {
-                if (confirm('Batalkan pesan ini untuk semua orang?')) {
-                    messagesRef.child(currentMessageKey).remove().then(() => { hideContextMenu(); }).catch(err => {
-                        alert('Gagal membatalkan pesan.');
-                        hideContextMenu();
-                    });
-                } else { hideContextMenu(); }
-            }
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!contextMenu.contains(e.target)) { hideContextMenu(); }
-        });
-
-        // ============================================================
-        // 12. HEADER DROPDOWN
-        // ============================================================
-        headerMenuBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            headerDropdown.classList.toggle('show');
-        });
-        document.addEventListener('click', (e) => {
-            if (!headerDropdown.contains(e.target) && e.target !== headerMenuBtn) {
-                headerDropdown.classList.remove('show');
-            }
-        });
-        clearAllChat.addEventListener('click', () => {
-            if (confirm('Hapus semua pesan? Tindakan tidak dapat dibatalkan.')) {
-                messagesRef.remove().then(() => {
-                    document.querySelectorAll('.message').forEach(el => el.remove());
-                    document.querySelectorAll('.date-separator').forEach(el => el.remove());
-                    updateEmptyState();
-                    notifiedKeys.clear();
-                    lastDisplayedDateKey = null;
-                    headerDropdown.classList.remove('show');
-                }).catch(err => {
-                    alert('Gagal hapus semua pesan.');
-                });
-            }
-        });
-
-        clearAllHistory.addEventListener('click', () => {
-            headerDropdown.classList.remove('show');
-            if (confirm('Hapus semua riwayat panggilan?')) {
-                callHistoryRef.remove().then(() => {
-                    renderCallHistory();
-                }).catch(err => {
-                    alert('Gagal hapus riwayat.');
-                });
-            }
-        });
-
-        // ============================================================
-        // 13. CLEANUP DATE SEPARATORS
-        // ============================================================
-        function cleanupDateSeparators() {
-            document.querySelectorAll('.date-separator').forEach(sep => {
-                let next = sep.nextElementSibling,
-                    hasAfter = false;
-                while (next) { if (next.classList.contains('message')) { hasAfter = true; break; } next = next
-                        .nextElementSibling; }
-                let prev = sep.previousElementSibling,
-                    hasBefore = false;
-                while (prev) { if (prev.classList.contains('message')) { hasBefore = true; break; } prev = prev
-                        .previousElementSibling; }
-                if (!hasAfter && !hasBefore) sep.remove();
-            });
-        }
-
-        // ============================================================
-        // 14. LINK PREVIEW (sama seperti sebelumnya)
+        // 14. LINK PREVIEW
         // ============================================================
         const previewCache = new Map();
 
@@ -2536,7 +2500,7 @@
         }
 
         // ============================================================
-        // 15. RENDER MESSAGE (sama seperti sebelumnya)
+        // 15. RENDER MESSAGE
         // ============================================================
         let lastDisplayedDateKey = null;
 
@@ -2744,13 +2708,11 @@
 
             bubble.addEventListener('click', (e) => {
                 e.stopPropagation();
-                showContextMenu(e, key, msgDiv, { text, name: sender, imageUrl, fileUrl, fileName, fileSize,
-                    fileMime });
+                showContextMenu(e, key, msgDiv, { text, name: sender, imageUrl, fileUrl, fileName, fileSize, fileMime });
             });
             msgDiv.addEventListener('click', (e) => {
                 if (!e.target.closest('.bubble')) {
-                    showContextMenu(e, key, msgDiv, { text, name: sender, imageUrl, fileUrl, fileName, fileSize,
-                        fileMime });
+                    showContextMenu(e, key, msgDiv, { text, name: sender, imageUrl, fileUrl, fileName, fileSize, fileMime });
                 }
             });
 
@@ -2793,7 +2755,7 @@
         }
 
         // ============================================================
-        // 16. SUARA (Chat + Ringtone)
+        // 16. SUARA
         // ============================================================
         let audioCtx = null;
         let ringtoneNodes = null;
@@ -2835,11 +2797,7 @@
                     osc.start(now + note.start);
                     osc.stop(now + note.start + note.dur);
                 });
-            } catch (e) { try { const a = new Audio(
-                        'data:audio/wav;base64,UklGRlQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAABCAAAAAAA='
-                        );
-                    a.volume = 0.5;
-                    a.play().catch(() => {}); } catch (e2) {} }
+            } catch (e) {}
         }
 
         function playOutgoingSound() {
@@ -2857,11 +2815,7 @@
                 gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
                 osc.start(now);
                 osc.stop(now + 0.08);
-            } catch (e) { try { const a = new Audio(
-                        'data:audio/wav;base64,UklGRlQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAABCAAAAAAA='
-                        );
-                    a.volume = 0.3;
-                    a.play().catch(() => {}); } catch (e2) {} }
+            } catch (e) {}
         }
 
         function playRingtone() {
@@ -2940,7 +2894,6 @@
                 }
             });
 
-            // Update user online status periodically
             setInterval(() => {
                 if (currentUsername) {
                     usersRef.child(currentUsername).update({
@@ -2950,7 +2903,6 @@
                 }
             }, 30000);
 
-            // Set user offline when page closes
             window.addEventListener('beforeunload', () => {
                 if (currentUsername) {
                     usersRef.child(currentUsername).update({
@@ -2962,7 +2914,7 @@
         }
 
         // ============================================================
-        // 18. KIRIM PESAN (Chat + File)
+        // 18. KIRIM PESAN
         // ============================================================
         let pendingFile = null;
         let isUploading = false;
@@ -3100,7 +3052,7 @@
         }
 
         // ============================================================
-        // 19. EMOJI PICKER (Chat)
+        // 19. EMOJI PICKER
         // ============================================================
         let isEmojiPickerVisible = false;
         emojiToggle.addEventListener('click', (e) => {
@@ -3137,7 +3089,7 @@
         });
 
         // ============================================================
-        // 21. CALL HISTORY UI
+        // 21. CALL HISTORY
         // ============================================================
 
         function openCallHistory() {
@@ -3169,18 +3121,19 @@
         // 22. CALL HISTORY - SAVE & RENDER
         // ============================================================
 
-        function saveCallRecord(type, isVideo, callerName, calleeName, status, duration, startTime, endTime) {
+        function createCallRecord(type, isVideo, callerName, calleeName) {
             const recordId = callHistoryRef.push().key;
+            const now = Date.now();
             const record = {
                 type: type,
                 isVideo: isVideo,
                 callerName: callerName,
-                calleeName: calleeName,
-                status: status,
-                startTime: startTime || Date.now(),
-                endTime: endTime || Date.now(),
-                duration: duration || 0,
-                timestamp: Date.now()
+                calleeName: calleeName || 'Penerima',
+                status: 'ringing',
+                startTime: now,
+                endTime: 0,
+                duration: 0,
+                timestamp: now
             };
             callHistoryRef.child(recordId).set(record).catch(err => {
                 console.warn('Gagal simpan riwayat panggilan:', err);
@@ -3330,7 +3283,7 @@
         });
 
         // ============================================================
-        // 23. WEBRTC - CALL LOGIC (sama seperti sebelumnya)
+        // 23. WEBRTC - PERBAIKAN UTAMA UNTUK VIDEO
         // ============================================================
 
         function getCallerName() {
@@ -3371,14 +3324,12 @@
             if (localStream) {
                 localStream.getTracks().forEach(track => {
                     track.stop();
-                    track.enabled = false;
                 });
                 localStream = null;
             }
             if (remoteStream) {
                 remoteStream.getTracks().forEach(track => {
                     track.stop();
-                    track.enabled = false;
                 });
                 remoteStream = null;
             }
@@ -3433,38 +3384,27 @@
             }
         }
 
-        function createCallRecord(type, isVideo, callerName, calleeName) {
-            const recordId = callHistoryRef.push().key;
-            const now = Date.now();
-            const record = {
-                type: type,
-                isVideo: isVideo,
-                callerName: callerName,
-                calleeName: calleeName || 'Penerima',
-                status: 'ringing',
-                startTime: now,
-                endTime: 0,
-                duration: 0,
-                timestamp: now
-            };
-            callHistoryRef.child(recordId).set(record).catch(err => {
-                console.warn('Gagal simpan riwayat panggilan:', err);
-            });
-            return recordId;
-        }
-
+        // ============================================================
+        // 24. CREATE PEER CONNECTION - DIPERBAIKI
+        // ============================================================
         function createPeerConnection(isCallerFlag, callId) {
             const pc = new RTCPeerConnection(rtcConfig);
 
+            // Tambahkan track dari localStream
             if (localStream) {
                 localStream.getTracks().forEach(track => {
                     pc.addTrack(track, localStream);
                 });
             }
 
+            // ========== PERBAIKAN UTAMA ==========
+            // Event ontrack untuk menerima stream dari remote
             pc.ontrack = (event) => {
+                console.log('📹 ontrack event received!', event);
                 if (event.streams && event.streams[0]) {
+                    // Set remote video langsung dari event
                     remoteVideo.srcObject = event.streams[0];
+                    remoteStream = event.streams[0];
                     callStatusDisplay.textContent = '📞 Tersambung';
                     stopRingtone();
 
@@ -3472,9 +3412,13 @@
                         callConnectedTime = Date.now();
                         updateCallRecord(activeCallRecord.callId, { status: 'answered' });
                     }
+                } else {
+                    // Fallback: jika tidak ada streams di event
+                    console.warn('⚠️ Tidak ada stream di event ontrack');
                 }
             };
 
+            // Event untuk ICE candidate
             pc.onicecandidate = (event) => {
                 if (event.candidate) {
                     callsRef.child(callId).child('candidates').push({
@@ -3484,8 +3428,10 @@
                 }
             };
 
+            // Event untuk ICE connection state
             pc.oniceconnectionstatechange = () => {
                 const state = pc.iceConnectionState;
+                console.log('🔄 ICE State:', state);
                 if (state === 'connected' && activeCallRecord && activeCallRecord.callId) {
                     callConnectedTime = Date.now();
                     updateCallRecord(activeCallRecord.callId, { status: 'answered' });
@@ -3500,11 +3446,19 @@
                 }
             };
 
+            // Event untuk connection state
+            pc.onconnectionstatechange = () => {
+                console.log('🔗 Connection State:', pc.connectionState);
+                if (pc.connectionState === 'connected') {
+                    console.log('✅ Koneksi WebRTC berhasil!');
+                }
+            };
+
             return pc;
         }
 
         // ============================================================
-        // 24. SWITCH CAMERA
+        // 25. SWITCH CAMERA
         // ============================================================
         async function switchCamera() {
             if (!localStream || !isVideoCall) return;
@@ -3578,37 +3532,11 @@
             } catch (error) {
                 console.warn('Gagal mengganti kamera:', error);
                 currentFacingMode = (currentFacingMode === 'user') ? 'environment' : 'user';
-                try {
-                    const fallbackStream = await navigator.mediaDevices.getUserMedia({
-                        audio: true,
-                        video: { facingMode: currentFacingMode }
-                    });
-                    const videoTracks = fallbackStream.getVideoTracks();
-                    videoTracks.forEach(track => {
-                        localStream.getVideoTracks().forEach(t => {
-                            if (localStream.getTracks().includes(t)) {
-                                localStream.removeTrack(t);
-                                t.stop();
-                            }
-                        });
-                        localStream.addTrack(track);
-                    });
-                    localVideo.srcObject = localStream;
-                    if (peerConnection) {
-                        const senders = peerConnection.getSenders();
-                        const videoSender = senders.find(s => s.track && s.track.kind === 'video');
-                        if (videoSender && videoTracks.length > 0) {
-                            await videoSender.replaceTrack(videoTracks[0]);
-                        }
-                    }
-                } catch (fallbackError) {
-                    alert('Gagal mengganti kamera.');
-                }
             }
         }
 
         // ============================================================
-        // 25. MULAI PANGGILAN (Caller)
+        // 26. MULAI PANGGILAN (Caller)
         // ============================================================
         async function startCall(video) {
             if (currentCallId) {
@@ -3675,6 +3603,7 @@
 
                 callStatusDisplay.textContent = '⏳ Menunggu penerima...';
 
+                // Listener untuk answer
                 const answerListener = callsRef.child(callId).child('answer');
                 const onAnswer = (snapshot) => {
                     if (snapshot.exists()) {
@@ -3694,6 +3623,7 @@
                 };
                 answerListener.on('value', onAnswer);
 
+                // Listener untuk candidates
                 const candListener = callsRef.child(callId).child('candidates');
                 const onCandidate = (snapshot) => {
                     const data = snapshot.val();
@@ -3716,7 +3646,7 @@
         }
 
         // ============================================================
-        // 26. MENERIMA PANGGILAN (Callee)
+        // 27. MENERIMA PANGGILAN (Callee) - DIPERBAIKI
         // ============================================================
         function acceptIncomingCall() {
             if (!incomingCallId) return;
@@ -3738,6 +3668,7 @@
                     currentCallId = callId;
                     isCaller = false;
 
+                    // === AMBIL LOCAL STREAM ===
                     const constraints = {
                         audio: true,
                         video: video ? {
@@ -3749,7 +3680,7 @@
                     localStream = await navigator.mediaDevices.getUserMedia(constraints);
                     localVideo.srcObject = localStream;
 
-                    const name = getCallerName();
+                    const name = currentUsername || 'User';
                     const recordId = createCallRecord(video ? 'video' : 'voice', video, data.from || 'Penelepon', name);
                     activeCallRecord = {
                         callId: recordId,
@@ -3773,14 +3704,18 @@
 
                     stopRingtone();
 
+                    // === BUAT PEER CONNECTION ===
                     peerConnection = createPeerConnection(false, callId);
 
+                    // === SET REMOTE DESCRIPTION ===
                     const offer = new RTCSessionDescription(data.sdp);
                     await peerConnection.setRemoteDescription(offer);
 
+                    // === BUAT ANSWER ===
                     const answer = await peerConnection.createAnswer();
                     await peerConnection.setLocalDescription(answer);
 
+                    // === KIRIM ANSWER ===
                     await callsRef.child(callId).child('answer').set({
                         sdp: answer,
                         from: name
@@ -3795,6 +3730,7 @@
                     incomingCallPopup.classList.remove('show');
                     incomingCallId = null;
 
+                    // === LISTENER CANDIDATES ===
                     const candListener = callsRef.child(callId).child('candidates');
                     const onCandidate = (snapshot) => {
                         const candData = snapshot.val();
@@ -3817,7 +3753,7 @@
         }
 
         // ============================================================
-        // 27. LISTENER PANGGILAN MASUK
+        // 28. LISTENER PANGGILAN MASUK
         // ============================================================
         function listenForIncomingCalls() {
             callsRef.on('child_added', (snapshot) => {
@@ -3857,6 +3793,7 @@
                     };
                     callStartTime = Date.now();
 
+                    // Timeout jika tidak dijawab
                     setTimeout(() => {
                         if (incomingCallId === callId) {
                             incomingCallPopup.classList.remove('show');
@@ -3879,7 +3816,7 @@
         }
 
         // ============================================================
-        // 28. TOMBOL PANGGILAN
+        // 29. TOMBOL PANGGILAN
         // ============================================================
         voiceCallBtn.addEventListener('click', () => {
             startCall(false);
@@ -3890,7 +3827,7 @@
         });
 
         // ============================================================
-        // 29. TOMBOL INCOMING CALL
+        // 30. TOMBOL INCOMING CALL
         // ============================================================
         incAcceptBtn.addEventListener('click', () => {
             stopRingtone();
@@ -3916,7 +3853,7 @@
         });
 
         // ============================================================
-        // 30. TOMBOL KONTROL PANGGILAN
+        // 31. TOMBOL KONTROL PANGGILAN
         // ============================================================
         endCallBtn.addEventListener('click', () => {
             if (confirm('Akhiri panggilan?')) {
@@ -3954,7 +3891,7 @@
         switchCameraBtn.addEventListener('click', switchCamera);
 
         // ============================================================
-        // 31. CLEANUP PANGGILAN DI FIREBASE
+        // 32. CLEANUP PANGGILAN DI FIREBASE
         // ============================================================
         callsRef.on('child_removed', (snapshot) => {
             const removedId = snapshot.key;
@@ -3981,16 +3918,6 @@
         });
 
         // ============================================================
-        // 32. WEBRTC KONFIGURASI
-        // ============================================================
-        const rtcConfig = {
-            iceServers: [
-                { urls: 'stun:stun.l.google.com:19302' },
-                { urls: 'stun:stun1.l.google.com:19302' }
-            ]
-        };
-
-        // ============================================================
         // 33. INISIALISASI
         // ============================================================
 
@@ -4001,7 +3928,6 @@
         const hasSavedLogin = checkSavedLogin();
 
         if (!hasSavedLogin) {
-            // Tampilkan login
             loginScreen.style.display = 'flex';
             document.getElementById('appContainer').classList.remove('show');
         }
@@ -4013,8 +3939,9 @@
         // Listener panggilan masuk
         listenForIncomingCalls();
 
-        console.log('💬 Ja\'O Chat dengan sistem login siap!');
-        console.log('👤 Login dengan username unik di Firebase.');
+        console.log('💬 Ja\'O Chat dengan perbaikan video siap!');
+        console.log('📹 Video call sekarang bisa diterima dengan benar.');
+        console.log('📸 Fitur ganti kamera depan/belakang tersedia!');
     </script>
 </body>
 </html>
