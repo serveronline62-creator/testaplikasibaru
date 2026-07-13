@@ -35,13 +35,179 @@
             margin: 0;
             padding: 0;
         }
+        
+        /* ----- LOGIN SCREEN ----- */
+        #loginScreen {
+            width: 100%;
+            max-width: 420px;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+            padding: 40px 30px;
+            text-align: center;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #loginScreen .login-logo {
+            font-size: 72px;
+            color: #00a884;
+            margin-bottom: 10px;
+        }
+        #loginScreen h1 {
+            font-size: 28px;
+            color: #1a1a1a;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        #loginScreen .subtitle {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        #loginScreen .login-form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        #loginScreen .login-form input {
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+            width: 100%;
+        }
+        #loginScreen .login-form input:focus {
+            border-color: #00a884;
+        }
+        #loginScreen .login-form input.error {
+            border-color: #e74c3c;
+        }
+        #loginScreen .login-form .login-btn {
+            padding: 14px;
+            background: #00a884;
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        #loginScreen .login-form .login-btn:hover {
+            background: #008f72;
+            transform: scale(1.02);
+        }
+        #loginScreen .login-form .login-btn:active {
+            transform: scale(0.98);
+        }
+        #loginScreen .login-form .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        #loginScreen .login-error {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: -8px;
+            display: none;
+        }
+        #loginScreen .login-error.show {
+            display: block;
+        }
+        #loginScreen .login-loading {
+            display: none;
+            margin: 10px 0;
+            color: #00a884;
+            font-size: 14px;
+        }
+        #loginScreen .login-loading.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        #loginScreen .login-loading .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid #e0e0e0;
+            border-top: 3px solid #00a884;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #loginScreen .users-list {
+            margin-top: 20px;
+            width: 100%;
+            border-top: 1px solid #e8e8e8;
+            padding-top: 16px;
+        }
+        #loginScreen .users-list .users-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        #loginScreen .users-list .user-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 4px;
+        }
+        #loginScreen .users-list .user-item:hover {
+            background: #f0f0f0;
+        }
+        #loginScreen .users-list .user-item .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #00a884;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        #loginScreen .users-list .user-item .user-name {
+            font-size: 15px;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+        #loginScreen .users-list .user-item .user-status {
+            font-size: 12px;
+            color: #999;
+            margin-left: auto;
+        }
+        #loginScreen .users-list .user-item .user-status.online {
+            color: #25d366;
+        }
+
         .chat-container {
             width: 100%;
             max-width: 520px;
             background: #ffffff;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
             overflow: hidden;
-            display: flex;
+            display: none;
             flex-direction: column;
             height: 100vh;
             max-height: 100vh;
@@ -58,8 +224,11 @@
                 margin: 16px;
             }
         }
+        .chat-container.show {
+            display: flex;
+        }
 
-        /* ----- HEADER ----- */
+        /* ----- CHAT HEADER ----- */
         .chat-header {
             background: #00a884;
             padding: 12px 16px;
@@ -79,10 +248,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 18px;
             color: #00a884;
             font-weight: bold;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-transform: uppercase;
         }
         .chat-header .info {
             flex: 1;
@@ -119,6 +289,10 @@
                 opacity: 0.4;
                 transform: scale(0.8);
             }
+        }
+        .chat-header .info .username-display {
+            font-size: 12px;
+            opacity: 0.8;
         }
         .chat-header .actions {
             display: flex;
@@ -165,6 +339,21 @@
         .chat-header .actions .menu-dots:hover {
             opacity: 1;
             background: rgba(255, 255, 255, 0.2);
+        }
+        .chat-header .actions .logout-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .chat-header .actions .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .header-dropdown {
@@ -226,7 +415,7 @@
             margin: 4px 12px;
         }
 
-        /* ----- MESSAGE AREA ----- */
+        /* ----- MESSAGE AREA (sama seperti sebelumnya) ----- */
         .messages-wrapper {
             flex: 1;
             overflow-y: auto;
@@ -456,18 +645,6 @@
             font-size: 11px;
             color: #999;
             text-transform: lowercase;
-        }
-        .link-preview .lp-loading {
-            padding: 12px;
-            text-align: center;
-            color: #999;
-            font-size: 13px;
-        }
-        .link-preview .lp-error {
-            padding: 12px;
-            text-align: center;
-            color: #e74c3c;
-            font-size: 13px;
         }
 
         .message .reply-quote {
@@ -701,6 +878,7 @@
             flex: 0 0 100px;
             font-weight: 500;
             background: #f8f8f8;
+            display: none;
         }
         .input-row button.send-btn {
             padding: 10px 18px;
@@ -1295,13 +1473,23 @@
 
         /* ----- RESPONSIVE ----- */
         @media (max-width: 480px) {
+            #loginScreen {
+                padding: 30px 20px;
+                margin: 12px;
+            }
+            #loginScreen .login-logo {
+                font-size: 56px;
+            }
+            #loginScreen h1 {
+                font-size: 24px;
+            }
             .chat-header .info h1 {
                 font-size: 16px;
             }
             .chat-header .avatar {
                 width: 36px;
                 height: 36px;
-                font-size: 18px;
+                font-size: 16px;
             }
             .chat-header .actions button {
                 width: 36px;
@@ -1321,6 +1509,7 @@
                 flex: 0 0 80px;
                 font-size: 14px;
                 padding: 8px 12px;
+                display: none;
             }
             .input-row input[type="text"].msg-input {
                 font-size: 14px;
@@ -1436,13 +1625,18 @@
             .call-history-header h2 {
                 font-size: 16px;
             }
+            #loginScreen .users-list .user-item {
+                padding: 8px 12px;
+            }
+            #loginScreen .users-list .user-item .user-avatar {
+                width: 30px;
+                height: 30px;
+                font-size: 13px;
+            }
         }
         @media (max-width: 380px) {
             .input-row {
                 flex-wrap: wrap;
-            }
-            .input-row input[type="text"].name-input {
-                flex: 1 1 100%;
             }
             .input-row input[type="text"].msg-input {
                 flex: 1 1 60%;
@@ -1464,19 +1658,51 @@
 </head>
 <body>
 
+    <!-- ============================================================= -->
+    <!-- LOGIN SCREEN -->
+    <!-- ============================================================= -->
+    <div id="loginScreen">
+        <div class="login-logo"><i class="fas fa-comment-dots"></i></div>
+        <h1>Ja'O Chat</h1>
+        <p class="subtitle">Masuk untuk mulai mengobrol</p>
+        
+        <div class="login-form">
+            <input type="text" id="loginUsername" placeholder="Masukkan username" maxlength="20" autocomplete="off" />
+            <div class="login-error" id="loginError">Username sudah digunakan! Silakan pilih yang lain.</div>
+            <button class="login-btn" id="loginBtn">
+                <span>Masuk</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <div class="login-loading" id="loginLoading">
+                <div class="spinner"></div>
+                <span>Memeriksa username...</span>
+            </div>
+        </div>
+
+        <div class="users-list" id="usersList">
+            <div class="users-label"><i class="fas fa-users"></i> Pengguna Aktif</div>
+            <div id="activeUsersContainer"></div>
+        </div>
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- CHAT CONTAINER -->
+    <!-- ============================================================= -->
     <div class="chat-container" id="appContainer">
 
         <!-- HEADER -->
         <div class="chat-header">
-            <div class="avatar"><i class="fas fa-comment-dots"></i></div>
+            <div class="avatar" id="userAvatar">U</div>
             <div class="info">
                 <h1>Ja'O Chat</h1>
                 <div class="status"><span>Online</span></div>
+                <div class="username-display" id="headerUsername">@user</div>
             </div>
             <div class="actions">
                 <button id="voiceCallBtn" title="Panggilan Suara"><i class="fas fa-phone"></i></button>
                 <button id="videoCallBtn" title="Panggilan Video"><i class="fas fa-video"></i></button>
                 <button id="historyCallBtn" title="Riwayat Panggilan"><i class="fas fa-history"></i></button>
+                <button class="logout-btn" id="logoutBtn" title="Keluar"><i class="fas fa-sign-out-alt"></i></button>
                 <span class="menu-dots" id="headerMenuBtn"><i class="fas fa-ellipsis-v"></i></span>
             </div>
             <div class="header-dropdown" id="headerDropdown">
@@ -1517,7 +1743,6 @@
             </div>
 
             <div class="input-row">
-                <input type="text" class="name-input" id="nameInput" placeholder="Nama" maxlength="20" value="User" />
                 <input type="text" class="msg-input" id="messageInput" placeholder="Ketik pesan..." maxlength="500" autocomplete="off" />
                 <button class="icon-btn" id="attachBtn" title="Kirim File"><i class="fas fa-paperclip"></i></button>
                 <button class="icon-btn" id="emojiToggle" type="button" aria-label="Emoji"><i class="far fa-smile"></i></button>
@@ -1532,7 +1757,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- CALL OVERLAY (Tampilan saat sedang telepon/video call)        -->
+        <!-- CALL OVERLAY -->
         <!-- ============================================================= -->
         <div class="call-overlay" id="callOverlay">
             <div class="call-info">
@@ -1552,7 +1777,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- INCOMING CALL POPUP (Notifikasi panggilan masuk)              -->
+        <!-- INCOMING CALL POPUP -->
         <!-- ============================================================= -->
         <div class="incoming-call" id="incomingCallPopup">
             <div class="inc-caller" id="incCallerName">User</div>
@@ -1564,7 +1789,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- CALL HISTORY PANEL (Slide-in dari kanan)                      -->
+        <!-- CALL HISTORY PANEL -->
         <!-- ============================================================= -->
         <div class="call-history-overlay" id="callHistoryOverlay">
             <div class="call-history-panel">
@@ -1625,28 +1850,30 @@
         const messagesRef = database.ref('messages');
         const callsRef = database.ref('calls');
         const callHistoryRef = database.ref('callHistory');
+        const usersRef = database.ref('users');
 
         // ============================================================
-        // 2. GOFILE API TOKEN
+        // 2. VARIABEL GLOBAL
         // ============================================================
-        const GOFILE_API_TOKEN = 'YOUR_API_TOKEN';
+        let currentUser = null;
+        let currentUsername = '';
+        let isLoggedIn = false;
 
         // ============================================================
-        // 3. WEBRTC KONFIGURASI
+        // 3. DOM ELEMEN LOGIN
         // ============================================================
-        const rtcConfig = {
-            iceServers: [
-                { urls: 'stun:stun.l.google.com:19302' },
-                { urls: 'stun:stun1.l.google.com:19302' }
-            ]
-        };
+        const loginScreen = document.getElementById('loginScreen');
+        const loginUsername = document.getElementById('loginUsername');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginError = document.getElementById('loginError');
+        const loginLoading = document.getElementById('loginLoading');
+        const activeUsersContainer = document.getElementById('activeUsersContainer');
 
         // ============================================================
-        // 4. DOM ELEMEN
+        // 4. DOM ELEMEN CHAT (seperti sebelumnya)
         // ============================================================
         const container = document.getElementById('messageContainer');
         const emptyState = document.getElementById('emptyState');
-        const nameInput = document.getElementById('nameInput');
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
         const emojiToggle = document.getElementById('emojiToggle');
@@ -1672,6 +1899,9 @@
         const filePreviewInfo = document.getElementById('filePreviewInfo');
         const uploadProgress = document.getElementById('uploadProgress');
         const cancelFileBtn = document.getElementById('cancelFileBtn');
+        const userAvatar = document.getElementById('userAvatar');
+        const headerUsername = document.getElementById('headerUsername');
+        const logoutBtn = document.getElementById('logoutBtn');
 
         // Call DOM
         const callOverlay = document.getElementById('callOverlay');
@@ -1712,124 +1942,221 @@
         let isVideoOff = false;
         let incomingCallId = null;
         let currentFacingMode = 'user';
-
-        // ============================================================
-        // 6. CALL HISTORY TRACKING
-        // ============================================================
         let activeCallRecord = null;
         let callStartTime = 0;
         let callConnectedTime = 0;
 
         // ============================================================
-        // 7. SUARA (Chat + Ringtone)
+        // 6. LOGIN SYSTEM
         // ============================================================
-        let audioCtx = null;
-        let ringtoneNodes = null;
 
-        function initAudio() {
-            if (!audioCtx) {
-                try { audioCtx = new(window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
-            }
-            if (audioCtx && audioCtx.state === 'suspended') {
-                audioCtx.resume().catch(() => {});
-            }
-        }
-
-        function playBirdSound() {
-            try {
-                initAudio();
-                if (!audioCtx) return;
-                const now = audioCtx.currentTime;
-                const notes = [
-                    { freq: 1200, dur: 0.06, start: 0.00 },
-                    { freq: 1800, dur: 0.05, start: 0.08 },
-                    { freq: 1400, dur: 0.07, start: 0.15 },
-                    { freq: 2000, dur: 0.05, start: 0.24 },
-                    { freq: 1600, dur: 0.06, start: 0.32 },
-                    { freq: 2200, dur: 0.04, start: 0.40 },
-                    { freq: 1300, dur: 0.08, start: 0.48 }
-                ];
-                notes.forEach(note => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(note.freq, now + note.start);
-                    gain.gain.setValueAtTime(0, now + note.start);
-                    gain.gain.linearRampToValueAtTime(0.15, now + note.start + 0.01);
-                    gain.gain.linearRampToValueAtTime(0.12, now + note.start + note.dur * 0.5);
-                    gain.gain.linearRampToValueAtTime(0, now + note.start + note.dur);
-                    osc.start(now + note.start);
-                    osc.stop(now + note.start + note.dur);
-                });
-            } catch (e) { try { const a = new Audio(
-                        'data:audio/wav;base64,UklGRlQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAABCAAAAAAA='
-                        );
-                    a.volume = 0.5;
-                    a.play().catch(() => {}); } catch (e2) {} }
-        }
-
-        function playOutgoingSound() {
-            try {
-                initAudio();
-                if (!audioCtx) return;
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.frequency.value = 600;
-                osc.type = 'sine';
-                const now = audioCtx.currentTime;
-                gain.gain.setValueAtTime(0.12, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-                osc.start(now);
-                osc.stop(now + 0.08);
-            } catch (e) { try { const a = new Audio(
-                        'data:audio/wav;base64,UklGRlQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAABCAAAAAAA='
-                        );
-                    a.volume = 0.3;
-                    a.play().catch(() => {}); } catch (e2) {} }
-        }
-
-        function playRingtone() {
-            stopRingtone();
-            try {
-                initAudio();
-                if (!audioCtx) return;
-                const gain = audioCtx.createGain();
-                gain.connect(audioCtx.destination);
-                gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
-                let isOn = true;
-                const interval = setInterval(() => {
-                    if (!audioCtx || audioCtx.state === 'closed') {
-                        clearInterval(interval);
-                        return;
+        // Cek apakah user sudah login sebelumnya
+        function checkSavedLogin() {
+            const saved = localStorage.getItem('jao_chat_user');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    if (data.username && data.timestamp) {
+                        // Cek apakah login masih valid (misal 7 hari)
+                        const daysDiff = (Date.now() - data.timestamp) / (1000 * 60 * 60 * 24);
+                        if (daysDiff < 7) {
+                            // Coba login otomatis
+                            loginAsUser(data.username);
+                            return true;
+                        }
                     }
-                    const freq = isOn ? 440 : 480;
-                    const osc = audioCtx.createOscillator();
-                    osc.connect(gain);
-                    osc.type = 'sine';
-                    osc.frequency.value = freq;
-                    const startTime = audioCtx.currentTime;
-                    osc.start(startTime);
-                    osc.stop(startTime + 0.2);
-                    isOn = !isOn;
-                }, 400);
-                ringtoneNodes = { gain, interval };
-            } catch (e) { console.warn('Gagal memutar ringtone:', e); }
+                } catch (e) {}
+            }
+            return false;
         }
 
-        function stopRingtone() {
-            if (ringtoneNodes) {
-                clearInterval(ringtoneNodes.interval);
-                try { ringtoneNodes.gain.disconnect(); } catch (e) {}
-                ringtoneNodes = null;
+        function saveLogin(username) {
+            localStorage.setItem('jao_chat_user', JSON.stringify({
+                username: username,
+                timestamp: Date.now()
+            }));
+        }
+
+        function clearSavedLogin() {
+            localStorage.removeItem('jao_chat_user');
+        }
+
+        function loginAsUser(username) {
+            currentUsername = username;
+            currentUser = username;
+            isLoggedIn = true;
+            
+            // Update UI
+            const initial = username.charAt(0).toUpperCase();
+            userAvatar.textContent = initial;
+            headerUsername.textContent = '@' + username;
+            
+            // Tampilkan chat, sembunyikan login
+            loginScreen.style.display = 'none';
+            document.getElementById('appContainer').classList.add('show');
+            
+            // Set user di Firebase
+            usersRef.child(username).set({
+                username: username,
+                lastActive: Date.now(),
+                online: true
+            }).catch(err => console.warn('Gagal update user:', err));
+            
+            // Simpan login
+            saveLogin(username);
+            
+            // Inisialisasi chat
+            initChat();
+            messageInput.focus();
+        }
+
+        async function handleLogin() {
+            const username = loginUsername.value.trim();
+            if (!username) {
+                loginError.textContent = 'Masukkan username terlebih dahulu!';
+                loginError.classList.add('show');
+                loginUsername.classList.add('error');
+                return;
+            }
+            
+            if (username.length < 3) {
+                loginError.textContent = 'Username minimal 3 karakter!';
+                loginError.classList.add('show');
+                loginUsername.classList.add('error');
+                return;
+            }
+
+            // Sembunyikan error
+            loginError.classList.remove('show');
+            loginUsername.classList.remove('error');
+            
+            // Tampilkan loading
+            loginBtn.disabled = true;
+            loginLoading.classList.add('show');
+            
+            try {
+                // Cek apakah username sudah digunakan
+                const snapshot = await usersRef.child(username).once('value');
+                if (snapshot.exists()) {
+                    loginError.textContent = 'Username "' + username + '" sudah digunakan! Silakan pilih yang lain.';
+                    loginError.classList.add('show');
+                    loginUsername.classList.add('error');
+                    loginBtn.disabled = false;
+                    loginLoading.classList.remove('show');
+                    return;
+                }
+                
+                // Login berhasil
+                loginAsUser(username);
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                loginError.textContent = 'Terjadi kesalahan. Silakan coba lagi.';
+                loginError.classList.add('show');
+                loginBtn.disabled = false;
+                loginLoading.classList.remove('show');
             }
         }
 
+        // Event listener login
+        loginBtn.addEventListener('click', handleLogin);
+        loginUsername.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleLogin();
+            }
+            // Hapus error saat mengetik
+            if (loginError.classList.contains('show')) {
+                loginError.classList.remove('show');
+                loginUsername.classList.remove('error');
+            }
+        });
+
         // ============================================================
-        // 8. FUNGSI BANTU (Chat)
+        // 7. LOGOUT
+        // ============================================================
+        logoutBtn.addEventListener('click', () => {
+            if (confirm('Yakin ingin keluar?')) {
+                // Update status offline
+                if (currentUsername) {
+                    usersRef.child(currentUsername).update({
+                        online: false,
+                        lastActive: Date.now()
+                    }).catch(() => {});
+                }
+                
+                // Hapus session
+                clearSavedLogin();
+                isLoggedIn = false;
+                currentUser = null;
+                currentUsername = '';
+                
+                // Sembunyikan chat, tampilkan login
+                document.getElementById('appContainer').classList.remove('show');
+                loginScreen.style.display = 'flex';
+                
+                // Reset chat listeners
+                messagesRef.off();
+                callsRef.off();
+                callHistoryRef.off();
+                
+                // Bersihkan container
+                container.innerHTML = '';
+                emptyState.style.display = 'flex';
+                lastDisplayedDateKey = null;
+                notifiedKeys.clear();
+            }
+        });
+
+        // ============================================================
+        // 8. ACTIVE USERS LIST
+        // ============================================================
+        function renderActiveUsers() {
+            usersRef.orderByChild('online').equalTo(true).limitToLast(20).on('value', (snapshot) => {
+                const users = [];
+                snapshot.forEach((child) => {
+                    const data = child.val();
+                    if (data.username && data.username !== currentUsername) {
+                        users.push({
+                            username: data.username,
+                            lastActive: data.lastActive
+                        });
+                    }
+                });
+                
+                // Urutkan berdasarkan lastActive terbaru
+                users.sort((a, b) => (b.lastActive || 0) - (a.lastActive || 0));
+                
+                if (users.length === 0) {
+                    activeUsersContainer.innerHTML = '<div style="text-align:center;color:#bbb;font-size:13px;padding:10px 0;">Tidak ada pengguna aktif</div>';
+                    return;
+                }
+                
+                let html = '';
+                users.forEach(user => {
+                    const initial = user.username.charAt(0).toUpperCase();
+                    html += `
+                        <div class="user-item" data-username="${user.username}">
+                            <div class="user-avatar">${initial}</div>
+                            <div class="user-name">${user.username}</div>
+                            <div class="user-status online"><i class="fas fa-circle" style="font-size:8px;"></i> Online</div>
+                        </div>
+                    `;
+                });
+                activeUsersContainer.innerHTML = html;
+                
+                // Klik user untuk mengisi username di input (bisa langsung chat)
+                document.querySelectorAll('.user-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        // Bisa digunakan untuk fitur chat langsung dengan user tersebut
+                        // Untuk sekarang, kita fokus ke login
+                    });
+                });
+            });
+        }
+
+        // ============================================================
+        // 9. FUNGSI BANTU (Chat) - Sama seperti sebelumnya
         // ============================================================
         function formatTime(timestamp) {
             if (!timestamp) return '--:--';
@@ -1838,8 +2165,7 @@
         }
 
         function getSenderName() {
-            const raw = nameInput.value.trim();
-            return raw || 'Anonim';
+            return currentUsername || 'Anonim';
         }
 
         function scrollToBottom() {
@@ -1905,18 +2231,16 @@
 
         function formatDateForHistory(timestamp) {
             const d = new Date(timestamp);
-            const today = new Date();
-            const yesterday = new Date(today);
-            yesterday.setDate(yesterday.getDate() - 1);
             const dateStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
             const timeStr = d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             return dateStr + ' ' + timeStr;
         }
 
         // ============================================================
-        // 9. UPLOAD FILE (Chat)
+        // 10. UPLOAD FILE (Chat)
         // ============================================================
         const IMGUR_CLIENT_ID = '546c25a59c58ad7';
+        const GOFILE_API_TOKEN = 'YOUR_API_TOKEN';
 
         async function uploadToImgur(file) {
             const formData = new FormData();
@@ -1967,34 +2291,7 @@
         }
 
         // ============================================================
-        // 10. HEADER DROPDOWN
-        // ============================================================
-        headerMenuBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            headerDropdown.classList.toggle('show');
-        });
-        document.addEventListener('click', (e) => {
-            if (!headerDropdown.contains(e.target) && e.target !== headerMenuBtn) {
-                headerDropdown.classList.remove('show');
-            }
-        });
-        clearAllChat.addEventListener('click', () => {
-            if (confirm('Hapus semua pesan? Tindakan tidak dapat dibatalkan.')) {
-                messagesRef.remove().then(() => {
-                    document.querySelectorAll('.message').forEach(el => el.remove());
-                    document.querySelectorAll('.date-separator').forEach(el => el.remove());
-                    updateEmptyState();
-                    notifiedKeys.clear();
-                    lastDisplayedDateKey = null;
-                    headerDropdown.classList.remove('show');
-                }).catch(err => {
-                    alert('Gagal hapus semua pesan.');
-                });
-            }
-        });
-
-        // ============================================================
-        // 11. REPLY (Chat)
+        // 11. REPLY & CONTEXT MENU (sama seperti sebelumnya)
         // ============================================================
         let replyTo = null;
 
@@ -2012,9 +2309,6 @@
         }
         cancelReplyBtn.addEventListener('click', clearReply);
 
-        // ============================================================
-        // 12. CONTEXT MENU (Chat)
-        // ============================================================
         let currentMessageKey = null;
         let currentMessageElement = null;
         let currentMessageData = null;
@@ -2060,7 +2354,6 @@
         menuForward.addEventListener('click', () => {
             if (currentMessageData) {
                 const name = getSenderName();
-                sessionStorage.setItem('chat_user', name);
                 const newRef = messagesRef.push();
                 const payload = {
                     name: name,
@@ -2068,9 +2361,7 @@
                     timestamp: Date.now(),
                     read: false
                 };
-                if (currentMessageData.imageUrl) {
-                    payload.imageUrl = currentMessageData.imageUrl;
-                }
+                if (currentMessageData.imageUrl) payload.imageUrl = currentMessageData.imageUrl;
                 if (currentMessageData.fileUrl) {
                     payload.fileUrl = currentMessageData.fileUrl;
                     payload.fileName = currentMessageData.fileName;
@@ -2112,6 +2403,44 @@
         });
 
         // ============================================================
+        // 12. HEADER DROPDOWN
+        // ============================================================
+        headerMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            headerDropdown.classList.toggle('show');
+        });
+        document.addEventListener('click', (e) => {
+            if (!headerDropdown.contains(e.target) && e.target !== headerMenuBtn) {
+                headerDropdown.classList.remove('show');
+            }
+        });
+        clearAllChat.addEventListener('click', () => {
+            if (confirm('Hapus semua pesan? Tindakan tidak dapat dibatalkan.')) {
+                messagesRef.remove().then(() => {
+                    document.querySelectorAll('.message').forEach(el => el.remove());
+                    document.querySelectorAll('.date-separator').forEach(el => el.remove());
+                    updateEmptyState();
+                    notifiedKeys.clear();
+                    lastDisplayedDateKey = null;
+                    headerDropdown.classList.remove('show');
+                }).catch(err => {
+                    alert('Gagal hapus semua pesan.');
+                });
+            }
+        });
+
+        clearAllHistory.addEventListener('click', () => {
+            headerDropdown.classList.remove('show');
+            if (confirm('Hapus semua riwayat panggilan?')) {
+                callHistoryRef.remove().then(() => {
+                    renderCallHistory();
+                }).catch(err => {
+                    alert('Gagal hapus riwayat.');
+                });
+            }
+        });
+
+        // ============================================================
         // 13. CLEANUP DATE SEPARATORS
         // ============================================================
         function cleanupDateSeparators() {
@@ -2129,7 +2458,7 @@
         }
 
         // ============================================================
-        // 14. LINK PREVIEW (Chat)
+        // 14. LINK PREVIEW (sama seperti sebelumnya)
         // ============================================================
         const previewCache = new Map();
 
@@ -2207,7 +2536,7 @@
         }
 
         // ============================================================
-        // 15. RENDER MESSAGE (Chat)
+        // 15. RENDER MESSAGE (sama seperti sebelumnya)
         // ============================================================
         let lastDisplayedDateKey = null;
 
@@ -2464,47 +2793,176 @@
         }
 
         // ============================================================
-        // 16. LISTENER REALTIME (Chat)
+        // 16. SUARA (Chat + Ringtone)
+        // ============================================================
+        let audioCtx = null;
+        let ringtoneNodes = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                try { audioCtx = new(window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(() => {});
+            }
+        }
+
+        function playBirdSound() {
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                const now = audioCtx.currentTime;
+                const notes = [
+                    { freq: 1200, dur: 0.06, start: 0.00 },
+                    { freq: 1800, dur: 0.05, start: 0.08 },
+                    { freq: 1400, dur: 0.07, start: 0.15 },
+                    { freq: 2000, dur: 0.05, start: 0.24 },
+                    { freq: 1600, dur: 0.06, start: 0.32 },
+                    { freq: 2200, dur: 0.04, start: 0.40 },
+                    { freq: 1300, dur: 0.08, start: 0.48 }
+                ];
+                notes.forEach(note => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(note.freq, now + note.start);
+                    gain.gain.setValueAtTime(0, now + note.start);
+                    gain.gain.linearRampToValueAtTime(0.15, now + note.start + 0.01);
+                    gain.gain.linearRampToValueAtTime(0.12, now + note.start + note.dur * 0.5);
+                    gain.gain.linearRampToValueAtTime(0, now + note.start + note.dur);
+                    osc.start(now + note.start);
+                    osc.stop(now + note.start + note.dur);
+                });
+            } catch (e) { try { const a = new Audio(
+                        'data:audio/wav;base64,UklGRlQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAABCAAAAAAA='
+                        );
+                    a.volume = 0.5;
+                    a.play().catch(() => {}); } catch (e2) {} }
+        }
+
+        function playOutgoingSound() {
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.frequency.value = 600;
+                osc.type = 'sine';
+                const now = audioCtx.currentTime;
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            } catch (e) { try { const a = new Audio(
+                        'data:audio/wav;base64,UklGRlQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAABCAAAAAAA='
+                        );
+                    a.volume = 0.3;
+                    a.play().catch(() => {}); } catch (e2) {} }
+        }
+
+        function playRingtone() {
+            stopRingtone();
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                const gain = audioCtx.createGain();
+                gain.connect(audioCtx.destination);
+                gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+                let isOn = true;
+                const interval = setInterval(() => {
+                    if (!audioCtx || audioCtx.state === 'closed') {
+                        clearInterval(interval);
+                        return;
+                    }
+                    const freq = isOn ? 440 : 480;
+                    const osc = audioCtx.createOscillator();
+                    osc.connect(gain);
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    const startTime = audioCtx.currentTime;
+                    osc.start(startTime);
+                    osc.stop(startTime + 0.2);
+                    isOn = !isOn;
+                }, 400);
+                ringtoneNodes = { gain, interval };
+            } catch (e) { console.warn('Gagal memutar ringtone:', e); }
+        }
+
+        function stopRingtone() {
+            if (ringtoneNodes) {
+                clearInterval(ringtoneNodes.interval);
+                try { ringtoneNodes.gain.disconnect(); } catch (e) {}
+                ringtoneNodes = null;
+            }
+        }
+
+        // ============================================================
+        // 17. LISTENER REALTIME (Chat)
         // ============================================================
         let isInitialLoad = true;
         const notifiedKeys = new Set();
 
-        messagesRef.orderByChild('timestamp').limitToLast(100).on('child_added', (snapshot) => {
-            const key = snapshot.key;
-            const data = snapshot.val();
-            const currentUser = sessionStorage.getItem('chat_user') || getSenderName();
-            const isOwn = (data.name === currentUser);
-            renderMessage(key, data, isOwn);
-            if (!isOwn && data.read !== true && !notifiedKeys.has(key)) {
-                playBirdSound();
-                notifiedKeys.add(key);
-                messagesRef.child(key).update({ read: true }).catch(() => {});
-            }
-            if (isInitialLoad) {
-                isInitialLoad = false;
-                setTimeout(rebuildDateSeparators, 300);
-            }
-        });
+        function initChat() {
+            messagesRef.orderByChild('timestamp').limitToLast(100).on('child_added', (snapshot) => {
+                const key = snapshot.key;
+                const data = snapshot.val();
+                const isOwn = (data.name === currentUsername);
+                renderMessage(key, data, isOwn);
+                if (!isOwn && data.read !== true && !notifiedKeys.has(key)) {
+                    playBirdSound();
+                    notifiedKeys.add(key);
+                    messagesRef.child(key).update({ read: true }).catch(() => {});
+                }
+                if (isInitialLoad) {
+                    isInitialLoad = false;
+                    setTimeout(rebuildDateSeparators, 300);
+                }
+            });
 
-        messagesRef.on('child_changed', (snapshot) => {
-            const data = snapshot.val();
-            if (data.read !== undefined) updateCheckMark(snapshot.key, data.read);
-        });
+            messagesRef.on('child_changed', (snapshot) => {
+                const data = snapshot.val();
+                if (data.read !== undefined) updateCheckMark(snapshot.key, data.read);
+            });
 
-        messagesRef.on('child_removed', (snapshot) => {
-            const el = container.querySelector(`[data-key="${snapshot.key}"]`);
-            if (el) {
-                el.style.transition = 'opacity 0.2s';
-                el.style.opacity = '0';
-                setTimeout(() => { el.remove();
-                    updateEmptyState();
-                    cleanupDateSeparators();
-                    rebuildDateSeparators(); }, 200);
-            }
-        });
+            messagesRef.on('child_removed', (snapshot) => {
+                const el = container.querySelector(`[data-key="${snapshot.key}"]`);
+                if (el) {
+                    el.style.transition = 'opacity 0.2s';
+                    el.style.opacity = '0';
+                    setTimeout(() => { el.remove();
+                        updateEmptyState();
+                        cleanupDateSeparators();
+                        rebuildDateSeparators(); }, 200);
+                }
+            });
+
+            // Update user online status periodically
+            setInterval(() => {
+                if (currentUsername) {
+                    usersRef.child(currentUsername).update({
+                        lastActive: Date.now(),
+                        online: true
+                    }).catch(() => {});
+                }
+            }, 30000);
+
+            // Set user offline when page closes
+            window.addEventListener('beforeunload', () => {
+                if (currentUsername) {
+                    usersRef.child(currentUsername).update({
+                        online: false,
+                        lastActive: Date.now()
+                    }).catch(() => {});
+                }
+            });
+        }
 
         // ============================================================
-        // 17. KIRIM PESAN (Chat + File)
+        // 18. KIRIM PESAN (Chat + File)
         // ============================================================
         let pendingFile = null;
         let isUploading = false;
@@ -2550,6 +3008,8 @@
         });
 
         async function sendMessage() {
+            if (!isLoggedIn) return;
+            
             const text = messageInput.value.trim();
             const hasFile = pendingFile !== null;
 
@@ -2559,7 +3019,6 @@
             }
 
             const name = getSenderName();
-            sessionStorage.setItem('chat_user', name);
 
             let imageUrl = null,
                 fileUrl = null,
@@ -2641,7 +3100,7 @@
         }
 
         // ============================================================
-        // 18. EMOJI PICKER (Chat)
+        // 19. EMOJI PICKER (Chat)
         // ============================================================
         let isEmojiPickerVisible = false;
         emojiToggle.addEventListener('click', (e) => {
@@ -2669,20 +3128,16 @@
         });
 
         // ============================================================
-        // 19. EVENT LISTENERS (Chat)
+        // 20. EVENT LISTENERS (Chat)
         // ============================================================
         sendBtn.addEventListener('click', sendMessage);
         messageInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault();
                 sendMessage(); }
         });
-        nameInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') { e.preventDefault();
-                messageInput.focus(); }
-        });
 
         // ============================================================
-        // 20. CALL HISTORY UI
+        // 21. CALL HISTORY UI
         // ============================================================
 
         function openCallHistory() {
@@ -2710,19 +3165,8 @@
             }
         });
 
-        clearAllHistory.addEventListener('click', () => {
-            headerDropdown.classList.remove('show');
-            if (confirm('Hapus semua riwayat panggilan?')) {
-                callHistoryRef.remove().then(() => {
-                    renderCallHistory();
-                }).catch(err => {
-                    alert('Gagal hapus riwayat.');
-                });
-            }
-        });
-
         // ============================================================
-        // 21. CALL HISTORY - SAVE & RENDER
+        // 22. CALL HISTORY - SAVE & RENDER
         // ============================================================
 
         function saveCallRecord(type, isVideo, callerName, calleeName, status, duration, startTime, endTime) {
@@ -2886,7 +3330,7 @@
         });
 
         // ============================================================
-        // 22. WEBRTC - CALL LOGIC (dengan Call History & Switch Camera)
+        // 23. WEBRTC - CALL LOGIC (sama seperti sebelumnya)
         // ============================================================
 
         function getCallerName() {
@@ -3019,7 +3463,6 @@
             }
 
             pc.ontrack = (event) => {
-                console.log('📹 ontrack event received:', event.streams.length);
                 if (event.streams && event.streams[0]) {
                     remoteVideo.srcObject = event.streams[0];
                     callStatusDisplay.textContent = '📞 Tersambung';
@@ -3043,7 +3486,6 @@
 
             pc.oniceconnectionstatechange = () => {
                 const state = pc.iceConnectionState;
-                console.log('🔄 ICE State:', state);
                 if (state === 'connected' && activeCallRecord && activeCallRecord.callId) {
                     callConnectedTime = Date.now();
                     updateCallRecord(activeCallRecord.callId, { status: 'answered' });
@@ -3058,37 +3500,26 @@
                 }
             };
 
-            pc.onconnectionstatechange = () => {
-                console.log('🔗 Connection State:', pc.connectionState);
-            };
-
             return pc;
         }
 
         // ============================================================
-        // 23. SWITCH CAMERA
+        // 24. SWITCH CAMERA
         // ============================================================
         async function switchCamera() {
-            if (!localStream || !isVideoCall) {
-                return;
-            }
+            if (!localStream || !isVideoCall) return;
 
             const videoTracks = localStream.getVideoTracks();
-            if (videoTracks.length === 0) {
-                return;
-            }
+            if (videoTracks.length === 0) return;
 
-            // Simpan status audio
             const audioTracks = localStream.getAudioTracks();
             const wasMuted = isMuted;
 
-            // Matikan track video saat ini
             videoTracks.forEach(track => {
                 track.stop();
                 localStream.removeTrack(track);
             });
 
-            // Ganti mode kamera
             currentFacingMode = (currentFacingMode === 'user') ? 'environment' : 'user';
 
             try {
@@ -3101,18 +3532,14 @@
                     }
                 });
 
-                // Ambil video track baru
                 const newVideoTracks = newStream.getVideoTracks();
                 const newAudioTracks = newStream.getAudioTracks();
 
-                // Tambahkan video track baru ke localStream
                 newVideoTracks.forEach(track => {
                     localStream.addTrack(track);
                 });
 
-                // Update audio track
                 if (newAudioTracks.length > 0) {
-                    // Hapus audio track lama
                     audioTracks.forEach(track => {
                         if (localStream.getTracks().includes(track)) {
                             localStream.removeTrack(track);
@@ -3122,23 +3549,19 @@
                     newAudioTracks.forEach(track => {
                         localStream.addTrack(track);
                     });
-                    // Terapkan mute jika sebelumnya muted
                     if (wasMuted) {
                         newAudioTracks.forEach(track => { track.enabled = false; });
                     }
                 }
 
-                // Perbarui video local
                 localVideo.srcObject = localStream;
 
-                // Perbarui peer connection
                 if (peerConnection) {
                     const senders = peerConnection.getSenders();
                     const videoSender = senders.find(s => s.track && s.track.kind === 'video');
                     if (videoSender && newVideoTracks.length > 0) {
                         await videoSender.replaceTrack(newVideoTracks[0]);
                     }
-                    // Update audio sender
                     const audioSender = senders.find(s => s.track && s.track.kind === 'audio');
                     if (audioSender && newAudioTracks.length > 0) {
                         await audioSender.replaceTrack(newAudioTracks[0]);
@@ -3155,7 +3578,6 @@
             } catch (error) {
                 console.warn('Gagal mengganti kamera:', error);
                 currentFacingMode = (currentFacingMode === 'user') ? 'environment' : 'user';
-
                 try {
                     const fallbackStream = await navigator.mediaDevices.getUserMedia({
                         audio: true,
@@ -3186,7 +3608,7 @@
         }
 
         // ============================================================
-        // 24. MULAI PANGGILAN (Caller)
+        // 25. MULAI PANGGILAN (Caller)
         // ============================================================
         async function startCall(video) {
             if (currentCallId) {
@@ -3294,7 +3716,7 @@
         }
 
         // ============================================================
-        // 25. MENERIMA PANGGILAN (Callee)
+        // 26. MENERIMA PANGGILAN (Callee)
         // ============================================================
         function acceptIncomingCall() {
             if (!incomingCallId) return;
@@ -3395,14 +3817,14 @@
         }
 
         // ============================================================
-        // 26. LISTENER PANGGILAN MASUK
+        // 27. LISTENER PANGGILAN MASUK
         // ============================================================
         function listenForIncomingCalls() {
             callsRef.on('child_added', (snapshot) => {
                 const data = snapshot.val();
                 const callId = snapshot.key;
 
-                if (data.type === 'offer' && data.from !== getCallerName()) {
+                if (data.type === 'offer' && data.from !== currentUsername) {
                     if (currentCallId) {
                         callsRef.child(callId).remove().catch(() => {});
                         return;
@@ -3417,7 +3839,7 @@
 
                     playRingtone();
 
-                    const name = getCallerName();
+                    const name = currentUsername || 'User';
                     const recordId = createCallRecord(
                         data.isVideo ? 'video' : 'voice',
                         data.isVideo || false,
@@ -3457,7 +3879,7 @@
         }
 
         // ============================================================
-        // 27. TOMBOL PANGGILAN
+        // 28. TOMBOL PANGGILAN
         // ============================================================
         voiceCallBtn.addEventListener('click', () => {
             startCall(false);
@@ -3468,7 +3890,7 @@
         });
 
         // ============================================================
-        // 28. TOMBOL INCOMING CALL
+        // 29. TOMBOL INCOMING CALL
         // ============================================================
         incAcceptBtn.addEventListener('click', () => {
             stopRingtone();
@@ -3494,7 +3916,7 @@
         });
 
         // ============================================================
-        // 29. TOMBOL KONTROL PANGGILAN
+        // 30. TOMBOL KONTROL PANGGILAN
         // ============================================================
         endCallBtn.addEventListener('click', () => {
             if (confirm('Akhiri panggilan?')) {
@@ -3532,7 +3954,7 @@
         switchCameraBtn.addEventListener('click', switchCamera);
 
         // ============================================================
-        // 30. CLEANUP PANGGILAN DI FIREBASE
+        // 31. CLEANUP PANGGILAN DI FIREBASE
         // ============================================================
         callsRef.on('child_removed', (snapshot) => {
             const removedId = snapshot.key;
@@ -3559,24 +3981,40 @@
         });
 
         // ============================================================
-        // 31. INISIALISASI
+        // 32. WEBRTC KONFIGURASI
         // ============================================================
-        const savedName = sessionStorage.getItem('chat_user');
-        if (savedName) nameInput.value = savedName;
-        messageInput.focus();
+        const rtcConfig = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' }
+            ]
+        };
 
-        setTimeout(() => {
-            updateEmptyState();
-            setTimeout(rebuildDateSeparators, 500);
-        }, 300);
+        // ============================================================
+        // 33. INISIALISASI
+        // ============================================================
 
+        // Tampilkan daftar user aktif
+        renderActiveUsers();
+
+        // Cek login tersimpan
+        const hasSavedLogin = checkSavedLogin();
+
+        if (!hasSavedLogin) {
+            // Tampilkan login
+            loginScreen.style.display = 'flex';
+            document.getElementById('appContainer').classList.remove('show');
+        }
+
+        // Set observer untuk empty state
         const observer = new MutationObserver(() => updateEmptyState());
         observer.observe(container, { childList: true, subtree: true });
 
+        // Listener panggilan masuk
         listenForIncomingCalls();
 
-        console.log('💬 Ja\'O Chating & Call dengan perbaikan video siap!');
-        console.log('📸 Fitur ganti kamera depan/belakang tersedia!');
+        console.log('💬 Ja\'O Chat dengan sistem login siap!');
+        console.log('👤 Login dengan username unik di Firebase.');
     </script>
 </body>
 </html>
