@@ -108,7 +108,7 @@
         .login-card .subtitle {
             font-size: 14px;
             color: #888;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .login-card .login-form {
@@ -259,6 +259,19 @@
         }
         .login-card .guest-link button:hover {
             background: #e8f5f0;
+        }
+
+        .login-card .info-message {
+            font-size: 13px;
+            color: #00a884;
+            background: #e8f5f0;
+            padding: 8px 12px;
+            border-radius: 10px;
+            margin: 6px 0;
+            display: none;
+        }
+        .login-card .info-message.show {
+            display: block;
         }
 
         /* ----- CHAT CONTAINER (sama seperti sebelumnya) ----- */
@@ -451,6 +464,15 @@
             height: 1px;
             background: #e8e8e8;
             margin: 4px 12px;
+        }
+        .header-dropdown .drop-item.logout {
+            color: #e74c3c;
+            border-top: 1px solid #e8e8e8;
+            margin-top: 4px;
+            padding-top: 10px;
+        }
+        .header-dropdown .drop-item.logout:hover {
+            background: #fde8e8;
         }
 
         /* ----- MESSAGE AREA ----- */
@@ -1519,17 +1541,6 @@
             background: #fde8e8;
         }
 
-        /* ----- LOGOUT BUTTON IN HEADER DROPDOWN ----- */
-        .header-dropdown .drop-item.logout {
-            color: #e74c3c;
-            border-top: 1px solid #e8e8e8;
-            margin-top: 4px;
-            padding-top: 10px;
-        }
-        .header-dropdown .drop-item.logout:hover {
-            background: #fde8e8;
-        }
-
         /* ----- RESPONSIVE ----- */
         @media (max-width: 480px) {
             .chat-header .info h1 {
@@ -1716,10 +1727,14 @@
                 <i class="fas fa-comment-dots"></i>
             </div>
             <h2>Ja'O Chat</h2>
-            <p class="subtitle">Pilih akun untuk masuk</p>
+            <p class="subtitle">Masuk atau daftar untuk mulai chatting</p>
 
             <div class="user-list" id="userList">
                 <!-- Daftar user akan di-render oleh JavaScript -->
+                <div style="text-align:center;color:#999;padding:16px;font-size:14px;">
+                    <i class="fas fa-users" style="font-size:24px;display:block;margin-bottom:8px;"></i>
+                    Belum ada pengguna terdaftar.<br />Daftar sekarang!
+                </div>
             </div>
 
             <div class="login-divider">atau</div>
@@ -1727,14 +1742,15 @@
             <div class="login-form">
                 <input type="text" id="loginNameInput" placeholder="Masukkan nama pengguna" maxlength="30" />
                 <button class="login-btn" id="loginAsGuestBtn">
-                    <i class="fas fa-sign-in-alt"></i> Masuk sebagai Tamu
+                    <i class="fas fa-sign-in-alt"></i> Masuk / Daftar
                 </button>
             </div>
 
             <div class="guest-link">
-                <span>Belum terdaftar? </span>
+                <span>Belum punya akun? </span>
                 <button id="registerNewUserBtn">Daftar sekarang</button>
             </div>
+            <div class="info-message" id="infoMessage"></div>
         </div>
     </div>
 
@@ -1889,10 +1905,10 @@
 
     <script>
         // ============================================================
-        // 0. USER MANAGEMENT (Login System)
+        // 0. USER MANAGEMENT (Login System) - TANPA DEFAULT AKUN
         // ============================================================
 
-        // Daftar pengguna terdaftar (disimpan di localStorage agar persisten)
+        // Daftar pengguna terdaftar (disimpan di localStorage)
         let registeredUsers = [];
 
         // Muat daftar pengguna dari localStorage
@@ -1902,10 +1918,8 @@
                 if (stored) {
                     registeredUsers = JSON.parse(stored);
                 } else {
-                    // Data default jika belum ada
-                    registeredUsers = [
-                        
-                    ];
+                    // Tidak ada default akun - langsung kosong
+                    registeredUsers = [];
                     saveUsers();
                 }
             } catch (e) {
@@ -1981,6 +1995,7 @@
         const loginNameInput = document.getElementById('loginNameInput');
         const loginAsGuestBtn = document.getElementById('loginAsGuestBtn');
         const registerNewUserBtn = document.getElementById('registerNewUserBtn');
+        const infoMessage = document.getElementById('infoMessage');
 
         const container = document.getElementById('messageContainer');
         const emptyState = document.getElementById('emptyState');
@@ -2066,6 +2081,7 @@
             if (callHistoryOverlay.classList.contains('show')) {
                 renderCallHistory();
             }
+            hideInfoMessage();
         }
 
         function logoutUser() {
@@ -2102,8 +2118,9 @@
             if (registeredUsers.length === 0) {
                 const emptyMsg = document.createElement('div');
                 emptyMsg.style.cssText =
-                    'text-align:center;color:#999;padding:16px;font-size:14px;';
-                emptyMsg.textContent = 'Belum ada pengguna terdaftar. Daftar sekarang!';
+                    'text-align:center;color:#999;padding:20px 16px;font-size:14px;';
+                emptyMsg.innerHTML =
+                    '<i class="fas fa-users" style="font-size:28px;display:block;margin-bottom:10px;opacity:0.4;"></i>Belum ada pengguna terdaftar.<br />Daftar sekarang!';
                 userList.appendChild(emptyMsg);
                 return;
             }
@@ -2150,28 +2167,51 @@
         }
 
         // ============================================================
-        // 7. LOGIN HANDLERS
+        // 7. INFO MESSAGE
+        // ============================================================
+        function showInfoMessage(msg, isSuccess = true) {
+            infoMessage.textContent = msg;
+            infoMessage.style.color = isSuccess ? '#00a884' : '#e74c3c';
+            infoMessage.style.background = isSuccess ? '#e8f5f0' : '#fde8e8';
+            infoMessage.classList.add('show');
+            setTimeout(() => {
+                hideInfoMessage();
+            }, 4000);
+        }
+
+        function hideInfoMessage() {
+            infoMessage.classList.remove('show');
+        }
+
+        // ============================================================
+        // 8. LOGIN HANDLERS
         // ============================================================
 
-        // Login sebagai tamu (nama dari input)
+        // Login / Daftar otomatis
         loginAsGuestBtn.addEventListener('click', () => {
             const name = loginNameInput.value.trim();
             if (!name) {
-                alert('Masukkan nama pengguna terlebih dahulu.');
+                showInfoMessage('Masukkan nama pengguna terlebih dahulu.', false);
                 loginNameInput.focus();
+                return;
+            }
+            if (name.length < 2) {
+                showInfoMessage('Nama minimal 2 karakter.', false);
                 return;
             }
             // Cari user terdaftar
             const existing = findUserByName(name);
             if (existing) {
                 loginUser(existing);
+                showInfoMessage('Selamat datang kembali, ' + name + '!');
             } else {
                 // Daftar otomatis sebagai user baru
-                const newUser = addUser(name, name + '@guest.com');
+                const newUser = addUser(name, name + '@chat.com');
                 if (newUser) {
                     loginUser(newUser);
+                    showInfoMessage('✅ Akun "' + name + '" berhasil dibuat!');
                 } else {
-                    alert('Gagal mendaftar. Coba nama lain.');
+                    showInfoMessage('Gagal mendaftar. Coba nama lain.', false);
                 }
             }
         });
@@ -2183,28 +2223,32 @@
             }
         });
 
-        // Daftar user baru
+        // Daftar user baru (manual)
         registerNewUserBtn.addEventListener('click', () => {
             const name = loginNameInput.value.trim();
             if (!name) {
-                alert('Masukkan nama pengguna yang ingin didaftarkan.');
+                showInfoMessage('Masukkan nama yang ingin didaftarkan.', false);
                 loginNameInput.focus();
+                return;
+            }
+            if (name.length < 2) {
+                showInfoMessage('Nama minimal 2 karakter.', false);
                 return;
             }
             const existing = findUserByName(name);
             if (existing) {
-                alert('Nama "' + name + '" sudah terdaftar. Silakan login langsung.');
+                showInfoMessage('Nama "' + name + '" sudah terdaftar. Silakan login.', false);
                 return;
             }
-            const newUser = addUser(name, name + '@email.com');
+            const newUser = addUser(name, name + '@chat.com');
             if (newUser) {
-                alert('✅ Pengguna "' + name + '" berhasil didaftarkan! Silakan login.');
+                showInfoMessage('✅ "' + name + '" berhasil didaftarkan! Masuk otomatis.');
                 renderUserList();
                 loginNameInput.value = '';
                 // Otomatis login
                 loginUser(newUser);
             } else {
-                alert('Gagal mendaftar. Coba lagi.');
+                showInfoMessage('Gagal mendaftar. Coba lagi.', false);
             }
         });
 
@@ -2215,7 +2259,7 @@
         });
 
         // ============================================================
-        // 8. AUTO-LOGIN (Cek session)
+        // 9. AUTO-LOGIN (Cek session)
         // ============================================================
         function checkAutoLogin() {
             const savedName = sessionStorage.getItem('chat_user');
@@ -2241,7 +2285,7 @@
         }
 
         // ============================================================
-        // 9. VARIABEL CALL
+        // 10. VARIABEL CALL
         // ============================================================
         let localStream = null;
         let remoteStream = null;
@@ -2254,14 +2298,14 @@
         let incomingCallId = null;
 
         // ============================================================
-        // 10. CALL HISTORY TRACKING
+        // 11. CALL HISTORY TRACKING
         // ============================================================
         let activeCallRecord = null;
         let callStartTime = 0;
         let callConnectedTime = 0;
 
         // ============================================================
-        // 11. SUARA (Chat + Ringtone)
+        // 12. SUARA (Chat + Ringtone)
         // ============================================================
         let audioCtx = null;
         let ringtoneNodes = null;
@@ -2372,7 +2416,7 @@
         }
 
         // ============================================================
-        // 12. FUNGSI BANTU (Chat)
+        // 13. FUNGSI BANTU (Chat)
         // ============================================================
         function formatTime(timestamp) {
             if (!timestamp) return '--:--';
@@ -2453,7 +2497,7 @@
         }
 
         // ============================================================
-        // 13. UPLOAD FILE (Chat)
+        // 14. UPLOAD FILE (Chat)
         // ============================================================
         const IMGUR_CLIENT_ID = '546c25a59c58ad7';
 
@@ -2506,7 +2550,7 @@
         }
 
         // ============================================================
-        // 14. HEADER DROPDOWN
+        // 15. HEADER DROPDOWN
         // ============================================================
         headerMenuBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -2534,7 +2578,7 @@
         });
 
         // ============================================================
-        // 15. REPLY (Chat)
+        // 16. REPLY (Chat)
         // ============================================================
         let replyTo = null;
 
@@ -2553,7 +2597,7 @@
         cancelReplyBtn.addEventListener('click', clearReply);
 
         // ============================================================
-        // 16. CONTEXT MENU (Chat)
+        // 17. CONTEXT MENU (Chat)
         // ============================================================
         let currentMessageKey = null;
         let currentMessageElement = null;
@@ -2652,7 +2696,7 @@
         });
 
         // ============================================================
-        // 17. CLEANUP DATE SEPARATORS
+        // 18. CLEANUP DATE SEPARATORS
         // ============================================================
         function cleanupDateSeparators() {
             document.querySelectorAll('.date-separator').forEach(sep => {
@@ -2669,7 +2713,7 @@
         }
 
         // ============================================================
-        // 18. LINK PREVIEW (Chat)
+        // 19. LINK PREVIEW (Chat)
         // ============================================================
         const previewCache = new Map();
 
@@ -2747,7 +2791,7 @@
         }
 
         // ============================================================
-        // 19. RENDER MESSAGE (Chat)
+        // 20. RENDER MESSAGE (Chat)
         // ============================================================
         let lastDisplayedDateKey = null;
 
@@ -3005,7 +3049,7 @@
         }
 
         // ============================================================
-        // 20. LOAD MESSAGES (Realtime)
+        // 21. LOAD MESSAGES (Realtime)
         // ============================================================
         let isInitialLoad = true;
         const notifiedKeys = new Set();
@@ -3053,7 +3097,7 @@
         }
 
         // ============================================================
-        // 21. KIRIM PESAN (Chat + File)
+        // 22. KIRIM PESAN (Chat + File)
         // ============================================================
         let pendingFile = null;
         let isUploading = false;
@@ -3193,7 +3237,7 @@
         }
 
         // ============================================================
-        // 22. EMOJI PICKER (Chat)
+        // 23. EMOJI PICKER (Chat)
         // ============================================================
         let isEmojiPickerVisible = false;
         emojiToggle.addEventListener('click', (e) => {
@@ -3221,7 +3265,7 @@
         });
 
         // ============================================================
-        // 23. EVENT LISTENERS (Chat)
+        // 24. EVENT LISTENERS (Chat)
         // ============================================================
         sendBtn.addEventListener('click', sendMessage);
         messageInput.addEventListener('keydown', (e) => {
@@ -3230,7 +3274,7 @@
         });
 
         // ============================================================
-        // 24. CALL HISTORY UI
+        // 25. CALL HISTORY UI
         // ============================================================
 
         function openCallHistory() {
@@ -3273,7 +3317,7 @@
         });
 
         // ============================================================
-        // 25. CALL HISTORY - SAVE & RENDER
+        // 26. CALL HISTORY - SAVE & RENDER
         // ============================================================
 
         function saveCallRecord(type, isVideo, callerName, calleeName, status, duration, startTime, endTime) {
@@ -3438,7 +3482,7 @@
         });
 
         // ============================================================
-        // 26. WEBRTC - CALL LOGIC (dengan Call History)
+        // 27. WEBRTC - CALL LOGIC (dengan Call History)
         // ============================================================
 
         function getCallerName() {
@@ -3608,7 +3652,7 @@
         }
 
         // ============================================================
-        // 27. MULAI PANGGILAN (Caller)
+        // 28. MULAI PANGGILAN (Caller)
         // ============================================================
         async function startCall(video) {
             if (!isLoggedIn()) {
@@ -3713,7 +3757,7 @@
         }
 
         // ============================================================
-        // 28. MENERIMA PANGGILAN (Callee)
+        // 29. MENERIMA PANGGILAN (Callee)
         // ============================================================
         function acceptIncomingCall() {
             if (!isLoggedIn()) return;
@@ -3808,7 +3852,7 @@
         }
 
         // ============================================================
-        // 29. LISTENER PANGGILAN MASUK
+        // 30. LISTENER PANGGILAN MASUK
         // ============================================================
         function listenForIncomingCalls() {
             callsRef.on('child_added', (snapshot) => {
@@ -3871,7 +3915,7 @@
         }
 
         // ============================================================
-        // 30. TOMBOL PANGGILAN
+        // 31. TOMBOL PANGGILAN
         // ============================================================
         voiceCallBtn.addEventListener('click', () => {
             startCall(false);
@@ -3882,7 +3926,7 @@
         });
 
         // ============================================================
-        // 31. TOMBOL INCOMING CALL
+        // 32. TOMBOL INCOMING CALL
         // ============================================================
         incAcceptBtn.addEventListener('click', () => {
             stopRingtone();
@@ -3908,7 +3952,7 @@
         });
 
         // ============================================================
-        // 32. TOMBOL KONTROL PANGGILAN
+        // 33. TOMBOL KONTROL PANGGILAN
         // ============================================================
         endCallBtn.addEventListener('click', () => {
             if (confirm('Akhiri panggilan?')) {
@@ -3944,7 +3988,7 @@
         });
 
         // ============================================================
-        // 33. CLEANUP PANGGILAN DI FIREBASE
+        // 34. CLEANUP PANGGILAN DI FIREBASE
         // ============================================================
         callsRef.on('child_removed', (snapshot) => {
             const removedId = snapshot.key;
@@ -3971,7 +4015,7 @@
         });
 
         // ============================================================
-        // 34. INISIALISASI
+        // 35. INISIALISASI
         // ============================================================
 
         // Load users from localStorage
@@ -3993,8 +4037,8 @@
         // Listen for incoming calls (hanya jika sudah login)
         listenForIncomingCalls();
 
-        console.log('💬 Ja\'O Chating & Call + Login System siap!');
-        console.log('👤 Daftar pengguna tersimpan di localStorage.');
+        console.log('💬 Ja\'O Chating & Call - Tanpa Default Akun siap!');
+        console.log('👤 Pengguna harus mendaftar terlebih dahulu.');
     </script>
 </body>
 </html>
