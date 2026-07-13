@@ -989,97 +989,7 @@
         }
 
         /* ================================================================
-           CAMERA SELECTOR POPUP
-           ================================================================ */
-        .camera-selector-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(8px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 5000;
-            animation: fadeIn 0.3s ease;
-        }
-        .camera-selector-overlay.show {
-            display: flex;
-        }
-
-        .camera-selector-card {
-            background: #ffffff;
-            border-radius: 28px;
-            padding: 32px 28px 28px;
-            max-width: 380px;
-            width: 92%;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
-            text-align: center;
-            animation: slideUp 0.4s ease;
-        }
-        .camera-selector-card h3 {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1a1a1a;
-            margin-bottom: 4px;
-        }
-        .camera-selector-card .sub {
-            font-size: 14px;
-            color: #888;
-            margin-bottom: 20px;
-        }
-
-        .camera-selector-card .camera-options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .camera-selector-card .camera-options button {
-            padding: 16px;
-            border: 2px solid #e8e8e8;
-            border-radius: 16px;
-            background: #f8f8f8;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            color: #1a1a1a;
-        }
-        .camera-selector-card .camera-options button:hover {
-            border-color: #00a884;
-            background: #e8f5f0;
-        }
-        .camera-selector-card .camera-options button:active {
-            transform: scale(0.97);
-        }
-        .camera-selector-card .camera-options button .cam-icon {
-            font-size: 24px;
-        }
-
-        .camera-selector-card .cancel-camera-btn {
-            margin-top: 16px;
-            background: transparent;
-            border: none;
-            color: #888;
-            font-size: 14px;
-            cursor: pointer;
-            padding: 8px;
-            width: 100%;
-            border-radius: 12px;
-            transition: background 0.2s;
-        }
-        .camera-selector-card .cancel-camera-btn:hover {
-            background: #f0f0f0;
-        }
-
-        /* ================================================================
-           CALL UI (Overlay / Modal)
+           CALL UI (Overlay / Modal) - dengan tombol ganti kamera
            ================================================================ */
         .call-overlay {
             position: absolute;
@@ -1148,17 +1058,17 @@
             width: 100%;
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 16px;
             backdrop-filter: blur(10px);
             flex-shrink: 0;
             flex-wrap: wrap;
         }
         .call-overlay .call-controls button {
-            width: 60px;
-            height: 60px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             border: none;
-            font-size: 26px;
+            font-size: 24px;
             cursor: pointer;
             transition: transform 0.15s, opacity 0.2s;
             display: flex;
@@ -1193,7 +1103,15 @@
             background: #e67e22;
         }
         .call-overlay .call-controls .btn-switch-camera {
-            background: #2196f3;
+            background: #2d7d46;
+            font-size: 22px;
+        }
+        .call-overlay .call-controls .btn-switch-camera:hover {
+            background: #1f5a33;
+        }
+        .call-overlay .call-controls .btn-switch-camera:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
         }
         .call-overlay .call-info {
             position: absolute;
@@ -1672,9 +1590,13 @@
                 right: 4px;
             }
             .call-overlay .call-controls button {
-                width: 50px;
-                height: 50px;
-                font-size: 22px;
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+            .call-overlay .call-controls {
+                gap: 12px;
+                padding: 14px;
             }
             .incoming-call {
                 bottom: 80px;
@@ -1709,16 +1631,6 @@
             .login-card h2 {
                 font-size: 20px;
             }
-            .camera-selector-card {
-                padding: 24px 20px 20px;
-            }
-            .camera-selector-card h3 {
-                font-size: 18px;
-            }
-            .camera-selector-card .camera-options button {
-                padding: 14px;
-                font-size: 15px;
-            }
         }
         @media (max-width: 380px) {
             .input-row {
@@ -1741,6 +1653,15 @@
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 2px;
+            }
+            .call-overlay .call-controls button {
+                width: 42px;
+                height: 42px;
+                font-size: 18px;
+            }
+            .call-overlay .call-controls {
+                gap: 8px;
+                padding: 10px;
             }
         }
     </style>
@@ -1781,25 +1702,6 @@
             <div style="margin-top:12px;text-align:center;font-size:13px;color:#888;">
                 <span id="authModeText">Belum punya akun? Daftar sekarang!</span>
             </div>
-        </div>
-    </div>
-
-    <!-- ============================================================= -->
-    <!-- CAMERA SELECTOR POPUP                                         -->
-    <!-- ============================================================= -->
-    <div class="camera-selector-overlay" id="cameraSelectorOverlay">
-        <div class="camera-selector-card">
-            <h3>📸 Pilih Kamera</h3>
-            <p class="sub">Pilih kamera yang ingin digunakan</p>
-            <div class="camera-options">
-                <button id="cameraFrontBtn">
-                    <span class="cam-icon">🤳</span> Kamera Depan
-                </button>
-                <button id="cameraBackBtn">
-                    <span class="cam-icon">📷</span> Kamera Belakang
-                </button>
-            </div>
-            <button class="cancel-camera-btn" id="cancelCameraBtn">Batal</button>
         </div>
     </div>
 
@@ -1878,7 +1780,7 @@
         </div>
 
         <!-- ============================================================= -->
-        <!-- CALL OVERLAY (Tampilan saat sedang telepon/video call)        -->
+        <!-- CALL OVERLAY - dengan tombol ganti kamera                     -->
         <!-- ============================================================= -->
         <div class="call-overlay" id="callOverlay">
             <div class="call-info">
@@ -2001,12 +1903,6 @@
         const loginError = document.getElementById('loginError');
         const authModeText = document.getElementById('authModeText');
 
-        // Camera Selector
-        const cameraSelectorOverlay = document.getElementById('cameraSelectorOverlay');
-        const cameraFrontBtn = document.getElementById('cameraFrontBtn');
-        const cameraBackBtn = document.getElementById('cameraBackBtn');
-        const cancelCameraBtn = document.getElementById('cancelCameraBtn');
-
         const appContainer = document.getElementById('appContainer');
         const container = document.getElementById('messageContainer');
         const emptyState = document.getElementById('emptyState');
@@ -2066,13 +1962,7 @@
         const clearHistoryBtn = document.getElementById('clearHistoryBtn');
 
         // ============================================================
-        // 4. VARIABEL CAMERA
-        // ============================================================
-        let selectedCameraFacing = 'user'; // 'user' = depan, 'environment' = belakang
-        let cameraSelectorResolve = null;
-
-        // ============================================================
-        // 5. AUTH STATE
+        // 4. AUTH STATE
         // ============================================================
         let currentUser = null;
         let isGuest = false;
@@ -2082,7 +1972,7 @@
         }
 
         // ============================================================
-        // 6. AUTH FUNCTIONS
+        // 5. AUTH FUNCTIONS
         // ============================================================
 
         async function registerUser(email, password) {
@@ -2133,48 +2023,7 @@
         }
 
         // ============================================================
-        // 7. CAMERA SELECTOR FUNCTIONS
-        // ============================================================
-
-        function showCameraSelector() {
-            return new Promise((resolve) => {
-                cameraSelectorOverlay.classList.add('show');
-                cameraSelectorResolve = resolve;
-            });
-        }
-
-        function hideCameraSelector() {
-            cameraSelectorOverlay.classList.remove('show');
-        }
-
-        cameraFrontBtn.addEventListener('click', () => {
-            selectedCameraFacing = 'user';
-            hideCameraSelector();
-            if (cameraSelectorResolve) {
-                cameraSelectorResolve('user');
-                cameraSelectorResolve = null;
-            }
-        });
-
-        cameraBackBtn.addEventListener('click', () => {
-            selectedCameraFacing = 'environment';
-            hideCameraSelector();
-            if (cameraSelectorResolve) {
-                cameraSelectorResolve('environment');
-                cameraSelectorResolve = null;
-            }
-        });
-
-        cancelCameraBtn.addEventListener('click', () => {
-            hideCameraSelector();
-            if (cameraSelectorResolve) {
-                cameraSelectorResolve(null);
-                cameraSelectorResolve = null;
-            }
-        });
-
-        // ============================================================
-        // 8. COMPRESS IMAGE (untuk mobile)
+        // 6. COMPRESS IMAGE (untuk mobile)
         // ============================================================
         function compressImage(file, maxWidth = 800, maxHeight = 800, quality = 0.7) {
             return new Promise((resolve, reject) => {
@@ -2225,7 +2074,7 @@
         }
 
         // ============================================================
-        // 9. UPLOAD IMAGE (Chat)
+        // 7. UPLOAD IMAGE (Chat)
         // ============================================================
         const IMGUR_CLIENT_ID = '546c25a59c58ad7';
 
@@ -2278,7 +2127,7 @@
         }
 
         // ============================================================
-        // 10. AUTH UI FUNCTIONS
+        // 8. AUTH UI FUNCTIONS
         // ============================================================
 
         function showLoginScreen() {
@@ -2314,7 +2163,7 @@
         }
 
         // ============================================================
-        // 11. AUTH EVENT LISTENERS
+        // 9. AUTH EVENT LISTENERS
         // ============================================================
 
         loginBtn.addEventListener('click', async () => {
@@ -2439,7 +2288,7 @@
         });
 
         // ============================================================
-        // 12. FIREBASE AUTH STATE OBSERVER
+        // 10. FIREBASE AUTH STATE OBSERVER
         // ============================================================
 
         auth.onAuthStateChanged(async (user) => {
@@ -2485,7 +2334,7 @@
         });
 
         // ============================================================
-        // 13. LOAD USER DATA
+        // 11. LOAD USER DATA
         // ============================================================
 
         function loadUserData(uid) {
@@ -2502,7 +2351,7 @@
         }
 
         // ============================================================
-        // 14. VARIABEL CALL
+        // 12. VARIABEL CALL
         // ============================================================
         let localStream = null;
         let remoteStream = null;
@@ -2514,15 +2363,19 @@
         let isVideoOff = false;
         let incomingCallId = null;
 
+        // VARIABEL KAMERA
+        let currentFacingMode = 'user'; // 'user' atau 'environment'
+        let isSwitchingCamera = false;
+
         // ============================================================
-        // 15. CALL HISTORY TRACKING
+        // 13. CALL HISTORY TRACKING
         // ============================================================
         let activeCallRecord = null;
         let callStartTime = 0;
         let callConnectedTime = 0;
 
         // ============================================================
-        // 16. SUARA
+        // 14. SUARA
         // ============================================================
         let audioCtx = null;
         let ringtoneNodes = null;
@@ -2633,7 +2486,7 @@
         }
 
         // ============================================================
-        // 17. FUNGSI BANTU (Chat)
+        // 15. FUNGSI BANTU (Chat)
         // ============================================================
         function formatTime(timestamp) {
             if (!timestamp) return '--:--';
@@ -2714,7 +2567,7 @@
         }
 
         // ============================================================
-        // 18. HEADER DROPDOWN
+        // 16. HEADER DROPDOWN
         // ============================================================
         headerMenuBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -2760,7 +2613,7 @@
         });
 
         // ============================================================
-        // 19. REPLY (Chat)
+        // 17. REPLY (Chat)
         // ============================================================
         let replyTo = null;
 
@@ -2779,7 +2632,7 @@
         cancelReplyBtn.addEventListener('click', clearReply);
 
         // ============================================================
-        // 20. CONTEXT MENU (Chat)
+        // 18. CONTEXT MENU (Chat)
         // ============================================================
         let currentMessageKey = null;
         let currentMessageElement = null;
@@ -2878,7 +2731,7 @@
         });
 
         // ============================================================
-        // 21. CLEANUP DATE SEPARATORS
+        // 19. CLEANUP DATE SEPARATORS
         // ============================================================
         function cleanupDateSeparators() {
             document.querySelectorAll('.date-separator').forEach(sep => {
@@ -2895,7 +2748,7 @@
         }
 
         // ============================================================
-        // 22. LINK PREVIEW (Chat)
+        // 20. LINK PREVIEW (Chat)
         // ============================================================
         const previewCache = new Map();
 
@@ -2973,7 +2826,7 @@
         }
 
         // ============================================================
-        // 23. RENDER MESSAGE (Chat)
+        // 21. RENDER MESSAGE (Chat)
         // ============================================================
         let lastDisplayedDateKey = null;
 
@@ -3033,6 +2886,7 @@
                 bubble.appendChild(q);
             }
 
+            // TAMPILAN GAMBAR
             if (imageUrl) {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'bubble-image-wrapper';
@@ -3191,9 +3045,7 @@
                 showContextMenu(e, key, msgDiv, { text, name: sender, imageUrl, fileUrl, fileName, fileSize,
                     fileMime });
             });
-            bubble.addEventListener('touchstart', (e) => {
-                // Biarkan click handle
-            }, { passive: true });
+            bubble.addEventListener('touchstart', (e) => {}, { passive: true });
 
             container.appendChild(msgDiv);
             scrollToBottom();
@@ -3234,7 +3086,7 @@
         }
 
         // ============================================================
-        // 24. LOAD MESSAGES (Realtime)
+        // 22. LOAD MESSAGES (Realtime)
         // ============================================================
         let isInitialLoad = true;
         const notifiedKeys = new Set();
@@ -3282,7 +3134,7 @@
         }
 
         // ============================================================
-        // 25. KIRIM PESAN (Chat + Gambar)
+        // 23. KIRIM PESAN (Chat + Gambar)
         // ============================================================
         let pendingFile = null;
         let isUploading = false;
@@ -3313,60 +3165,11 @@
 
         cancelFileBtn.addEventListener('click', clearFilePreview);
 
-        attachBtn.addEventListener('click', async () => {
+        attachBtn.addEventListener('click', () => {
             if (isUploading || !isLoggedIn()) return;
-            
-            // Tampilkan pilihan kamera
-            const cameraChoice = await showCameraSelector();
-            if (cameraChoice === null) {
-                // User membatalkan
-                return;
-            }
-            
-            // Gunakan camera dengan MediaCapture
-            try {
-                const constraints = {
-                    video: {
-                        facingMode: cameraChoice,
-                        width: { ideal: 800 },
-                        height: { ideal: 800 }
-                    },
-                    audio: false
-                };
-                
-                const stream = await navigator.mediaDevices.getUserMedia(constraints);
-                const track = stream.getVideoTracks()[0];
-                
-                // Capture gambar dari stream
-                const videoElement = document.createElement('video');
-                videoElement.srcObject = stream;
-                videoElement.play();
-                
-                // Tunggu sebentar untuk mendapatkan frame
-                await new Promise(resolve => setTimeout(resolve, 500));
-                
-                // Capture frame
-                const canvas = document.createElement('canvas');
-                canvas.width = videoElement.videoWidth || 800;
-                canvas.height = videoElement.videoHeight || 800;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-                
-                // Hentikan stream
-                stream.getTracks().forEach(t => t.stop());
-                
-                // Konversi ke blob
-                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.85));
-                const file = new File([blob], 'camera_photo.jpg', { type: 'image/jpeg' });
-                
-                showFilePreview(file, true);
-            } catch (error) {
-                console.error('Gagal mengakses kamera:', error);
-                alert('Tidak dapat mengakses kamera. Pastikan izin kamera diberikan.\nError: ' + error.message);
-            }
+            fileInput.click();
         });
 
-        // Juga tetap support upload dari galeri
         fileInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (file && isLoggedIn()) {
@@ -3494,7 +3297,7 @@
         }
 
         // ============================================================
-        // 26. EMOJI PICKER (Chat)
+        // 24. EMOJI PICKER (Chat)
         // ============================================================
         let isEmojiPickerVisible = false;
         emojiToggle.addEventListener('click', (e) => {
@@ -3522,7 +3325,7 @@
         });
 
         // ============================================================
-        // 27. EVENT LISTENERS (Chat)
+        // 25. EVENT LISTENERS (Chat)
         // ============================================================
         sendBtn.addEventListener('click', sendMessage);
         messageInput.addEventListener('keydown', (e) => {
@@ -3531,7 +3334,7 @@
         });
 
         // ============================================================
-        // 28. CALL HISTORY UI
+        // 26. CALL HISTORY UI
         // ============================================================
 
         function openCallHistory() {
@@ -3562,7 +3365,7 @@
         });
 
         // ============================================================
-        // 29. CALL HISTORY - SAVE & RENDER
+        // 27. CALL HISTORY - SAVE & RENDER
         // ============================================================
 
         function saveCallRecord(type, isVideo, callerName, calleeName, status, duration, startTime, endTime) {
@@ -3727,7 +3530,7 @@
         });
 
         // ============================================================
-        // 30. WEBRTC - CALL LOGIC
+        // 28. WEBRTC - CALL LOGIC dengan SWITCH CAMERA
         // ============================================================
 
         function getCallerName() {
@@ -3742,9 +3545,13 @@
             if (!video) {
                 localVideo.style.display = 'none';
                 remoteVideo.style.display = 'none';
+                switchCameraBtn.style.display = 'none';
             } else {
                 localVideo.style.display = 'block';
                 remoteVideo.style.display = 'block';
+                switchCameraBtn.style.display = 'flex';
+                switchCameraBtn.disabled = false;
+                switchCameraBtn.innerHTML = '<i class="fas fa-sync-alt"></i>';
             }
             toggleMicBtn.classList.remove('muted');
             toggleMicBtn.innerHTML = '<i class="fas fa-microphone"></i>';
@@ -3752,6 +3559,9 @@
             toggleVideoBtn.innerHTML = '<i class="fas fa-video"></i>';
             isMuted = false;
             isVideoOff = false;
+            // Reset state kamera
+            currentFacingMode = 'user';
+            isSwitchingCamera = false;
         }
 
         function hideCallOverlay() {
@@ -3788,6 +3598,7 @@
             activeCallRecord = null;
             callStartTime = 0;
             callConnectedTime = 0;
+            switchCameraBtn.style.display = 'none';
         }
 
         function endCallAndSaveHistory() {
@@ -3842,62 +3653,98 @@
             return recordId;
         }
 
-        function createPeerConnection(isCallerFlag, callId) {
-            const pc = new RTCPeerConnection(rtcConfig);
+        // ============================================================
+        // 29. SWITCH CAMERA FUNCTION
+        // ============================================================
+        async function switchCamera() {
+            if (!localStream || isSwitchingCamera || !isVideoCall) return;
+            isSwitchingCamera = true;
+            switchCameraBtn.disabled = true;
+            switchCameraBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
-            if (localStream) {
-                localStream.getTracks().forEach(track => {
-                    pc.addTrack(track, localStream);
-                });
+            try {
+                // Toggle facing mode
+                const newFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+
+                // Get current track settings
+                const videoTrack = localStream.getVideoTracks()[0];
+                if (!videoTrack) {
+                    throw new Error('Tidak ada track video');
+                }
+
+                // Hentikan track video lama
+                videoTrack.stop();
+
+                // Buat constraint baru dengan facing mode yang diinginkan
+                const constraints = {
+                    audio: true,
+                    video: {
+                        facingMode: newFacingMode,
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    }
+                };
+
+                // Dapatkan stream baru
+                const newStream = await navigator.mediaDevices.getUserMedia(constraints);
+
+                // Ganti track video di localStream
+                const newVideoTrack = newStream.getVideoTracks()[0];
+                const audioTrack = localStream.getAudioTracks()[0];
+
+                // Buat stream baru dengan track yang benar
+                const newLocalStream = new MediaStream();
+                if (audioTrack) {
+                    newLocalStream.addTrack(audioTrack);
+                }
+                newLocalStream.addTrack(newVideoTrack);
+
+                // Update peerConnection dengan track baru
+                if (peerConnection) {
+                    // Hapus sender video lama
+                    const senders = peerConnection.getSenders();
+                    const videoSender = senders.find(s => s.track && s.track.kind === 'video');
+                    if (videoSender) {
+                        await videoSender.replaceTrack(newVideoTrack);
+                    } else {
+                        // Tambahkan track baru
+                        peerConnection.addTrack(newVideoTrack, newLocalStream);
+                    }
+                }
+
+                // Update localStream dan video element
+                localStream = newLocalStream;
+                localVideo.srcObject = localStream;
+
+                // Update facing mode state
+                currentFacingMode = newFacingMode;
+
+                console.log('Kamera berubah ke:', newFacingMode);
+
+            } catch (error) {
+                console.error('Gagal mengganti kamera:', error);
+                alert('Tidak dapat mengganti kamera. Pastikan perangkat memiliki kamera depan dan belakang.');
+                // Jika gagal, coba restart dengan kamera default
+                try {
+                    const defaultStream = await navigator.mediaDevices.getUserMedia({
+                        audio: true,
+                        video: { facingMode: 'user' }
+                    });
+                    localStream = defaultStream;
+                    localVideo.srcObject = localStream;
+                    currentFacingMode = 'user';
+                } catch (e) {
+                    console.warn('Gagal restart kamera:', e);
+                }
             }
 
-            pc.ontrack = (event) => {
-                if (!remoteStream) {
-                    remoteStream = new MediaStream();
-                }
-                event.streams[0].getTracks().forEach(track => {
-                    remoteStream.addTrack(track);
-                });
-                remoteVideo.srcObject = remoteStream;
-                callStatusDisplay.textContent = '📞 Tersambung';
-                stopRingtone();
-
-                if (activeCallRecord && activeCallRecord.callId) {
-                    callConnectedTime = Date.now();
-                    updateCallRecord(activeCallRecord.callId, { status: 'answered' });
-                }
-            };
-
-            pc.onicecandidate = (event) => {
-                if (event.candidate) {
-                    callsRef.child(callId).child('candidates').push({
-                        candidate: event.candidate.toJSON(),
-                        from: isCallerFlag ? 'caller' : 'callee'
-                    });
-                }
-            };
-
-            pc.oniceconnectionstatechange = () => {
-                const state = pc.iceConnectionState;
-                if (state === 'connected' && activeCallRecord && activeCallRecord.callId) {
-                    callConnectedTime = Date.now();
-                    updateCallRecord(activeCallRecord.callId, { status: 'answered' });
-                }
-                if (state === 'disconnected' || state === 'failed' || state === 'closed') {
-                    callStatusDisplay.textContent = '❌ Panggilan terputus';
-                    stopRingtone();
-                    setTimeout(() => {
-                        endCallAndSaveHistory();
-                        hideCallOverlay();
-                    }, 1500);
-                }
-            };
-
-            return pc;
+            switchCameraBtn.disabled = false;
+            switchCameraBtn.innerHTML = '<i class="fas fa-sync-alt"></i>';
+            isSwitchingCamera = false;
         }
 
         // ============================================================
-        // 31. MULAI PANGGILAN (Caller) dengan Pilihan Kamera
+        // 30. MULAI PANGGILAN (Caller)
         // ============================================================
         async function startCall(video) {
             if (!isLoggedIn()) {
@@ -3916,22 +3763,13 @@
             }
 
             try {
-                // Tampilkan pilihan kamera jika video call
-                let facingMode = 'user';
-                if (video) {
-                    const choice = await showCameraSelector();
-                    if (choice === null) {
-                        return; // User membatalkan
-                    }
-                    facingMode = choice;
-                }
-
                 const constraints = {
                     audio: true,
-                    video: video ? { facingMode: facingMode } : false
+                    video: video ? { facingMode: 'user' } : false
                 };
                 localStream = await navigator.mediaDevices.getUserMedia(constraints);
                 localVideo.srcObject = localStream;
+                currentFacingMode = 'user';
 
                 const callId = callsRef.push().key;
                 currentCallId = callId;
@@ -3954,6 +3792,10 @@
                 if (!video) {
                     localVideo.style.display = 'none';
                     remoteVideo.style.display = 'none';
+                    switchCameraBtn.style.display = 'none';
+                } else {
+                    switchCameraBtn.style.display = 'flex';
+                    switchCameraBtn.disabled = false;
                 }
 
                 peerConnection = createPeerConnection(true, callId);
@@ -4012,7 +3854,7 @@
         }
 
         // ============================================================
-        // 32. MENERIMA PANGGILAN (Callee)
+        // 31. MENERIMA PANGGILAN (Callee)
         // ============================================================
         function acceptIncomingCall() {
             if (!isLoggedIn()) return;
@@ -4032,31 +3874,16 @@
                 try {
                     const video = data.isVideo || false;
                     isVideoCall = video;
-
-                    // Pilih kamera jika video call
-                    let facingMode = 'user';
-                    if (video) {
-                        const choice = await showCameraSelector();
-                        if (choice === null) {
-                            // User membatalkan, tolak panggilan
-                            callsRef.child(callId).remove().catch(() => {});
-                            incomingCallPopup.classList.remove('show');
-                            incomingCallId = null;
-                            stopRingtone();
-                            return;
-                        }
-                        facingMode = choice;
-                    }
-
                     currentCallId = callId;
                     isCaller = false;
 
                     const constraints = {
                         audio: true,
-                        video: video ? { facingMode: facingMode } : false
+                        video: video ? { facingMode: 'user' } : false
                     };
                     localStream = await navigator.mediaDevices.getUserMedia(constraints);
                     localVideo.srcObject = localStream;
+                    currentFacingMode = 'user';
 
                     const name = getCallerName();
                     const recordId = createCallRecord(video ? 'video' : 'voice', video, data.from || 'Penelepon', name);
@@ -4075,6 +3902,10 @@
                     if (!video) {
                         localVideo.style.display = 'none';
                         remoteVideo.style.display = 'none';
+                        switchCameraBtn.style.display = 'none';
+                    } else {
+                        switchCameraBtn.style.display = 'flex';
+                        switchCameraBtn.disabled = false;
                     }
 
                     stopRingtone();
@@ -4123,7 +3954,7 @@
         }
 
         // ============================================================
-        // 33. LISTENER PANGGILAN MASUK
+        // 32. LISTENER PANGGILAN MASUK
         // ============================================================
         function listenForIncomingCalls() {
             if (!isLoggedIn()) return;
@@ -4188,7 +4019,7 @@
         }
 
         // ============================================================
-        // 34. TOMBOL PANGGILAN
+        // 33. TOMBOL PANGGILAN
         // ============================================================
         voiceCallBtn.addEventListener('click', () => {
             startCall(false);
@@ -4199,7 +4030,7 @@
         });
 
         // ============================================================
-        // 35. TOMBOL INCOMING CALL
+        // 34. TOMBOL INCOMING CALL
         // ============================================================
         incAcceptBtn.addEventListener('click', () => {
             stopRingtone();
@@ -4225,7 +4056,7 @@
         });
 
         // ============================================================
-        // 36. TOMBOL KONTROL PANGGILAN
+        // 35. TOMBOL KONTROL PANGGILAN
         // ============================================================
         endCallBtn.addEventListener('click', () => {
             if (confirm('Akhiri panggilan?')) {
@@ -4260,52 +4091,11 @@
             }
         });
 
-        // Switch camera selama panggilan berlangsung
-        switchCameraBtn.addEventListener('click', async () => {
-            if (!localStream) return;
-            
-            const videoTracks = localStream.getVideoTracks();
-            if (videoTracks.length === 0) return;
-            
-            // Tampilkan pilihan kamera
-            const choice = await showCameraSelector();
-            if (choice === null) return;
-            
-            try {
-                // Hentikan track video lama
-                videoTracks.forEach(track => track.stop());
-                localStream.removeTrack(videoTracks[0]);
-                
-                // Dapatkan track video baru dengan facingMode yang dipilih
-                const newStream = await navigator.mediaDevices.getUserMedia({
-                    audio: false,
-                    video: { facingMode: choice }
-                });
-                
-                const newVideoTrack = newStream.getVideoTracks()[0];
-                localStream.addTrack(newVideoTrack);
-                
-                // Update video element
-                localVideo.srcObject = localStream;
-                
-                // Update peer connection
-                const sender = peerConnection?.getSenders().find(s => s.track?.kind === 'video');
-                if (sender) {
-                    await sender.replaceTrack(newVideoTrack);
-                }
-                
-                // Reset state
-                isVideoOff = false;
-                toggleVideoBtn.innerHTML = '<i class="fas fa-video"></i>';
-                toggleVideoBtn.classList.remove('video-off');
-                
-                // Simpan facingMode untuk referensi
-                selectedCameraFacing = choice;
-                
-            } catch (error) {
-                console.error('Gagal mengganti kamera:', error);
-                alert('Gagal mengganti kamera: ' + error.message);
-            }
+        // ============================================================
+        // 36. SWITCH CAMERA BUTTON
+        // ============================================================
+        switchCameraBtn.addEventListener('click', () => {
+            switchCamera();
         });
 
         // ============================================================
@@ -4343,10 +4133,9 @@
         const observer = new MutationObserver(() => updateEmptyState());
         observer.observe(container, { childList: true, subtree: true });
 
-        console.log('💬 Ja\'O Chating & Call + Pilihan Kamera siap!');
-        console.log('📸 Kirim gambar dengan tombol 📷 - pilih kamera depan/belakang');
-        console.log('📹 Video call juga bisa pilih kamera sebelum memulai');
-        console.log('🔄 Ganti kamera selama panggilan dengan tombol 🔄');
+        console.log('💬 Ja\'O Chating & Call + Switch Camera siap!');
+        console.log('📸 Tombol 🔄 untuk ganti kamera depan/belakang saat video call');
+        console.log('📱 Mirip seperti di WhatsApp!');
     </script>
 </body>
 </html>
