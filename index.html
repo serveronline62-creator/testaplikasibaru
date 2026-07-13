@@ -136,7 +136,7 @@
             flex-direction: column;
             gap: 8px;
             margin: 8px 0 16px;
-            max-height: 200px;
+            max-height: 240px;
             overflow-y: auto;
         }
         .login-card .user-list::-webkit-scrollbar {
@@ -145,6 +145,14 @@
         .login-card .user-list::-webkit-scrollbar-thumb {
             background: #ccc;
             border-radius: 8px;
+        }
+        .login-card .user-list .list-title {
+            font-size: 13px;
+            color: #888;
+            text-align: left;
+            padding: 4px 4px 8px;
+            font-weight: 500;
+            border-bottom: 1px solid #eee;
         }
 
         .login-card .user-item {
@@ -224,12 +232,18 @@
         .login-card .login-btn:active {
             transform: scale(0.97);
         }
+        .login-card .login-btn.secondary {
+            background: #6c7a89;
+        }
+        .login-card .login-btn.secondary:hover {
+            background: #5a6a7a;
+        }
 
         .login-card .login-divider {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin: 8px 0 4px;
+            margin: 12px 0 8px;
             color: #bbb;
             font-size: 13px;
         }
@@ -244,7 +258,7 @@
         .login-card .guest-link {
             font-size: 13px;
             color: #888;
-            margin-top: 4px;
+            margin-top: 8px;
         }
         .login-card .guest-link button {
             background: none;
@@ -264,14 +278,18 @@
         .login-card .info-message {
             font-size: 13px;
             color: #00a884;
+            padding: 8px;
             background: #e8f5f0;
-            padding: 8px 12px;
-            border-radius: 10px;
-            margin: 6px 0;
-            display: none;
+            border-radius: 12px;
+            margin-top: 4px;
         }
-        .login-card .info-message.show {
-            display: block;
+        .login-card .error-message {
+            font-size: 13px;
+            color: #e74c3c;
+            padding: 8px;
+            background: #fde8e8;
+            border-radius: 12px;
+            margin-top: 4px;
         }
 
         /* ----- CHAT CONTAINER (sama seperti sebelumnya) ----- */
@@ -1690,6 +1708,9 @@
             .login-card h2 {
                 font-size: 20px;
             }
+            .login-card .user-list {
+                max-height: 180px;
+            }
         }
         @media (max-width: 380px) {
             .input-row {
@@ -1727,30 +1748,27 @@
                 <i class="fas fa-comment-dots"></i>
             </div>
             <h2>Ja'O Chat</h2>
-            <p class="subtitle">Masuk atau daftar untuk mulai chatting</p>
+            <p class="subtitle">Daftar atau login untuk mulai</p>
 
+            <!-- Daftar pengguna terdaftar -->
             <div class="user-list" id="userList">
-                <!-- Daftar user akan di-render oleh JavaScript -->
-                <div style="text-align:center;color:#999;padding:16px;font-size:14px;">
-                    <i class="fas fa-users" style="font-size:24px;display:block;margin-bottom:8px;"></i>
-                    Belum ada pengguna terdaftar.<br />Daftar sekarang!
-                </div>
+                <div class="list-title">📋 Pengguna Terdaftar</div>
+                <!-- Akan di-render oleh JavaScript -->
             </div>
 
-            <div class="login-divider">atau</div>
+            <div class="login-divider">atau daftar baru</div>
 
             <div class="login-form">
                 <input type="text" id="loginNameInput" placeholder="Masukkan nama pengguna" maxlength="30" />
-                <button class="login-btn" id="loginAsGuestBtn">
-                    <i class="fas fa-sign-in-alt"></i> Masuk / Daftar
+                <button class="login-btn" id="registerBtn">
+                    <i class="fas fa-user-plus"></i> Daftar & Masuk
+                </button>
+                <button class="login-btn secondary" id="loginAsGuestBtn">
+                    <i class="fas fa-sign-in-alt"></i> Login sebagai Tamu
                 </button>
             </div>
 
-            <div class="guest-link">
-                <span>Belum punya akun? </span>
-                <button id="registerNewUserBtn">Daftar sekarang</button>
-            </div>
-            <div class="info-message" id="infoMessage"></div>
+            <div id="loginMessage" style="margin-top:12px;"></div>
         </div>
     </div>
 
@@ -1905,10 +1923,9 @@
 
     <script>
         // ============================================================
-        // 0. USER MANAGEMENT (Login System) - TANPA DEFAULT AKUN
+        // 0. USER MANAGEMENT (Login System) - TANPA AKUN DEFAULT
         // ============================================================
 
-        // Daftar pengguna terdaftar (disimpan di localStorage)
         let registeredUsers = [];
 
         // Muat daftar pengguna dari localStorage
@@ -1918,12 +1935,13 @@
                 if (stored) {
                     registeredUsers = JSON.parse(stored);
                 } else {
-                    // Tidak ada default akun - langsung kosong
+                    // Tidak ada akun default, kosongkan
                     registeredUsers = [];
                     saveUsers();
                 }
             } catch (e) {
                 registeredUsers = [];
+                saveUsers();
             }
         }
 
@@ -1947,7 +1965,8 @@
                 name: name.trim(),
                 email: email || name.trim() + '@email.com',
                 avatar: name.trim().charAt(0).toUpperCase(),
-                isAdmin: false
+                isAdmin: false,
+                createdAt: Date.now()
             };
             registeredUsers.push(newUser);
             saveUsers();
@@ -1993,9 +2012,9 @@
         const loginOverlay = document.getElementById('loginOverlay');
         const userList = document.getElementById('userList');
         const loginNameInput = document.getElementById('loginNameInput');
+        const registerBtn = document.getElementById('registerBtn');
         const loginAsGuestBtn = document.getElementById('loginAsGuestBtn');
-        const registerNewUserBtn = document.getElementById('registerNewUserBtn');
-        const infoMessage = document.getElementById('infoMessage');
+        const loginMessage = document.getElementById('loginMessage');
 
         const container = document.getElementById('messageContainer');
         const emptyState = document.getElementById('emptyState');
@@ -2081,7 +2100,6 @@
             if (callHistoryOverlay.classList.contains('show')) {
                 renderCallHistory();
             }
-            hideInfoMessage();
         }
 
         function logoutUser() {
@@ -2107,20 +2125,40 @@
                     endCallAndSaveHistory();
                     hideCallOverlay();
                 }
+                // Bersihkan pesan
+                setLoginMessage('', '');
             }
+        }
+
+        function setLoginMessage(text, type) {
+            loginMessage.innerHTML = '';
+            if (!text) return;
+            const div = document.createElement('div');
+            div.className = type === 'error' ? 'error-message' : 'info-message';
+            div.textContent = text;
+            loginMessage.appendChild(div);
         }
 
         // ============================================================
         // 6. RENDER USER LIST (Login Screen)
         // ============================================================
         function renderUserList() {
+            // Hapus semua kecuali title
+            const title = userList.querySelector('.list-title');
             userList.innerHTML = '';
+            if (title) userList.appendChild(title);
+            else {
+                const t = document.createElement('div');
+                t.className = 'list-title';
+                t.textContent = '📋 Pengguna Terdaftar';
+                userList.appendChild(t);
+            }
+
             if (registeredUsers.length === 0) {
                 const emptyMsg = document.createElement('div');
                 emptyMsg.style.cssText =
-                    'text-align:center;color:#999;padding:20px 16px;font-size:14px;';
-                emptyMsg.innerHTML =
-                    '<i class="fas fa-users" style="font-size:28px;display:block;margin-bottom:10px;opacity:0.4;"></i>Belum ada pengguna terdaftar.<br />Daftar sekarang!';
+                    'text-align:center;color:#999;padding:12px;font-size:14px;background:#f5f5f5;border-radius:12px;';
+                emptyMsg.textContent = 'Belum ada pengguna terdaftar. Daftar sekarang!';
                 userList.appendChild(emptyMsg);
                 return;
             }
@@ -2159,6 +2197,7 @@
                 item.appendChild(badge);
 
                 item.addEventListener('click', () => {
+                    setLoginMessage('', '');
                     loginUser(user);
                 });
 
@@ -2167,88 +2206,71 @@
         }
 
         // ============================================================
-        // 7. INFO MESSAGE
-        // ============================================================
-        function showInfoMessage(msg, isSuccess = true) {
-            infoMessage.textContent = msg;
-            infoMessage.style.color = isSuccess ? '#00a884' : '#e74c3c';
-            infoMessage.style.background = isSuccess ? '#e8f5f0' : '#fde8e8';
-            infoMessage.classList.add('show');
-            setTimeout(() => {
-                hideInfoMessage();
-            }, 4000);
-        }
-
-        function hideInfoMessage() {
-            infoMessage.classList.remove('show');
-        }
-
-        // ============================================================
-        // 8. LOGIN HANDLERS
+        // 7. LOGIN HANDLERS
         // ============================================================
 
-        // Login / Daftar otomatis
-        loginAsGuestBtn.addEventListener('click', () => {
+        // Daftar & Login
+        registerBtn.addEventListener('click', () => {
             const name = loginNameInput.value.trim();
             if (!name) {
-                showInfoMessage('Masukkan nama pengguna terlebih dahulu.', false);
+                setLoginMessage('Masukkan nama pengguna terlebih dahulu.', 'error');
                 loginNameInput.focus();
                 return;
             }
             if (name.length < 2) {
-                showInfoMessage('Nama minimal 2 karakter.', false);
+                setLoginMessage('Nama minimal 2 karakter.', 'error');
+                return;
+            }
+            const existing = findUserByName(name);
+            if (existing) {
+                setLoginMessage('Nama "' + name + '" sudah terdaftar. Klik nama di daftar untuk login.', 'error');
+                return;
+            }
+            const newUser = addUser(name, name + '@email.com');
+            if (newUser) {
+                setLoginMessage('✅ Pengguna "' + name + '" berhasil didaftarkan!', '');
+                renderUserList();
+                loginNameInput.value = '';
+                loginUser(newUser);
+            } else {
+                setLoginMessage('Gagal mendaftar. Coba lagi.', 'error');
+            }
+        });
+
+        // Login sebagai tamu (langsung masuk dengan nama sementara)
+        loginAsGuestBtn.addEventListener('click', () => {
+            const name = loginNameInput.value.trim();
+            if (!name) {
+                setLoginMessage('Masukkan nama pengguna terlebih dahulu.', 'error');
+                loginNameInput.focus();
+                return;
+            }
+            if (name.length < 2) {
+                setLoginMessage('Nama minimal 2 karakter.', 'error');
                 return;
             }
             // Cari user terdaftar
             const existing = findUserByName(name);
             if (existing) {
                 loginUser(existing);
-                showInfoMessage('Selamat datang kembali, ' + name + '!');
+                return;
+            }
+            // Buat user baru sebagai tamu (tetap tersimpan)
+            const newUser = addUser(name, name + '@guest.com');
+            if (newUser) {
+                setLoginMessage('✅ Selamat datang, ' + name + '!', '');
+                renderUserList();
+                loginNameInput.value = '';
+                loginUser(newUser);
             } else {
-                // Daftar otomatis sebagai user baru
-                const newUser = addUser(name, name + '@chat.com');
-                if (newUser) {
-                    loginUser(newUser);
-                    showInfoMessage('✅ Akun "' + name + '" berhasil dibuat!');
-                } else {
-                    showInfoMessage('Gagal mendaftar. Coba nama lain.', false);
-                }
+                setLoginMessage('Gagal login. Coba lagi.', 'error');
             }
         });
 
         // Login dengan tekan Enter di input nama
         loginNameInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                loginAsGuestBtn.click();
-            }
-        });
-
-        // Daftar user baru (manual)
-        registerNewUserBtn.addEventListener('click', () => {
-            const name = loginNameInput.value.trim();
-            if (!name) {
-                showInfoMessage('Masukkan nama yang ingin didaftarkan.', false);
-                loginNameInput.focus();
-                return;
-            }
-            if (name.length < 2) {
-                showInfoMessage('Nama minimal 2 karakter.', false);
-                return;
-            }
-            const existing = findUserByName(name);
-            if (existing) {
-                showInfoMessage('Nama "' + name + '" sudah terdaftar. Silakan login.', false);
-                return;
-            }
-            const newUser = addUser(name, name + '@chat.com');
-            if (newUser) {
-                showInfoMessage('✅ "' + name + '" berhasil didaftarkan! Masuk otomatis.');
-                renderUserList();
-                loginNameInput.value = '';
-                // Otomatis login
-                loginUser(newUser);
-            } else {
-                showInfoMessage('Gagal mendaftar. Coba lagi.', false);
+                registerBtn.click();
             }
         });
 
@@ -2259,33 +2281,28 @@
         });
 
         // ============================================================
-        // 9. AUTO-LOGIN (Cek session)
+        // 8. AUTO-LOGIN (Cek session)
         // ============================================================
         function checkAutoLogin() {
             const savedName = sessionStorage.getItem('chat_user');
             const savedId = sessionStorage.getItem('chat_user_id');
             if (savedName && savedId) {
-                // Cari user berdasarkan id
                 const user = registeredUsers.find(u => u.id === savedId);
                 if (user) {
                     loginUser(user);
                     return true;
                 }
-                // Cari berdasarkan nama (fallback)
                 const userByName = registeredUsers.find(u => u.name === savedName);
                 if (userByName) {
                     loginUser(userByName);
                     return true;
                 }
             }
-            // Tidak ada session, tampilkan login
-            loginOverlay.classList.remove('hidden');
-            renderUserList();
             return false;
         }
 
         // ============================================================
-        // 10. VARIABEL CALL
+        // 9. VARIABEL CALL
         // ============================================================
         let localStream = null;
         let remoteStream = null;
@@ -2298,14 +2315,14 @@
         let incomingCallId = null;
 
         // ============================================================
-        // 11. CALL HISTORY TRACKING
+        // 10. CALL HISTORY TRACKING
         // ============================================================
         let activeCallRecord = null;
         let callStartTime = 0;
         let callConnectedTime = 0;
 
         // ============================================================
-        // 12. SUARA (Chat + Ringtone)
+        // 11. SUARA (Chat + Ringtone)
         // ============================================================
         let audioCtx = null;
         let ringtoneNodes = null;
@@ -2416,7 +2433,7 @@
         }
 
         // ============================================================
-        // 13. FUNGSI BANTU (Chat)
+        // 12. FUNGSI BANTU (Chat)
         // ============================================================
         function formatTime(timestamp) {
             if (!timestamp) return '--:--';
@@ -2497,7 +2514,7 @@
         }
 
         // ============================================================
-        // 14. UPLOAD FILE (Chat)
+        // 13. UPLOAD FILE (Chat)
         // ============================================================
         const IMGUR_CLIENT_ID = '546c25a59c58ad7';
 
@@ -2550,7 +2567,7 @@
         }
 
         // ============================================================
-        // 15. HEADER DROPDOWN
+        // 14. HEADER DROPDOWN
         // ============================================================
         headerMenuBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -2578,7 +2595,7 @@
         });
 
         // ============================================================
-        // 16. REPLY (Chat)
+        // 15. REPLY (Chat)
         // ============================================================
         let replyTo = null;
 
@@ -2597,7 +2614,7 @@
         cancelReplyBtn.addEventListener('click', clearReply);
 
         // ============================================================
-        // 17. CONTEXT MENU (Chat)
+        // 16. CONTEXT MENU (Chat)
         // ============================================================
         let currentMessageKey = null;
         let currentMessageElement = null;
@@ -2696,7 +2713,7 @@
         });
 
         // ============================================================
-        // 18. CLEANUP DATE SEPARATORS
+        // 17. CLEANUP DATE SEPARATORS
         // ============================================================
         function cleanupDateSeparators() {
             document.querySelectorAll('.date-separator').forEach(sep => {
@@ -2713,7 +2730,7 @@
         }
 
         // ============================================================
-        // 19. LINK PREVIEW (Chat)
+        // 18. LINK PREVIEW (Chat)
         // ============================================================
         const previewCache = new Map();
 
@@ -2791,7 +2808,7 @@
         }
 
         // ============================================================
-        // 20. RENDER MESSAGE (Chat)
+        // 19. RENDER MESSAGE (Chat)
         // ============================================================
         let lastDisplayedDateKey = null;
 
@@ -3049,7 +3066,7 @@
         }
 
         // ============================================================
-        // 21. LOAD MESSAGES (Realtime)
+        // 20. LOAD MESSAGES (Realtime)
         // ============================================================
         let isInitialLoad = true;
         const notifiedKeys = new Set();
@@ -3097,7 +3114,7 @@
         }
 
         // ============================================================
-        // 22. KIRIM PESAN (Chat + File)
+        // 21. KIRIM PESAN (Chat + File)
         // ============================================================
         let pendingFile = null;
         let isUploading = false;
@@ -3237,7 +3254,7 @@
         }
 
         // ============================================================
-        // 23. EMOJI PICKER (Chat)
+        // 22. EMOJI PICKER (Chat)
         // ============================================================
         let isEmojiPickerVisible = false;
         emojiToggle.addEventListener('click', (e) => {
@@ -3265,7 +3282,7 @@
         });
 
         // ============================================================
-        // 24. EVENT LISTENERS (Chat)
+        // 23. EVENT LISTENERS (Chat)
         // ============================================================
         sendBtn.addEventListener('click', sendMessage);
         messageInput.addEventListener('keydown', (e) => {
@@ -3274,7 +3291,7 @@
         });
 
         // ============================================================
-        // 25. CALL HISTORY UI
+        // 24. CALL HISTORY UI
         // ============================================================
 
         function openCallHistory() {
@@ -3317,7 +3334,7 @@
         });
 
         // ============================================================
-        // 26. CALL HISTORY - SAVE & RENDER
+        // 25. CALL HISTORY - SAVE & RENDER
         // ============================================================
 
         function saveCallRecord(type, isVideo, callerName, calleeName, status, duration, startTime, endTime) {
@@ -3482,7 +3499,7 @@
         });
 
         // ============================================================
-        // 27. WEBRTC - CALL LOGIC (dengan Call History)
+        // 26. WEBRTC - CALL LOGIC (dengan Call History)
         // ============================================================
 
         function getCallerName() {
@@ -3652,7 +3669,7 @@
         }
 
         // ============================================================
-        // 28. MULAI PANGGILAN (Caller)
+        // 27. MULAI PANGGILAN (Caller)
         // ============================================================
         async function startCall(video) {
             if (!isLoggedIn()) {
@@ -3757,7 +3774,7 @@
         }
 
         // ============================================================
-        // 29. MENERIMA PANGGILAN (Callee)
+        // 28. MENERIMA PANGGILAN (Callee)
         // ============================================================
         function acceptIncomingCall() {
             if (!isLoggedIn()) return;
@@ -3852,7 +3869,7 @@
         }
 
         // ============================================================
-        // 30. LISTENER PANGGILAN MASUK
+        // 29. LISTENER PANGGILAN MASUK
         // ============================================================
         function listenForIncomingCalls() {
             callsRef.on('child_added', (snapshot) => {
@@ -3915,7 +3932,7 @@
         }
 
         // ============================================================
-        // 31. TOMBOL PANGGILAN
+        // 30. TOMBOL PANGGILAN
         // ============================================================
         voiceCallBtn.addEventListener('click', () => {
             startCall(false);
@@ -3926,7 +3943,7 @@
         });
 
         // ============================================================
-        // 32. TOMBOL INCOMING CALL
+        // 31. TOMBOL INCOMING CALL
         // ============================================================
         incAcceptBtn.addEventListener('click', () => {
             stopRingtone();
@@ -3952,7 +3969,7 @@
         });
 
         // ============================================================
-        // 33. TOMBOL KONTROL PANGGILAN
+        // 32. TOMBOL KONTROL PANGGILAN
         // ============================================================
         endCallBtn.addEventListener('click', () => {
             if (confirm('Akhiri panggilan?')) {
@@ -3988,7 +4005,7 @@
         });
 
         // ============================================================
-        // 34. CLEANUP PANGGILAN DI FIREBASE
+        // 33. CLEANUP PANGGILAN DI FIREBASE
         // ============================================================
         callsRef.on('child_removed', (snapshot) => {
             const removedId = snapshot.key;
@@ -4015,11 +4032,14 @@
         });
 
         // ============================================================
-        // 35. INISIALISASI
+        // 34. INISIALISASI
         // ============================================================
 
         // Load users from localStorage
         loadUsers();
+
+        // Render user list
+        renderUserList();
 
         // Check auto login
         const loggedIn = checkAutoLogin();
@@ -4027,7 +4047,12 @@
         // Jika tidak login, tampilkan login
         if (!loggedIn) {
             loginOverlay.classList.remove('hidden');
-            renderUserList();
+            // Tampilkan pesan selamat datang
+            if (registeredUsers.length === 0) {
+                setLoginMessage('👋 Selamat datang! Daftarkan nama Anda untuk mulai.', '');
+            } else {
+                setLoginMessage('Pilih nama dari daftar atau daftar baru.', '');
+            }
         }
 
         // Observer untuk empty state
@@ -4037,7 +4062,7 @@
         // Listen for incoming calls (hanya jika sudah login)
         listenForIncomingCalls();
 
-        console.log('💬 Ja\'O Chating & Call - Tanpa Default Akun siap!');
+        console.log('💬 Ja\'O Chating & Call - Login System (Tanpa Akun Default) siap!');
         console.log('👤 Pengguna harus mendaftar terlebih dahulu.');
     </script>
 </body>
