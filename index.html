@@ -15,7 +15,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js">
     </script>
     <style>
-        /* ===== CSS LENGKAP ===== */
+        /* ===== CSS LENGKAP (sama seperti sebelumnya) ===== */
         :root,
         [data-theme="dark"] {
             --bg-primary: #0b1120;
@@ -52,8 +52,8 @@
             --spinner-accent-track: rgba(0, 212, 170, 0.2);
             --radius: 8px;
             --radius-lg: 14px;
-            --teknisi-filter-bg: rgba(0, 212, 170, 0.05);
-            --teknisi-filter-hover: rgba(0, 212, 170, 0.12);
+            --filter-bg: rgba(0, 212, 170, 0.08);
+            --filter-border: rgba(0, 212, 170, 0.25);
         }
         [data-theme="light"] {
             --bg-primary: #f0f4f8;
@@ -90,8 +90,8 @@
             --spinner-accent-track: rgba(13, 148, 136, 0.2);
             --radius: 8px;
             --radius-lg: 14px;
-            --teknisi-filter-bg: rgba(13, 148, 136, 0.05);
-            --teknisi-filter-hover: rgba(13, 148, 136, 0.12);
+            --filter-bg: rgba(13, 148, 136, 0.06);
+            --filter-border: rgba(13, 148, 136, 0.2);
         }
         *,
         *::before,
@@ -865,113 +865,6 @@
             margin-top: 2px;
         }
 
-        /* ===== TEKNISI FILTER ===== */
-        .teknisi-filter-section {
-            background: var(--teknisi-filter-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 0.85rem 1.2rem;
-            margin-bottom: 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        .teknisi-filter-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .teknisi-filter-label i {
-            color: var(--accent);
-        }
-        .teknisi-filter-chips {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-        .teknisi-chip {
-            padding: 4px 14px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            background: var(--chip-bg);
-            color: var(--text-secondary);
-            font-family: inherit;
-            font-size: 0.73rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .teknisi-chip:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-            background: var(--accent-dim);
-            transform: translateY(-1px);
-        }
-        .teknisi-chip.active {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #0b1120;
-            box-shadow: 0 0 16px rgba(0, 212, 170, 0.2);
-        }
-        [data-theme="light"] .teknisi-chip.active {
-            color: #fff;
-        }
-        .teknisi-chip .chip-count {
-            font-size: 0.6rem;
-            opacity: 0.7;
-            margin-left: 4px;
-            font-weight: 400;
-        }
-        .teknisi-clear {
-            padding: 4px 12px;
-            border-radius: 16px;
-            border: 1px dashed var(--border);
-            background: transparent;
-            color: var(--text-muted);
-            font-family: inherit;
-            font-size: 0.68rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .teknisi-clear:hover {
-            border-color: var(--danger);
-            color: var(--danger);
-            background: rgba(239, 68, 68, 0.05);
-        }
-        .teknisi-chip-all {
-            padding: 4px 14px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            background: var(--chip-bg);
-            color: var(--text-secondary);
-            font-family: inherit;
-            font-size: 0.73rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .teknisi-chip-all:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-            background: var(--accent-dim);
-        }
-        .teknisi-chip-all.active {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #0b1120;
-            box-shadow: 0 0 16px rgba(0, 212, 170, 0.2);
-        }
-        [data-theme="light"] .teknisi-chip-all.active {
-            color: #fff;
-        }
-
         /* ===== FORM ===== */
         .form-section-title {
             font-size: 0.75rem;
@@ -1122,6 +1015,53 @@
             background: linear-gradient(135deg, #228b4f, #1d6f42);
         }
 
+        /* ===== FILTER TEKNISI ===== */
+        .filter-teknisi-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding: 6px 0;
+        }
+        .filter-teknisi-bar .filter-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .filter-teknisi-chip {
+            padding: 4px 12px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: var(--chip-bg);
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .filter-teknisi-chip:hover {
+            border-color: var(--text-muted);
+            color: var(--text-primary);
+        }
+        .filter-teknisi-chip.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #0b1120;
+        }
+        .filter-teknisi-chip.clear-filter {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        .filter-teknisi-chip.clear-filter:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+        [data-theme="light"] .filter-teknisi-chip.active {
+            color: #fff;
+        }
+
         /* ===== TABLE ===== */
         .table-card {
             background: var(--bg-card);
@@ -1255,6 +1195,40 @@
             font-weight: 500;
             color: var(--text-primary);
         }
+        .data-table tbody td.teknisi-cell {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .data-table tbody td.teknisi-cell:hover {
+            color: var(--accent);
+            background: var(--accent-dim);
+            border-radius: 4px;
+        }
+        .data-table tbody td.teknisi-cell.filtered {
+            background: var(--filter-bg);
+            border-radius: 4px;
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .data-table tbody td.teknisi-cell::after {
+            content: '\f0b0';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 0.55rem;
+            color: var(--accent);
+            opacity: 0;
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            transition: opacity 0.2s;
+        }
+        .data-table tbody td.teknisi-cell:hover::after {
+            opacity: 0.6;
+        }
         .data-table tbody td.editable-cell {
             position: relative;
             cursor: pointer;
@@ -1284,31 +1258,6 @@
         }
         .data-table tbody td.locked-cell::after {
             display: none;
-        }
-        .data-table tbody td.teknisi-cell {
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--accent);
-            transition: all 0.2s ease;
-            position: relative;
-        }
-        .data-table tbody td.teknisi-cell:hover {
-            background: var(--teknisi-filter-hover);
-            transform: scale(1.02);
-        }
-        .data-table tbody td.teknisi-cell::after {
-            content: '\f0b0';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            font-size: 0.5rem;
-            color: var(--accent);
-            opacity: 0.4;
-            margin-left: 4px;
-        }
-        .data-table tbody td.teknisi-cell.active-filter {
-            background: var(--accent-dim);
-            border-radius: 4px;
-            padding: 2px 8px;
         }
         .data-table tbody tr.new-row {
             background: var(--new-row-bg) !important;
@@ -1819,14 +1768,12 @@
                 padding: 10px 12px;
                 font-size: 0.78rem;
             }
-            .teknisi-filter-section {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 0.75rem;
+            .filter-teknisi-bar {
+                gap: 4px;
             }
-            .teknisi-filter-chips {
-                max-height: 120px;
-                overflow-y: auto;
+            .filter-teknisi-chip {
+                font-size: 0.65rem;
+                padding: 3px 10px;
             }
         }
     </style>
@@ -1933,16 +1880,14 @@
                             <button class="btn btn-download btn-sm" onclick="downloadExcel('aktif')" id="btnDownload"><i class="fas fa-file-excel"></i> Download</button>
                         </div>
                     </div>
-
-                    <!-- TEKNISI FILTER - AKTIF -->
-                    <div class="teknisi-filter-section">
-                        <span class="teknisi-filter-label"><i class="fas fa-user-cog"></i> Filter Teknisi:</span>
-                        <div class="teknisi-filter-chips" id="teknisiFilterAktif">
-                            <button class="teknisi-chip-all active" onclick="filterTeknisi('aktif', 'all', this)">Semua</button>
-                            <!-- Akan diisi oleh JS -->
+                    <!-- Filter Teknisi Bar -->
+                    <div style="padding: 0.5rem 1.5rem 0.5rem 1.5rem; border-bottom: 1px solid var(--border);">
+                        <div class="filter-teknisi-bar" id="teknisiFilterAktif">
+                            <span class="filter-label"><i class="fas fa-user-cog"></i> Filter Teknisi:</span>
+                            <button class="filter-teknisi-chip clear-filter active" onclick="filterByTeknisi('aktif', null, this)">Semua</button>
+                            <!-- Teknisi chips akan diisi oleh JavaScript -->
                         </div>
                     </div>
-
                     <div class="table-wrapper">
                         <div class="table-loading-skeleton" id="tableSkeleton">
                             <div class="skeleton-row"><div class="skeleton-cell" style="width:30px;"></div><div class="skeleton-cell" style="width:70px;"></div><div class="skeleton-cell" style="width:120px;"></div><div class="skeleton-cell" style="flex:1;"></div></div>
@@ -1994,16 +1939,14 @@
                             <button class="btn btn-download btn-sm" onclick="downloadExcel('riwayat')" id="btnDownloadRiwayat"><i class="fas fa-file-excel"></i> Download</button>
                         </div>
                     </div>
-
-                    <!-- TEKNISI FILTER - RIWAYAT -->
-                    <div class="teknisi-filter-section">
-                        <span class="teknisi-filter-label"><i class="fas fa-user-cog"></i> Filter Teknisi:</span>
-                        <div class="teknisi-filter-chips" id="teknisiFilterRiwayat">
-                            <button class="teknisi-chip-all active" onclick="filterTeknisi('riwayat', 'all', this)">Semua</button>
-                            <!-- Akan diisi oleh JS -->
+                    <!-- Filter Teknisi Bar untuk Riwayat -->
+                    <div style="padding: 0.5rem 1.5rem 0.5rem 1.5rem; border-bottom: 1px solid var(--border);">
+                        <div class="filter-teknisi-bar" id="teknisiFilterRiwayat">
+                            <span class="filter-label"><i class="fas fa-user-cog"></i> Filter Teknisi:</span>
+                            <button class="filter-teknisi-chip clear-filter active" onclick="filterByTeknisi('riwayat', null, this)">Semua</button>
+                            <!-- Teknisi chips akan diisi oleh JavaScript -->
                         </div>
                     </div>
-
                     <div class="table-wrapper">
                         <table class="data-table" id="riwayatTableEl" style="display:none;">
                             <thead>
@@ -2083,9 +2026,12 @@
             <div class="modal-header"><h3><i class="fas fa-edit"></i> Edit Order</h3><button class="modal-close" onclick="closeEditModal()"><i class="fas fa-times"></i></button></div>
             <div class="modal-body">
                 <input type="hidden" id="modalRowIndex" />
+                <!-- Info part & konsumen tanpa nomor order -->
                 <div style="background:rgba(128,128,128,0.1);border-radius:var(--radius);padding:0.85rem 1rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
                     <span style="font-size:0.78rem;color:var(--text-secondary);" id="modalPartInfo"></span>
                 </div>
+
+                <!-- STATUS - semua user bisa ubah -->
                 <div class="form-group">
                     <label class="form-label">Status</label>
                     <select class="form-select" id="modalStatus">
@@ -2095,6 +2041,8 @@
                         <option value="FINISH">FINISH</option>
                     </select>
                 </div>
+
+                <!-- FIELD LAIN - selalu terlihat, tapi dinonaktifkan untuk non-admin -->
                 <div id="adminOnlyFields">
                     <div class="form-group">
                         <label class="form-label"><span class="editable-label"><i class="fas fa-pen edit-icon"></i> Tgl Order</span></label>
@@ -2120,6 +2068,8 @@
                         <textarea class="form-textarea" id="modalKeterangan"></textarea>
                     </div>
                 </div>
+
+                <!-- Pesan untuk non-admin -->
                 <div id="userOnlyMessage" style="display:none;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);border-radius:var(--radius);padding:12px 16px;color:var(--info);font-size:0.85rem;">
                     <i class="fas fa-info-circle" style="margin-right:8px;"></i>
                     Anda hanya dapat mengubah <strong>Status</strong>. Field lainnya hanya dapat diedit oleh <strong>Admin</strong>.
@@ -2159,6 +2109,10 @@
         var ADMIN_EMAIL = 'admin@app.local';
         var isAdmin = false;
 
+        // ===== STATE FILTER TEKNISI =====
+        var filterTeknisiAktif = null;
+        var filterTeknisiRiwayat = null;
+
         // ===== TEKNISI LIST =====
         var TEKNISI_LIST = [
             { nama: "YANDRI OTTU", nomor: "6281234567890" },
@@ -2168,12 +2122,7 @@
             { nama: "KRISTIAN OPENG", nomor: "6281234567894" },
             { nama: "MUHAMMAD FAUZI", nomor: "6281234567895" }
         ];
-
-        // ===== STATE FILTER TEKNISI =====
-        var currentTeknisiFilter = {
-            aktif: 'all',
-            riwayat: 'all'
-        };
+        var TEKNISI_NAMES = TEKNISI_LIST.map(function(t) { return t.nama; });
 
         // ===== INDEXEDDB =====
         var CACHE_DB = 'OrderKomponenCache',
@@ -2242,19 +2191,80 @@
             return allOrders.filter(function(o) { return (o['STATUS'] || '').toUpperCase() === 'FINISH'; });
         }
 
-        function getUniqueTeknisi(orders) {
-            var teknisiSet = new Set();
-            orders.forEach(function(o) {
-                var t = o['TEKNISI'];
-                if (t && t.trim()) teknisiSet.add(t.trim());
-            });
-            return Array.from(teknisiSet).sort();
+        // ===== FUNGSI FILTER TEKNISI =====
+        function filterByTeknisi(tab, teknisi, btn) {
+            var container = tab === 'aktif' ? document.getElementById('teknisiFilterAktif') : document.getElementById(
+                'teknisiFilterRiwayat');
+            var chips = container.querySelectorAll('.filter-teknisi-chip');
+            chips.forEach(function(c) { c.classList.remove('active'); });
+            if (btn) btn.classList.add('active');
+
+            if (tab === 'aktif') {
+                filterTeknisiAktif = teknisi;
+                renderAktifTable();
+            } else {
+                filterTeknisiRiwayat = teknisi;
+                renderRiwayatTable();
+            }
         }
 
-        function getTeknisiCount(orders, teknisi) {
-            return orders.filter(function(o) {
-                return (o['TEKNISI'] || '').trim() === teknisi;
-            }).length;
+        function buildTeknisiFilterChips() {
+            // Build untuk tab Aktif
+            var containerAktif = document.getElementById('teknisiFilterAktif');
+            if (containerAktif) {
+                // Hapus chips selain "Semua"
+                var chips = containerAktif.querySelectorAll('.filter-teknisi-chip:not(.clear-filter)');
+                chips.forEach(function(c) { c.remove(); });
+                // Tambahkan chips untuk setiap teknisi
+                TEKNISI_NAMES.forEach(function(nama) {
+                    var chip = document.createElement('button');
+                    chip.className = 'filter-teknisi-chip';
+                    chip.textContent = nama;
+                    chip.onclick = function() {
+                        filterByTeknisi('aktif', nama, this);
+                        // Hapus highlight di tabel
+                        document.querySelectorAll('#tableBody .teknisi-cell.filtered').forEach(function(el) {
+                            el.classList.remove('filtered');
+                        });
+                        // Highlight teknisi yang difilter
+                        if (filterTeknisiAktif) {
+                            document.querySelectorAll('#tableBody .teknisi-cell').forEach(function(el) {
+                                if (el.textContent.trim() === filterTeknisiAktif) {
+                                    el.classList.add('filtered');
+                                }
+                            });
+                        }
+                    };
+                    containerAktif.appendChild(chip);
+                });
+            }
+
+            // Build untuk tab Riwayat
+            var containerRiwayat = document.getElementById('teknisiFilterRiwayat');
+            if (containerRiwayat) {
+                var chips = containerRiwayat.querySelectorAll('.filter-teknisi-chip:not(.clear-filter)');
+                chips.forEach(function(c) { c.remove(); });
+                TEKNISI_NAMES.forEach(function(nama) {
+                    var chip = document.createElement('button');
+                    chip.className = 'filter-teknisi-chip';
+                    chip.textContent = nama;
+                    chip.onclick = function() {
+                        filterByTeknisi('riwayat', nama, this);
+                        // Hapus highlight di tabel riwayat
+                        document.querySelectorAll('#riwayatBody .teknisi-cell.filtered').forEach(function(el) {
+                            el.classList.remove('filtered');
+                        });
+                        if (filterTeknisiRiwayat) {
+                            document.querySelectorAll('#riwayatBody .teknisi-cell').forEach(function(el) {
+                                if (el.textContent.trim() === filterTeknisiRiwayat) {
+                                    el.classList.add('filtered');
+                                }
+                            });
+                        }
+                    };
+                    containerRiwayat.appendChild(chip);
+                });
+            }
         }
 
         // ===== FUNGSI HITUNG JUMLAH HARI =====
@@ -2550,7 +2560,6 @@
             document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
             btn.classList.add('active');
             document.getElementById(tab === 'aktif' ? 'panelAktif' : 'panelRiwayat').classList.add('active');
-            renderTeknisiFilters();
         }
 
         auth.onAuthStateChanged(function(user) {
@@ -2562,6 +2571,7 @@
                 if (!window._appStarted) {
                     window._appStarted = true;
                     setDefaultDate();
+                    buildTeknisiFilterChips();
                     startDataEngine();
                 } else {
                     renderAll();
@@ -2622,94 +2632,9 @@
         }
 
         function renderAll() {
-            renderTeknisiFilters();
             renderAktifTable();
             renderRiwayatTable();
             updateAllStats();
-        }
-
-        // ===== TEKNISI FILTER RENDER =====
-        function renderTeknisiFilters() {
-            var aktifOrders = getAktifOrders();
-            var riwayatOrders = getRiwayatOrders();
-
-            renderTeknisiFilter('aktif', aktifOrders);
-            renderTeknisiFilter('riwayat', riwayatOrders);
-        }
-
-        function renderTeknisiFilter(tab, orders) {
-            var container = document.getElementById(tab === 'aktif' ? 'teknisiFilterAktif' : 'teknisiFilterRiwayat');
-            if (!container) return;
-
-            var teknisiList = getUniqueTeknisi(orders);
-            var currentFilter = currentTeknisiFilter[tab];
-
-            var html = '';
-            html += '<button class="teknisi-chip-all ' + (currentFilter === 'all' ? 'active' : '') +
-                '" onclick="filterTeknisi(\'' + tab + '\', \'all\', this)">Semua</button>';
-
-            teknisiList.forEach(function(t) {
-                var count = getTeknisiCount(orders, t);
-                var isActive = (currentFilter === t);
-                html += '<button class="teknisi-chip ' + (isActive ? 'active' : '') +
-                    '" onclick="filterTeknisi(\'' + tab + '\', \'' + t.replace(/'/g, "\\'") + '\', this)">' +
-                    escapeHtml(t) + ' <span class="chip-count">(' + count + ')</span></button>';
-            });
-
-            container.innerHTML = html;
-        }
-
-        function filterTeknisi(tab, teknisi, btn) {
-            currentTeknisiFilter[tab] = teknisi;
-
-            // Update UI
-            var container = document.getElementById(tab === 'aktif' ? 'teknisiFilterAktif' : 'teknisiFilterRiwayat');
-            if (container) {
-                container.querySelectorAll('button').forEach(function(b) { b.classList.remove('active'); });
-                btn.classList.add('active');
-            }
-
-            if (tab === 'aktif') {
-                renderAktifTable();
-            } else {
-                renderRiwayatTable();
-            }
-        }
-
-        function filterTeknisiClick(teknisi) {
-            // Fungsi ini dipanggil dari onclick di cell teknisi
-            // Tentukan tab yang aktif
-            var tab = currentMainTab;
-            var teknisiName = teknisi;
-
-            // Cari tombol yang sesuai di filter
-            var container = document.getElementById(tab === 'aktif' ? 'teknisiFilterAktif' : 'teknisiFilterRiwayat');
-            if (container) {
-                var buttons = container.querySelectorAll('button');
-                var found = false;
-                buttons.forEach(function(b) {
-                    if (b.textContent.trim().startsWith(teknisiName)) {
-                        b.click();
-                        found = true;
-                    }
-                });
-                if (!found) {
-                    // Jika teknisi tidak ada di filter, set langsung
-                    currentTeknisiFilter[tab] = teknisiName;
-                    if (tab === 'aktif') {
-                        renderAktifTable();
-                    } else {
-                        renderRiwayatTable();
-                    }
-                }
-            } else {
-                currentTeknisiFilter[tab] = teknisiName;
-                if (tab === 'aktif') {
-                    renderAktifTable();
-                } else {
-                    renderRiwayatTable();
-                }
-            }
         }
 
         // ===== THEME =====
@@ -3029,16 +2954,17 @@
 
             var fd = getAktifOrders();
 
-            // Filter status
+            // Filter by status
             if (currentFilter !== 'all') fd = fd.filter(function(o) { return (o['STATUS'] || '').toUpperCase() ===
                     currentFilter; });
 
-            // Filter teknisi
-            var teknisiFilter = currentTeknisiFilter['aktif'];
-            if (teknisiFilter !== 'all') {
-                fd = fd.filter(function(o) { return (o['TEKNISI'] || '').trim() === teknisiFilter; });
+            // Filter by teknisi
+            if (filterTeknisiAktif) {
+                fd = fd.filter(function(o) { return (o['TEKNISI'] || '').toUpperCase() === filterTeknisiAktif
+                        .toUpperCase(); });
             }
 
+            // Search
             var sv = (document.getElementById('searchInput').value || '').toLowerCase();
             if (sv) fd = fd.filter(function(o) {
                 return Object.values(o).some(function(v) { return String(v).toLowerCase().includes(sv); });
@@ -3070,22 +2996,23 @@
                     jml = o['JUMLAH'] || '',
                     op = o['ORDER KE PABRIK'] || '',
                     k = o['Keterangan Pemenuhan'] || '',
-                    da = 'onclick="openEditModal(\'' + o._docId + '\')"';
+                    da = 'onclick="openEditModal(\'' + o._docId + '\')"',
+                    teknisi = o['TEKNISI'] || '';
+
+                // Cek apakah teknisi sedang difilter
+                var isFiltered = filterTeknisiAktif && teknisi.toUpperCase() === filterTeknisiAktif.toUpperCase();
+                var teknisiClass = 'teknisi-cell' + (isFiltered ? ' filtered' : '');
 
                 var jmlDisplay = jml ? escapeHtml(jml) + ' hari' : '-';
-                var teknisiName = escapeHtml(o['TEKNISI'] || '-');
-
-                var isTeknisiActive = (currentTeknisiFilter['aktif'] !== 'all' && (o['TEKNISI'] || '').trim() ===
-                    currentTeknisiFilter['aktif']);
 
                 h += '<tr class="' + (isNew ? 'new-row' : '') + '">' +
                     '<td>' + (i + 1) + '</td>' +
                     '<td><span class="status-badge ' + sc + '"><span class="status-dot"></span>' + escapeHtml(s) +
                     '</span></td>' +
-                    '<td class="name-cell teknisi-cell ' + (isTeknisiActive ? 'active-filter' : '') +
-                    '" onclick="filterTeknisiClick(\'' + teknisiName.replace(/'/g, "\\'") +
-                    '\')" title="Klik untuk filter berdasarkan teknisi ini">' +
-                    teknisiName + '</td>' +
+                    '<td class="' + teknisiClass + '" onclick="filterByTeknisi(\'aktif\', \'' + escapeHtml(teknisi) +
+                    '\', document.querySelector(\'#teknisiFilterAktif .filter-teknisi-chip:not(.clear-filter)\'))">' +
+                    escapeHtml(teknisi) +
+                    '</td>' +
                     '<td>' + formatDateDisplay(o['TGL PENGAJUAN ORD'] || '') + '</td>' +
                     '<td>' + escapeHtml(o['NO. SERVICE CASE'] || '') + '</td>' +
                     '<td>' + escapeHtml(o['TYPE (IDNO)'] || '') + '</td>' +
@@ -3132,10 +3059,10 @@
 
             var fd = getRiwayatOrders();
 
-            // Filter teknisi
-            var teknisiFilter = currentTeknisiFilter['riwayat'];
-            if (teknisiFilter !== 'all') {
-                fd = fd.filter(function(o) { return (o['TEKNISI'] || '').trim() === teknisiFilter; });
+            // Filter by teknisi
+            if (filterTeknisiRiwayat) {
+                fd = fd.filter(function(o) { return (o['TEKNISI'] || '').toUpperCase() === filterTeknisiRiwayat
+                        .toUpperCase(); });
             }
 
             var sv = (document.getElementById('searchRiwayat').value || '').toLowerCase();
@@ -3173,21 +3100,21 @@
                     ttp = o['TGL TERIMA PART'] || '',
                     jml = o['JUMLAH'] || '',
                     op = o['ORDER KE PABRIK'] || '',
-                    k = o['Keterangan Pemenuhan'] || '';
+                    k = o['Keterangan Pemenuhan'] || '',
+                    teknisi = o['TEKNISI'] || '';
+
+                var isFiltered = filterTeknisiRiwayat && teknisi.toUpperCase() === filterTeknisiRiwayat.toUpperCase();
+                var teknisiClass = 'teknisi-cell' + (isFiltered ? ' filtered' : '');
 
                 var jmlDisplay = jml ? escapeHtml(jml) + ' hari' : '-';
-                var teknisiName = escapeHtml(o['TEKNISI'] || '-');
-
-                var isTeknisiActive = (currentTeknisiFilter['riwayat'] !== 'all' && (o['TEKNISI'] || '').trim() ===
-                    currentTeknisiFilter['riwayat']);
 
                 h += '<tr>' +
                     '<td>' + (i + 1) + '</td>' +
                     '<td><span class="status-badge finish"><span class="status-dot"></span>FINISH</span></td>' +
-                    '<td class="name-cell teknisi-cell ' + (isTeknisiActive ? 'active-filter' : '') +
-                    '" onclick="filterTeknisiClick(\'' + teknisiName.replace(/'/g, "\\'") +
-                    '\')" title="Klik untuk filter berdasarkan teknisi ini">' +
-                    teknisiName + '</td>' +
+                    '<td class="' + teknisiClass + '" onclick="filterByTeknisi(\'riwayat\', \'' + escapeHtml(teknisi) +
+                    '\', document.querySelector(\'#teknisiFilterRiwayat .filter-teknisi-chip:not(.clear-filter)\'))">' +
+                    escapeHtml(teknisi) +
+                    '</td>' +
                     '<td>' + formatDateDisplay(o['TGL PENGAJUAN ORD'] || '') + '</td>' +
                     '<td>' + escapeHtml(o['NO. SERVICE CASE'] || '') + '</td>' +
                     '<td>' + escapeHtml(o['TYPE (IDNO)'] || '') + '</td>' +
@@ -3439,12 +3366,10 @@
             var f = getAktifOrders();
             if (currentFilter !== 'all') f = f.filter(function(o) { return (o['STATUS'] || '').toUpperCase() ===
                     currentFilter; });
-
-            var teknisiFilter = currentTeknisiFilter['aktif'];
-            if (teknisiFilter !== 'all') {
-                f = f.filter(function(o) { return (o['TEKNISI'] || '').trim() === teknisiFilter; });
+            if (filterTeknisiAktif) {
+                f = f.filter(function(o) { return (o['TEKNISI'] || '').toUpperCase() === filterTeknisiAktif
+                        .toUpperCase(); });
             }
-
             var s = (document.getElementById('searchInput').value || '').toLowerCase();
             if (s) f = f.filter(function(o) {
                 return Object.values(o).some(function(v) { return String(v).toLowerCase().includes(s); });
@@ -3495,7 +3420,7 @@
         document.getElementById('inputModal').addEventListener('click', function(e) { if (e.target === this) closeInputModal(); });
         document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
 
-        console.log('✅ Aplikasi siap - Filter teknisi dapat diklik pada kolom Teknisi.');
+        console.log('✅ Aplikasi siap - Filter Teknisi aktif! Klik nama teknisi untuk filter.');
         console.log('📱 WhatsApp notifications ready. Update TEKNISI_LIST with real phone numbers.');
     </script>
 </body>
