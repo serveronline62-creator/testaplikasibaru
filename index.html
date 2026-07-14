@@ -1015,104 +1015,6 @@
             background: linear-gradient(135deg, #228b4f, #1d6f42);
         }
 
-        /* ===== PAGINATION ===== */
-        .pagination-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.85rem 1.5rem;
-            border-top: 1px solid var(--border);
-            flex-wrap: wrap;
-            gap: 0.75rem;
-        }
-        .pagination-info {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-        }
-        .pagination-info strong {
-            color: var(--text-secondary);
-        }
-        .pagination-buttons {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-        .pagination-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 6px 16px;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            background: var(--chip-bg);
-            color: var(--text-secondary);
-            font-family: inherit;
-            font-size: 0.78rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-width: 80px;
-        }
-        .pagination-btn:hover:not(:disabled) {
-            border-color: var(--accent);
-            color: var(--accent);
-            background: var(--accent-dim);
-        }
-        .pagination-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-        .pagination-btn.active-page {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #0b1120;
-            min-width: 36px;
-            padding: 6px 12px;
-        }
-        [data-theme="light"] .pagination-btn.active-page {
-            color: #fff;
-        }
-        .pagination-numbers {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-        }
-        .pagination-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 32px;
-            height: 32px;
-            padding: 0 8px;
-            border-radius: var(--radius);
-            border: 1px solid transparent;
-            background: transparent;
-            color: var(--text-secondary);
-            font-family: inherit;
-            font-size: 0.78rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .pagination-number:hover:not(.active-page) {
-            border-color: var(--border);
-            background: var(--bg-input);
-        }
-        .pagination-number.active-page {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #0b1120;
-        }
-        [data-theme="light"] .pagination-number.active-page {
-            color: #fff;
-        }
-        .pagination-ellipsis {
-            color: var(--text-muted);
-            padding: 0 4px;
-            font-size: 0.78rem;
-        }
-
         /* ===== FILTER TEKNISI ===== */
         .filter-teknisi-bar {
             display: flex;
@@ -1554,6 +1456,110 @@
             font-size: 0.85rem;
         }
 
+        /* ===== PAGINATION ===== */
+        .pagination-wrapper {
+            padding: 0.85rem 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .pagination-info {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .pagination-info .highlight {
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .pagination-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 6px 16px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .pagination-btn:hover:not(:disabled) {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-dim);
+        }
+        .pagination-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .pagination-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #0b1120;
+        }
+        [data-theme="light"] .pagination-btn.active {
+            color: #fff;
+        }
+        .pagination-numbers {
+            display: flex;
+            gap: 4px;
+        }
+        .pagination-number {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pagination-number:hover:not(.active):not(:disabled) {
+            border-color: var(--text-muted);
+            color: var(--text-primary);
+            background: var(--row-hover);
+        }
+        .pagination-number.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #0b1120;
+        }
+        [data-theme="light"] .pagination-number.active {
+            color: #fff;
+        }
+        .pagination-number:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        .pagination-ellipsis {
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            padding: 0 4px;
+        }
+
         /* ===== MODAL ===== */
         .modal-overlay {
             display: none;
@@ -1905,19 +1911,21 @@
                 font-size: 0.65rem;
                 padding: 3px 10px;
             }
-            .pagination-container {
+            .pagination-wrapper {
                 flex-direction: column;
-                align-items: center;
-                gap: 0.5rem;
+                align-items: stretch;
+                gap: 0.75rem;
+            }
+            .pagination-controls {
+                justify-content: center;
+                flex-wrap: wrap;
             }
             .pagination-numbers {
                 flex-wrap: wrap;
                 justify-content: center;
             }
-            .pagination-btn {
-                min-width: 60px;
-                padding: 4px 12px;
-                font-size: 0.7rem;
+            .pagination-info {
+                justify-content: center;
             }
         }
     </style>
@@ -2065,23 +2073,18 @@
                         </table>
                     </div>
                     <div class="empty-state" id="emptyState" style="display:none;"><i class="fas fa-inbox"></i><p>Tidak ada order aktif.</p></div>
-                    
-                    <!-- ===== PAGINATION ===== -->
-                    <div class="pagination-container" id="paginationAktif" style="display:none;">
+                    <!-- ===== PAGINATION AKTIF ===== -->
+                    <div class="pagination-wrapper" id="paginationAktif" style="display:none;">
                         <div class="pagination-info">
-                            Menampilkan <strong id="paginationStartAktif">0</strong> - <strong id="paginationEndAktif">0</strong> 
-                            dari <strong id="paginationTotalAktif">0</strong> data
+                            <span>Menampilkan <span class="highlight" id="paginationStartAktif">0</span> - <span class="highlight" id="paginationEndAktif">0</span> dari <span class="highlight" id="paginationTotalAktif">0</span> data</span>
                         </div>
-                        <div class="pagination-buttons">
-                            <button class="pagination-btn" id="prevPageAktif" onclick="changePage('aktif', -1)">
-                                <i class="fas fa-chevron-left"></i> Back
-                            </button>
+                        <div class="pagination-controls">
+                            <button class="pagination-btn" id="prevPageAktif" onclick="changePage('aktif', -1)"><i class="fas fa-chevron-left"></i> Back</button>
                             <div class="pagination-numbers" id="paginationNumbersAktif"></div>
-                            <button class="pagination-btn" id="nextPageAktif" onclick="changePage('aktif', 1)">
-                                Next <i class="fas fa-chevron-right"></i>
-                            </button>
+                            <button class="pagination-btn" id="nextPageAktif" onclick="changePage('aktif', 1)">Next <i class="fas fa-chevron-right"></i></button>
                         </div>
                     </div>
+                    <div class="table-footer" id="tableFooter" style="display:none;"><span>Menampilkan <strong class="row-count" id="rowCount">0</strong> dari <strong class="row-count" id="rowTotal">0</strong> order</span><span style="display:flex;align-items:center;gap:6px;"><span class="sync-dot" style="width:6px;height:6px;"></span> Realtime</span></div>
                 </div>
             </div>
 
@@ -2135,23 +2138,18 @@
                         </table>
                     </div>
                     <div class="empty-state" id="emptyRiwayat" style="display:none;"><i class="fas fa-archive"></i><p>Belum ada riwayat order.</p></div>
-                    
                     <!-- ===== PAGINATION RIWAYAT ===== -->
-                    <div class="pagination-container" id="paginationRiwayat" style="display:none;">
+                    <div class="pagination-wrapper" id="paginationRiwayat" style="display:none;">
                         <div class="pagination-info">
-                            Menampilkan <strong id="paginationStartRiwayat">0</strong> - <strong id="paginationEndRiwayat">0</strong> 
-                            dari <strong id="paginationTotalRiwayat">0</strong> data
+                            <span>Menampilkan <span class="highlight" id="paginationStartRiwayat">0</span> - <span class="highlight" id="paginationEndRiwayat">0</span> dari <span class="highlight" id="paginationTotalRiwayat">0</span> data</span>
                         </div>
-                        <div class="pagination-buttons">
-                            <button class="pagination-btn" id="prevPageRiwayat" onclick="changePage('riwayat', -1)">
-                                <i class="fas fa-chevron-left"></i> Back
-                            </button>
+                        <div class="pagination-controls">
+                            <button class="pagination-btn" id="prevPageRiwayat" onclick="changePage('riwayat', -1)"><i class="fas fa-chevron-left"></i> Back</button>
                             <div class="pagination-numbers" id="paginationNumbersRiwayat"></div>
-                            <button class="pagination-btn" id="nextPageRiwayat" onclick="changePage('riwayat', 1)">
-                                Next <i class="fas fa-chevron-right"></i>
-                            </button>
+                            <button class="pagination-btn" id="nextPageRiwayat" onclick="changePage('riwayat', 1)">Next <i class="fas fa-chevron-right"></i></button>
                         </div>
                     </div>
+                    <div class="table-footer" id="riwayatFooter" style="display:none;"><span>Menampilkan <strong class="row-count" id="riwayatCount">0</strong> riwayat order</span><span style="display:flex;align-items:center;gap:6px;"><span class="sync-dot" style="width:6px;height:6px;"></span> Realtime</span></div>
                 </div>
             </div>
         </main>
@@ -2276,14 +2274,16 @@
         var ADMIN_EMAIL = 'admin@app.local';
         var isAdmin = false;
 
-        // ===== STATE =====
+        // ===== STATE FILTER TEKNISI =====
         var filterTeknisiAktif = null;
         var filterTeknisiRiwayat = null;
+
+        // ===== STATE PAGINATION =====
+        var ITEMS_PER_PAGE = 10;
         var currentPageAktif = 1;
         var currentPageRiwayat = 1;
-        var PAGE_SIZE = 10;
 
-        // ===== TEKNISI LIST (untuk WA dan dropdown form) =====
+        // ===== TEKNISI LIST =====
         var TEKNISI_LIST = [
             { nama: "YANDRI OTTU", nomor: "6281234567890" },
             { nama: "HARMINDO LAMMA", nomor: "6281234567891" },
@@ -2415,9 +2415,9 @@
                 document.querySelectorAll('#' + bodyId + ' .teknisi-cell.filtered').forEach(function(el) {
                     el.classList.remove('filtered');
                 });
+                // Reset ke halaman 1 saat filter berubah
                 if (tab === 'aktif') currentPageAktif = 1;
                 else currentPageRiwayat = 1;
-                renderAll();
             };
             container.appendChild(clearChip);
 
@@ -2441,7 +2441,6 @@
                     });
                     if (tab === 'aktif') currentPageAktif = 1;
                     else currentPageRiwayat = 1;
-                    renderAll();
                 };
                 container.appendChild(chip);
             });
@@ -2459,69 +2458,123 @@
 
             if (tab === 'aktif') {
                 filterTeknisiAktif = teknisi;
+                renderAktifTable();
             } else {
                 filterTeknisiRiwayat = teknisi;
+                renderRiwayatTable();
             }
         }
 
-        // ===== PAGINATION =====
-        function getPaginatedData(data, page) {
-            var start = (page - 1) * PAGE_SIZE;
-            var end = Math.min(start + PAGE_SIZE, data.length);
-            return {
-                data: data.slice(start, end),
-                start: start + 1,
-                end: end,
-                total: data.length,
-                totalPages: Math.ceil(data.length / PAGE_SIZE)
-            };
+        // ===== PAGINATION FUNCTIONS =====
+        function changePage(tab, direction) {
+            if (tab === 'aktif') {
+                var totalPages = Math.ceil(getFilteredAktifCount() / ITEMS_PER_PAGE);
+                var newPage = currentPageAktif + direction;
+                if (newPage < 1 || newPage > totalPages) return;
+                currentPageAktif = newPage;
+                renderAktifTable();
+            } else {
+                var totalPages = Math.ceil(getFilteredRiwayatCount() / ITEMS_PER_PAGE);
+                var newPage = currentPageRiwayat + direction;
+                if (newPage < 1 || newPage > totalPages) return;
+                currentPageRiwayat = newPage;
+                renderRiwayatTable();
+            }
         }
 
-        function renderPagination(tab, dataLength) {
-            var containerId = tab === 'aktif' ? 'paginationAktif' : 'paginationRiwayat';
-            var container = document.getElementById(containerId);
-            if (!container) return;
+        function goToPage(tab, page) {
+            if (tab === 'aktif') {
+                var totalPages = Math.ceil(getFilteredAktifCount() / ITEMS_PER_PAGE);
+                if (page < 1 || page > totalPages) return;
+                currentPageAktif = page;
+                renderAktifTable();
+            } else {
+                var totalPages = Math.ceil(getFilteredRiwayatCount() / ITEMS_PER_PAGE);
+                if (page < 1 || page > totalPages) return;
+                currentPageRiwayat = page;
+                renderRiwayatTable();
+            }
+        }
 
-            if (dataLength === 0) {
-                container.style.display = 'none';
+        function getFilteredAktifCount() {
+            var fd = getAktifOrders();
+            if (currentFilter !== 'all') fd = fd.filter(function(o) { return (o['STATUS'] || '').toUpperCase() ===
+                    currentFilter; });
+            if (filterTeknisiAktif) {
+                fd = fd.filter(function(o) { return (o['TEKNISI'] || '').toUpperCase() === filterTeknisiAktif
+                        .toUpperCase(); });
+            }
+            var sv = (document.getElementById('searchInput').value || '').toLowerCase();
+            if (sv) fd = fd.filter(function(o) {
+                return Object.values(o).some(function(v) { return String(v).toLowerCase().includes(sv); });
+            });
+            return fd.length;
+        }
+
+        function getFilteredRiwayatCount() {
+            var fd = getRiwayatOrders();
+            if (filterTeknisiRiwayat) {
+                fd = fd.filter(function(o) { return (o['TEKNISI'] || '').toUpperCase() === filterTeknisiRiwayat
+                        .toUpperCase(); });
+            }
+            var sv = (document.getElementById('searchRiwayat').value || '').toLowerCase();
+            if (sv) fd = fd.filter(function(o) {
+                return Object.values(o).some(function(v) { return String(v).toLowerCase().includes(sv); });
+            });
+            return fd.length;
+        }
+
+        function renderPagination(tab, totalItems) {
+            var totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+            var currentPage = tab === 'aktif' ? currentPageAktif : currentPageRiwayat;
+
+            var paginationWrapper = document.getElementById(tab === 'aktif' ? 'paginationAktif' : 'paginationRiwayat');
+            var numbersContainer = document.getElementById(tab === 'aktif' ? 'paginationNumbersAktif' :
+            'paginationNumbersRiwayat');
+            var prevBtn = document.getElementById(tab === 'aktif' ? 'prevPageAktif' : 'prevPageRiwayat');
+            var nextBtn = document.getElementById(tab === 'aktif' ? 'nextPageAktif' : 'nextPageRiwayat');
+            var startEl = document.getElementById(tab === 'aktif' ? 'paginationStartAktif' : 'paginationStartRiwayat');
+            var endEl = document.getElementById(tab === 'aktif' ? 'paginationEndAktif' : 'paginationEndRiwayat');
+            var totalEl = document.getElementById(tab === 'aktif' ? 'paginationTotalAktif' : 'paginationTotalRiwayat');
+
+            if (totalItems === 0) {
+                paginationWrapper.style.display = 'none';
                 return;
             }
 
-            var currentPage = tab === 'aktif' ? currentPageAktif : currentPageRiwayat;
-            var totalPages = Math.ceil(dataLength / PAGE_SIZE);
-            var start = (currentPage - 1) * PAGE_SIZE + 1;
-            var end = Math.min(currentPage * PAGE_SIZE, dataLength);
+            paginationWrapper.style.display = 'flex';
 
-            container.style.display = 'flex';
+            var start = (currentPage - 1) * ITEMS_PER_PAGE + 1;
+            var end = Math.min(currentPage * ITEMS_PER_PAGE, totalItems);
 
-            document.getElementById(tab === 'aktif' ? 'paginationStartAktif' : 'paginationStartRiwayat').textContent = start;
-            document.getElementById(tab === 'aktif' ? 'paginationEndAktif' : 'paginationEndRiwayat').textContent = end;
-            document.getElementById(tab === 'aktif' ? 'paginationTotalAktif' : 'paginationTotalRiwayat').textContent =
-            dataLength;
+            if (startEl) startEl.textContent = start;
+            if (endEl) endEl.textContent = end;
+            if (totalEl) totalEl.textContent = totalItems;
 
-            document.getElementById(tab === 'aktif' ? 'prevPageAktif' : 'prevPageRiwayat').disabled = (currentPage <= 1);
-            document.getElementById(tab === 'aktif' ? 'nextPageAktif' : 'nextPageRiwayat').disabled = (currentPage >=
-            totalPages);
+            prevBtn.disabled = currentPage <= 1;
+            nextBtn.disabled = currentPage >= totalPages;
 
-            // Render number buttons
-            var numbersContainer = document.getElementById(tab === 'aktif' ? 'paginationNumbersAktif' :
-                'paginationNumbersRiwayat');
+            // Build page numbers
             numbersContainer.innerHTML = '';
-
             var maxVisible = 5;
-            var half = Math.floor(maxVisible / 2);
-            var startPage = Math.max(1, currentPage - half);
-            var endPage = Math.min(totalPages, currentPage + half);
+            var halfVisible = Math.floor(maxVisible / 2);
+
+            var startPage = Math.max(1, currentPage - halfVisible);
+            var endPage = Math.min(totalPages, currentPage + halfVisible);
+
+            if (endPage - startPage < maxVisible - 1) {
+                if (startPage === 1) {
+                    endPage = Math.min(totalPages, startPage + maxVisible - 1);
+                } else if (endPage === totalPages) {
+                    startPage = Math.max(1, endPage - maxVisible + 1);
+                }
+            }
 
             if (startPage > 1) {
                 var firstBtn = document.createElement('button');
                 firstBtn.className = 'pagination-number';
                 firstBtn.textContent = '1';
-                firstBtn.onclick = function() {
-                    if (tab === 'aktif') { currentPageAktif = 1;
-                        renderAll(); } else { currentPageRiwayat = 1;
-                        renderAll(); }
-                };
+                firstBtn.onclick = function() { goToPage(tab, 1); };
                 numbersContainer.appendChild(firstBtn);
                 if (startPage > 2) {
                     var ellipsis = document.createElement('span');
@@ -2533,15 +2586,9 @@
 
             for (var i = startPage; i <= endPage; i++) {
                 var btn = document.createElement('button');
-                btn.className = 'pagination-number' + (i === currentPage ? ' active-page' : '');
+                btn.className = 'pagination-number' + (i === currentPage ? ' active' : '');
                 btn.textContent = i;
-                btn.onclick = function(page) {
-                    return function() {
-                        if (tab === 'aktif') { currentPageAktif = page;
-                            renderAll(); } else { currentPageRiwayat = page;
-                            renderAll(); }
-                    };
-                }(i);
+                btn.onclick = function(page) { return function() { goToPage(tab, page); }; }(i);
                 numbersContainer.appendChild(btn);
             }
 
@@ -2555,32 +2602,8 @@
                 var lastBtn = document.createElement('button');
                 lastBtn.className = 'pagination-number';
                 lastBtn.textContent = totalPages;
-                lastBtn.onclick = function() {
-                    if (tab === 'aktif') { currentPageAktif = totalPages;
-                        renderAll(); } else { currentPageRiwayat = totalPages;
-                        renderAll(); }
-                };
+                lastBtn.onclick = function() { goToPage(tab, totalPages); };
                 numbersContainer.appendChild(lastBtn);
-            }
-        }
-
-        function changePage(tab, delta) {
-            if (tab === 'aktif') {
-                var totalAktif = getFilteredData('aktif').length;
-                var totalPagesAktif = Math.ceil(totalAktif / PAGE_SIZE);
-                var newPageAktif = currentPageAktif + delta;
-                if (newPageAktif >= 1 && newPageAktif <= totalPagesAktif) {
-                    currentPageAktif = newPageAktif;
-                    renderAll();
-                }
-            } else {
-                var totalRiwayat = getFilteredData('riwayat').length;
-                var totalPagesRiwayat = Math.ceil(totalRiwayat / PAGE_SIZE);
-                var newPageRiwayat = currentPageRiwayat + delta;
-                if (newPageRiwayat >= 1 && newPageRiwayat <= totalPagesRiwayat) {
-                    currentPageRiwayat = newPageRiwayat;
-                    renderAll();
-                }
             }
         }
 
@@ -3011,35 +3034,6 @@
             }, 150);
         }
 
-        // ===== GET FILTERED DATA =====
-        function getFilteredData(tab) {
-            if (tab === 'aktif') {
-                var fd = getAktifOrders();
-                if (currentFilter !== 'all') fd = fd.filter(function(o) { return (o['STATUS'] || '').toUpperCase() ===
-                        currentFilter; });
-                if (filterTeknisiAktif) {
-                    fd = fd.filter(function(o) { return (o['TEKNISI'] || '').toUpperCase() === filterTeknisiAktif
-                            .toUpperCase(); });
-                }
-                var sv = (document.getElementById('searchInput').value || '').toLowerCase();
-                if (sv) fd = fd.filter(function(o) {
-                    return Object.values(o).some(function(v) { return String(v).toLowerCase().includes(sv); });
-                });
-                return fd;
-            } else {
-                var fd2 = getRiwayatOrders();
-                if (filterTeknisiRiwayat) {
-                    fd2 = fd2.filter(function(o) { return (o['TEKNISI'] || '').toUpperCase() === filterTeknisiRiwayat
-                            .toUpperCase(); });
-                }
-                var sv2 = (document.getElementById('searchRiwayat').value || '').toLowerCase();
-                if (sv2) fd2 = fd2.filter(function(o) {
-                    return Object.values(o).some(function(v) { return String(v).toLowerCase().includes(sv2); });
-                });
-                return fd2;
-            }
-        }
-
         // ===== MODAL INPUT =====
         function openInputModal() { resetForm();
             document.getElementById('inputModal').classList.add('active'); }
@@ -3304,33 +3298,60 @@
                 te = document.getElementById('dataTableEl'),
                 ft = document.getElementById('tableFooter');
 
-            var allFiltered = getFilteredData('aktif');
-            var totalData = allFiltered.length;
+            var fd = getAktifOrders();
 
-            // Pagination
-            var paginated = getPaginatedData(allFiltered, currentPageAktif);
-            var fd = paginated.data;
+            if (currentFilter !== 'all') fd = fd.filter(function(o) { return (o['STATUS'] || '').toUpperCase() ===
+                    currentFilter; });
 
-            // Update pagination
-            renderPagination('aktif', totalData);
+            if (filterTeknisiAktif) {
+                fd = fd.filter(function(o) { return (o['TEKNISI'] || '').toUpperCase() === filterTeknisiAktif
+                        .toUpperCase(); });
+            }
+
+            var sv = (document.getElementById('searchInput').value || '').toLowerCase();
+            if (sv) fd = fd.filter(function(o) {
+                return Object.values(o).some(function(v) { return String(v).toLowerCase().includes(sv); });
+            });
+
+            // PAGINATION: Ambil data per halaman
+            var totalItems = fd.length;
+            var totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+
+            // Reset currentPage jika melebihi totalPages
+            if (currentPageAktif > totalPages && totalPages > 0) currentPageAktif = totalPages;
+            if (currentPageAktif < 1) currentPageAktif = 1;
+
+            var startIdx = (currentPageAktif - 1) * ITEMS_PER_PAGE;
+            var endIdx = Math.min(startIdx + ITEMS_PER_PAGE, totalItems);
+            var pageData = fd.slice(startIdx, endIdx);
 
             if (sk) sk.style.display = 'none';
             if (te) te.style.display = 'table';
 
-            if (fd.length === 0) {
+            if (pageData.length === 0 && totalItems === 0) {
                 tb.innerHTML = '';
                 es.style.display = 'block';
                 ft.style.display = 'none';
+                document.getElementById('paginationAktif').style.display = 'none';
                 return;
             }
+            if (pageData.length === 0 && totalItems > 0) {
+                currentPageAktif = 1;
+                renderAktifTable();
+                return;
+            }
+
             es.style.display = 'none';
             ft.style.display = 'flex';
-            document.getElementById('rowCount').textContent = fd.length;
-            document.getElementById('rowTotal').textContent = totalData;
+            document.getElementById('rowCount').textContent = pageData.length;
+            document.getElementById('rowTotal').textContent = totalItems;
+
+            // Render pagination
+            renderPagination('aktif', totalItems);
 
             var h = '';
-            for (var i = 0; i < fd.length; i++) {
-                var o = fd[i],
+            for (var i = 0; i < pageData.length; i++) {
+                var o = pageData[i],
                     s = o['STATUS'] || 'PENDING',
                     sc = getStatusClass(s),
                     ri = o._rowIndex,
@@ -3348,11 +3369,8 @@
 
                 var jmlDisplay = jml ? escapeHtml(jml) + ' hari' : '-';
 
-                // Nomor urut berdasarkan halaman
-                var displayNumber = (currentPageAktif - 1) * PAGE_SIZE + i + 1;
-
                 h += '<tr class="' + (isNew ? 'new-row' : '') + '">' +
-                    '<td>' + displayNumber + '</td>' +
+                    '<td>' + (startIdx + i + 1) + '</td>' +
                     '<td><span class="status-badge ' + sc + '"><span class="status-dot"></span>' + escapeHtml(s) +
                     '</span></td>' +
                     '<td class="' + teknisiClass + '" onclick="filterByTeknisi(\'aktif\', \'' + escapeHtml(teknisi) +
@@ -3403,27 +3421,49 @@
                 te = document.getElementById('riwayatTableEl'),
                 ft = document.getElementById('riwayatFooter');
 
-            var allFiltered = getFilteredData('riwayat');
-            var totalData = allFiltered.length;
+            var fd = getRiwayatOrders();
 
-            // Pagination
-            var paginated = getPaginatedData(allFiltered, currentPageRiwayat);
-            var fd = paginated.data;
+            if (filterTeknisiRiwayat) {
+                fd = fd.filter(function(o) { return (o['TEKNISI'] || '').toUpperCase() === filterTeknisiRiwayat
+                        .toUpperCase(); });
+            }
 
-            // Update pagination
-            renderPagination('riwayat', totalData);
+            var sv = (document.getElementById('searchRiwayat').value || '').toLowerCase();
+            if (sv) fd = fd.filter(function(o) {
+                return Object.values(o).some(function(v) { return String(v).toLowerCase().includes(sv); });
+            });
 
-            if (fd.length === 0) {
+            // PAGINATION
+            var totalItems = fd.length;
+            var totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+
+            if (currentPageRiwayat > totalPages && totalPages > 0) currentPageRiwayat = totalPages;
+            if (currentPageRiwayat < 1) currentPageRiwayat = 1;
+
+            var startIdx = (currentPageRiwayat - 1) * ITEMS_PER_PAGE;
+            var endIdx = Math.min(startIdx + ITEMS_PER_PAGE, totalItems);
+            var pageData = fd.slice(startIdx, endIdx);
+
+            if (pageData.length === 0 && totalItems === 0) {
                 tb.innerHTML = '';
                 es.style.display = 'block';
                 te.style.display = 'none';
                 ft.style.display = 'none';
+                document.getElementById('paginationRiwayat').style.display = 'none';
                 return;
             }
+            if (pageData.length === 0 && totalItems > 0) {
+                currentPageRiwayat = 1;
+                renderRiwayatTable();
+                return;
+            }
+
             es.style.display = 'none';
             te.style.display = 'table';
             ft.style.display = 'flex';
-            document.getElementById('riwayatCount').textContent = fd.length;
+            document.getElementById('riwayatCount').textContent = pageData.length;
+
+            renderPagination('riwayat', totalItems);
 
             var canEdit = isAdmin,
                 cellClass = canEdit ? 'editable-cell' : 'locked-cell',
@@ -3437,8 +3477,8 @@
                 delActionClose = canEdit ? '\')"' : '';
 
             var h = '';
-            for (var i = 0; i < fd.length; i++) {
-                var o = fd[i],
+            for (var i = 0; i < pageData.length; i++) {
+                var o = pageData[i],
                     to = o['Tgl Order'] || '',
                     ttp = o['TGL TERIMA PART'] || '',
                     jml = o['JUMLAH'] || '',
@@ -3450,10 +3490,9 @@
                 var teknisiClass = 'teknisi-cell' + (isFiltered ? ' filtered' : '');
 
                 var jmlDisplay = jml ? escapeHtml(jml) + ' hari' : '-';
-                var displayNumber = (currentPageRiwayat - 1) * PAGE_SIZE + i + 1;
 
                 h += '<tr>' +
-                    '<td>' + displayNumber + '</td>' +
+                    '<td>' + (startIdx + i + 1) + '</td>' +
                     '<td><span class="status-badge finish"><span class="status-dot"></span>FINISH</span></td>' +
                     '<td class="' + teknisiClass + '" onclick="filterByTeknisi(\'riwayat\', \'' + escapeHtml(teknisi) +
                     '\', this.closest(\'.filter-teknisi-bar\').querySelector(\'.filter-teknisi-chip:not(.clear-filter)\'))">' +
