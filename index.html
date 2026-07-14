@@ -1015,6 +1015,104 @@
             background: linear-gradient(135deg, #228b4f, #1d6f42);
         }
 
+        /* ===== PAGINATION ===== */
+        .pagination-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.85rem 1.5rem;
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .pagination-info {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+        .pagination-info strong {
+            color: var(--text-secondary);
+        }
+        .pagination-buttons {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .pagination-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 6px 16px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: var(--chip-bg);
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 80px;
+        }
+        .pagination-btn:hover:not(:disabled) {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-dim);
+        }
+        .pagination-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        .pagination-btn.active-page {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #0b1120;
+            min-width: 36px;
+            padding: 6px 12px;
+        }
+        [data-theme="light"] .pagination-btn.active-page {
+            color: #fff;
+        }
+        .pagination-numbers {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        .pagination-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 32px;
+            padding: 0 8px;
+            border-radius: var(--radius);
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .pagination-number:hover:not(.active-page) {
+            border-color: var(--border);
+            background: var(--bg-input);
+        }
+        .pagination-number.active-page {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #0b1120;
+        }
+        [data-theme="light"] .pagination-number.active-page {
+            color: #fff;
+        }
+        .pagination-ellipsis {
+            color: var(--text-muted);
+            padding: 0 4px;
+            font-size: 0.78rem;
+        }
+
         /* ===== FILTER TEKNISI ===== */
         .filter-teknisi-bar {
             display: flex;
@@ -1807,6 +1905,20 @@
                 font-size: 0.65rem;
                 padding: 3px 10px;
             }
+            .pagination-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .pagination-numbers {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .pagination-btn {
+                min-width: 60px;
+                padding: 4px 12px;
+                font-size: 0.7rem;
+            }
         }
     </style>
 </head>
@@ -1916,7 +2028,6 @@
                     <div style="padding: 0.5rem 1.5rem 0.5rem 1.5rem; border-bottom: 1px solid var(--border);">
                         <div class="filter-teknisi-bar" id="teknisiFilterAktif">
                             <span class="filter-label"><i class="fas fa-user-cog"></i> Filter Teknisi: <span class="count-badge" id="teknisiCountAktif">0</span></span>
-                            <!-- Teknisi chips akan diisi oleh JavaScript secara dinamis dari data -->
                             <span class="filter-teknisi-empty" id="teknisiEmptyAktif">Belum ada data teknisi</span>
                         </div>
                     </div>
@@ -1954,7 +2065,23 @@
                         </table>
                     </div>
                     <div class="empty-state" id="emptyState" style="display:none;"><i class="fas fa-inbox"></i><p>Tidak ada order aktif.</p></div>
-                    <div class="table-footer" id="tableFooter" style="display:none;"><span>Menampilkan <strong class="row-count" id="rowCount">0</strong> dari <strong class="row-count" id="rowTotal">0</strong> order</span><span style="display:flex;align-items:center;gap:6px;"><span class="sync-dot" style="width:6px;height:6px;"></span> Realtime</span></div>
+                    
+                    <!-- ===== PAGINATION ===== -->
+                    <div class="pagination-container" id="paginationAktif" style="display:none;">
+                        <div class="pagination-info">
+                            Menampilkan <strong id="paginationStartAktif">0</strong> - <strong id="paginationEndAktif">0</strong> 
+                            dari <strong id="paginationTotalAktif">0</strong> data
+                        </div>
+                        <div class="pagination-buttons">
+                            <button class="pagination-btn" id="prevPageAktif" onclick="changePage('aktif', -1)">
+                                <i class="fas fa-chevron-left"></i> Back
+                            </button>
+                            <div class="pagination-numbers" id="paginationNumbersAktif"></div>
+                            <button class="pagination-btn" id="nextPageAktif" onclick="changePage('aktif', 1)">
+                                Next <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -2008,7 +2135,23 @@
                         </table>
                     </div>
                     <div class="empty-state" id="emptyRiwayat" style="display:none;"><i class="fas fa-archive"></i><p>Belum ada riwayat order.</p></div>
-                    <div class="table-footer" id="riwayatFooter" style="display:none;"><span>Menampilkan <strong class="row-count" id="riwayatCount">0</strong> riwayat order</span><span style="display:flex;align-items:center;gap:6px;"><span class="sync-dot" style="width:6px;height:6px;"></span> Realtime</span></div>
+                    
+                    <!-- ===== PAGINATION RIWAYAT ===== -->
+                    <div class="pagination-container" id="paginationRiwayat" style="display:none;">
+                        <div class="pagination-info">
+                            Menampilkan <strong id="paginationStartRiwayat">0</strong> - <strong id="paginationEndRiwayat">0</strong> 
+                            dari <strong id="paginationTotalRiwayat">0</strong> data
+                        </div>
+                        <div class="pagination-buttons">
+                            <button class="pagination-btn" id="prevPageRiwayat" onclick="changePage('riwayat', -1)">
+                                <i class="fas fa-chevron-left"></i> Back
+                            </button>
+                            <div class="pagination-numbers" id="paginationNumbersRiwayat"></div>
+                            <button class="pagination-btn" id="nextPageRiwayat" onclick="changePage('riwayat', 1)">
+                                Next <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -2133,9 +2276,12 @@
         var ADMIN_EMAIL = 'admin@app.local';
         var isAdmin = false;
 
-        // ===== STATE FILTER TEKNISI =====
+        // ===== STATE =====
         var filterTeknisiAktif = null;
         var filterTeknisiRiwayat = null;
+        var currentPageAktif = 1;
+        var currentPageRiwayat = 1;
+        var PAGE_SIZE = 10;
 
         // ===== TEKNISI LIST (untuk WA dan dropdown form) =====
         var TEKNISI_LIST = [
@@ -2223,7 +2369,6 @@
                     unique[t] = (unique[t] || 0) + 1;
                 }
             });
-            // Urutkan berdasarkan nama
             var sorted = Object.keys(unique).sort();
             return sorted.map(function(nama) {
                 return { nama: nama, count: unique[nama] };
@@ -2232,12 +2377,10 @@
 
         // ===== BUILD FILTER TEKNISI CHIPS DINAMIS =====
         function buildTeknisiFilterChips() {
-            // Untuk tab Aktif
             var aktifOrders = getAktifOrders();
             var teknisiAktif = getUniqueTeknisi(aktifOrders);
             buildFilterChips('teknisiFilterAktif', 'teknisiEmptyAktif', 'teknisiCountAktif', teknisiAktif, 'aktif');
 
-            // Untuk tab Riwayat
             var riwayatOrders = getRiwayatOrders();
             var teknisiRiwayat = getUniqueTeknisi(riwayatOrders);
             buildFilterChips('teknisiFilterRiwayat', 'teknisiEmptyRiwayat', 'teknisiCountRiwayat', teknisiRiwayat, 'riwayat');
@@ -2247,14 +2390,12 @@
             var container = document.getElementById(containerId);
             if (!container) return;
 
-            // Hapus semua chips selain label dan empty state
             var chips = container.querySelectorAll('.filter-teknisi-chip');
             chips.forEach(function(c) { c.remove(); });
 
             var emptyEl = document.getElementById(emptyId);
             var countEl = document.getElementById(countId);
 
-            // Update count
             if (countEl) countEl.textContent = teknisiData.length;
 
             if (teknisiData.length === 0) {
@@ -2263,23 +2404,23 @@
             }
             if (emptyEl) emptyEl.style.display = 'none';
 
-            // Tambahkan chip "Semua" (clear filter)
             var clearChip = document.createElement('button');
-            clearChip.className = 'filter-teknisi-chip clear-filter' + (tab === 'aktif' ? 
-                (filterTeknisiAktif === null ? ' active' : '') : 
+            clearChip.className = 'filter-teknisi-chip clear-filter' + (tab === 'aktif' ?
+                (filterTeknisiAktif === null ? ' active' : '') :
                 (filterTeknisiRiwayat === null ? ' active' : ''));
             clearChip.textContent = 'Semua';
             clearChip.onclick = function() {
                 filterByTeknisi(tab, null, this);
-                // Hapus highlight di tabel
                 var bodyId = tab === 'aktif' ? 'tableBody' : 'riwayatBody';
                 document.querySelectorAll('#' + bodyId + ' .teknisi-cell.filtered').forEach(function(el) {
                     el.classList.remove('filtered');
                 });
+                if (tab === 'aktif') currentPageAktif = 1;
+                else currentPageRiwayat = 1;
+                renderAll();
             };
             container.appendChild(clearChip);
 
-            // Tambahkan chip untuk setiap teknisi unik
             teknisiData.forEach(function(item) {
                 var chip = document.createElement('button');
                 chip.className = 'filter-teknisi-chip' + (
@@ -2289,7 +2430,6 @@
                 chip.innerHTML = item.nama + ' <span class="chip-count">(' + item.count + ')</span>';
                 chip.onclick = function() {
                     filterByTeknisi(tab, item.nama, this);
-                    // Hapus highlight lama dan highlight yang baru
                     var bodyId = tab === 'aktif' ? 'tableBody' : 'riwayatBody';
                     document.querySelectorAll('#' + bodyId + ' .teknisi-cell.filtered').forEach(function(el) {
                         el.classList.remove('filtered');
@@ -2299,6 +2439,9 @@
                             el.classList.add('filtered');
                         }
                     });
+                    if (tab === 'aktif') currentPageAktif = 1;
+                    else currentPageRiwayat = 1;
+                    renderAll();
                 };
                 container.appendChild(chip);
             });
@@ -2316,10 +2459,128 @@
 
             if (tab === 'aktif') {
                 filterTeknisiAktif = teknisi;
-                renderAktifTable();
             } else {
                 filterTeknisiRiwayat = teknisi;
-                renderRiwayatTable();
+            }
+        }
+
+        // ===== PAGINATION =====
+        function getPaginatedData(data, page) {
+            var start = (page - 1) * PAGE_SIZE;
+            var end = Math.min(start + PAGE_SIZE, data.length);
+            return {
+                data: data.slice(start, end),
+                start: start + 1,
+                end: end,
+                total: data.length,
+                totalPages: Math.ceil(data.length / PAGE_SIZE)
+            };
+        }
+
+        function renderPagination(tab, dataLength) {
+            var containerId = tab === 'aktif' ? 'paginationAktif' : 'paginationRiwayat';
+            var container = document.getElementById(containerId);
+            if (!container) return;
+
+            if (dataLength === 0) {
+                container.style.display = 'none';
+                return;
+            }
+
+            var currentPage = tab === 'aktif' ? currentPageAktif : currentPageRiwayat;
+            var totalPages = Math.ceil(dataLength / PAGE_SIZE);
+            var start = (currentPage - 1) * PAGE_SIZE + 1;
+            var end = Math.min(currentPage * PAGE_SIZE, dataLength);
+
+            container.style.display = 'flex';
+
+            document.getElementById(tab === 'aktif' ? 'paginationStartAktif' : 'paginationStartRiwayat').textContent = start;
+            document.getElementById(tab === 'aktif' ? 'paginationEndAktif' : 'paginationEndRiwayat').textContent = end;
+            document.getElementById(tab === 'aktif' ? 'paginationTotalAktif' : 'paginationTotalRiwayat').textContent =
+            dataLength;
+
+            document.getElementById(tab === 'aktif' ? 'prevPageAktif' : 'prevPageRiwayat').disabled = (currentPage <= 1);
+            document.getElementById(tab === 'aktif' ? 'nextPageAktif' : 'nextPageRiwayat').disabled = (currentPage >=
+            totalPages);
+
+            // Render number buttons
+            var numbersContainer = document.getElementById(tab === 'aktif' ? 'paginationNumbersAktif' :
+                'paginationNumbersRiwayat');
+            numbersContainer.innerHTML = '';
+
+            var maxVisible = 5;
+            var half = Math.floor(maxVisible / 2);
+            var startPage = Math.max(1, currentPage - half);
+            var endPage = Math.min(totalPages, currentPage + half);
+
+            if (startPage > 1) {
+                var firstBtn = document.createElement('button');
+                firstBtn.className = 'pagination-number';
+                firstBtn.textContent = '1';
+                firstBtn.onclick = function() {
+                    if (tab === 'aktif') { currentPageAktif = 1;
+                        renderAll(); } else { currentPageRiwayat = 1;
+                        renderAll(); }
+                };
+                numbersContainer.appendChild(firstBtn);
+                if (startPage > 2) {
+                    var ellipsis = document.createElement('span');
+                    ellipsis.className = 'pagination-ellipsis';
+                    ellipsis.textContent = '…';
+                    numbersContainer.appendChild(ellipsis);
+                }
+            }
+
+            for (var i = startPage; i <= endPage; i++) {
+                var btn = document.createElement('button');
+                btn.className = 'pagination-number' + (i === currentPage ? ' active-page' : '');
+                btn.textContent = i;
+                btn.onclick = function(page) {
+                    return function() {
+                        if (tab === 'aktif') { currentPageAktif = page;
+                            renderAll(); } else { currentPageRiwayat = page;
+                            renderAll(); }
+                    };
+                }(i);
+                numbersContainer.appendChild(btn);
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    var ellipsis2 = document.createElement('span');
+                    ellipsis2.className = 'pagination-ellipsis';
+                    ellipsis2.textContent = '…';
+                    numbersContainer.appendChild(ellipsis2);
+                }
+                var lastBtn = document.createElement('button');
+                lastBtn.className = 'pagination-number';
+                lastBtn.textContent = totalPages;
+                lastBtn.onclick = function() {
+                    if (tab === 'aktif') { currentPageAktif = totalPages;
+                        renderAll(); } else { currentPageRiwayat = totalPages;
+                        renderAll(); }
+                };
+                numbersContainer.appendChild(lastBtn);
+            }
+        }
+
+        function changePage(tab, delta) {
+            if (tab === 'aktif') {
+                var totalAktif = getFilteredData('aktif').length;
+                var totalPagesAktif = Math.ceil(totalAktif / PAGE_SIZE);
+                var newPageAktif = currentPageAktif + delta;
+                if (newPageAktif >= 1 && newPageAktif <= totalPagesAktif) {
+                    currentPageAktif = newPageAktif;
+                    renderAll();
+                }
+            } else {
+                var totalRiwayat = getFilteredData('riwayat').length;
+                var totalPagesRiwayat = Math.ceil(totalRiwayat / PAGE_SIZE);
+                var newPageRiwayat = currentPageRiwayat + delta;
+                if (newPageRiwayat >= 1 && newPageRiwayat <= totalPagesRiwayat) {
+                    currentPageRiwayat = newPageRiwayat;
+                    renderAll();
+                }
             }
         }
 
@@ -2687,7 +2948,6 @@
         }
 
         function renderAll() {
-            // Build filter chips dinamis berdasarkan data terbaru
             buildTeknisiFilterChips();
             renderAktifTable();
             renderRiwayatTable();
@@ -2737,12 +2997,47 @@
 
         function debouncedSearch() {
             clearTimeout(searchDebounceTimer);
-            searchDebounceTimer = setTimeout(renderAktifTable, 150);
+            searchDebounceTimer = setTimeout(function() {
+                currentPageAktif = 1;
+                renderAktifTable();
+            }, 150);
         }
 
         function debouncedSearchRiwayat() {
             clearTimeout(searchRiwayatTimer);
-            searchRiwayatTimer = setTimeout(renderRiwayatTable, 150);
+            searchRiwayatTimer = setTimeout(function() {
+                currentPageRiwayat = 1;
+                renderRiwayatTable();
+            }, 150);
+        }
+
+        // ===== GET FILTERED DATA =====
+        function getFilteredData(tab) {
+            if (tab === 'aktif') {
+                var fd = getAktifOrders();
+                if (currentFilter !== 'all') fd = fd.filter(function(o) { return (o['STATUS'] || '').toUpperCase() ===
+                        currentFilter; });
+                if (filterTeknisiAktif) {
+                    fd = fd.filter(function(o) { return (o['TEKNISI'] || '').toUpperCase() === filterTeknisiAktif
+                            .toUpperCase(); });
+                }
+                var sv = (document.getElementById('searchInput').value || '').toLowerCase();
+                if (sv) fd = fd.filter(function(o) {
+                    return Object.values(o).some(function(v) { return String(v).toLowerCase().includes(sv); });
+                });
+                return fd;
+            } else {
+                var fd2 = getRiwayatOrders();
+                if (filterTeknisiRiwayat) {
+                    fd2 = fd2.filter(function(o) { return (o['TEKNISI'] || '').toUpperCase() === filterTeknisiRiwayat
+                            .toUpperCase(); });
+                }
+                var sv2 = (document.getElementById('searchRiwayat').value || '').toLowerCase();
+                if (sv2) fd2 = fd2.filter(function(o) {
+                    return Object.values(o).some(function(v) { return String(v).toLowerCase().includes(sv2); });
+                });
+                return fd2;
+            }
         }
 
         // ===== MODAL INPUT =====
@@ -3009,23 +3304,15 @@
                 te = document.getElementById('dataTableEl'),
                 ft = document.getElementById('tableFooter');
 
-            var fd = getAktifOrders();
+            var allFiltered = getFilteredData('aktif');
+            var totalData = allFiltered.length;
 
-            // Filter by status
-            if (currentFilter !== 'all') fd = fd.filter(function(o) { return (o['STATUS'] || '').toUpperCase() ===
-                    currentFilter; });
+            // Pagination
+            var paginated = getPaginatedData(allFiltered, currentPageAktif);
+            var fd = paginated.data;
 
-            // Filter by teknisi
-            if (filterTeknisiAktif) {
-                fd = fd.filter(function(o) { return (o['TEKNISI'] || '').toUpperCase() === filterTeknisiAktif
-                        .toUpperCase(); });
-            }
-
-            // Search
-            var sv = (document.getElementById('searchInput').value || '').toLowerCase();
-            if (sv) fd = fd.filter(function(o) {
-                return Object.values(o).some(function(v) { return String(v).toLowerCase().includes(sv); });
-            });
+            // Update pagination
+            renderPagination('aktif', totalData);
 
             if (sk) sk.style.display = 'none';
             if (te) te.style.display = 'table';
@@ -3039,7 +3326,7 @@
             es.style.display = 'none';
             ft.style.display = 'flex';
             document.getElementById('rowCount').textContent = fd.length;
-            document.getElementById('rowTotal').textContent = getAktifOrders().length;
+            document.getElementById('rowTotal').textContent = totalData;
 
             var h = '';
             for (var i = 0; i < fd.length; i++) {
@@ -3061,8 +3348,11 @@
 
                 var jmlDisplay = jml ? escapeHtml(jml) + ' hari' : '-';
 
+                // Nomor urut berdasarkan halaman
+                var displayNumber = (currentPageAktif - 1) * PAGE_SIZE + i + 1;
+
                 h += '<tr class="' + (isNew ? 'new-row' : '') + '">' +
-                    '<td>' + (i + 1) + '</td>' +
+                    '<td>' + displayNumber + '</td>' +
                     '<td><span class="status-badge ' + sc + '"><span class="status-dot"></span>' + escapeHtml(s) +
                     '</span></td>' +
                     '<td class="' + teknisiClass + '" onclick="filterByTeknisi(\'aktif\', \'' + escapeHtml(teknisi) +
@@ -3113,18 +3403,15 @@
                 te = document.getElementById('riwayatTableEl'),
                 ft = document.getElementById('riwayatFooter');
 
-            var fd = getRiwayatOrders();
+            var allFiltered = getFilteredData('riwayat');
+            var totalData = allFiltered.length;
 
-            // Filter by teknisi
-            if (filterTeknisiRiwayat) {
-                fd = fd.filter(function(o) { return (o['TEKNISI'] || '').toUpperCase() === filterTeknisiRiwayat
-                        .toUpperCase(); });
-            }
+            // Pagination
+            var paginated = getPaginatedData(allFiltered, currentPageRiwayat);
+            var fd = paginated.data;
 
-            var sv = (document.getElementById('searchRiwayat').value || '').toLowerCase();
-            if (sv) fd = fd.filter(function(o) {
-                return Object.values(o).some(function(v) { return String(v).toLowerCase().includes(sv); });
-            });
+            // Update pagination
+            renderPagination('riwayat', totalData);
 
             if (fd.length === 0) {
                 tb.innerHTML = '';
@@ -3163,9 +3450,10 @@
                 var teknisiClass = 'teknisi-cell' + (isFiltered ? ' filtered' : '');
 
                 var jmlDisplay = jml ? escapeHtml(jml) + ' hari' : '-';
+                var displayNumber = (currentPageRiwayat - 1) * PAGE_SIZE + i + 1;
 
                 h += '<tr>' +
-                    '<td>' + (i + 1) + '</td>' +
+                    '<td>' + displayNumber + '</td>' +
                     '<td><span class="status-badge finish"><span class="status-dot"></span>FINISH</span></td>' +
                     '<td class="' + teknisiClass + '" onclick="filterByTeknisi(\'riwayat\', \'' + escapeHtml(teknisi) +
                     '\', this.closest(\'.filter-teknisi-bar\').querySelector(\'.filter-teknisi-chip:not(.clear-filter)\'))">' +
@@ -3437,6 +3725,7 @@
             currentFilter = s;
             document.querySelectorAll('.filter-chips .chip').forEach(function(x) { x.classList.remove('active'); });
             c.classList.add('active');
+            currentPageAktif = 1;
             renderAktifTable();
         }
 
@@ -3476,7 +3765,7 @@
         document.getElementById('inputModal').addEventListener('click', function(e) { if (e.target === this) closeInputModal(); });
         document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
 
-        console.log('✅ Aplikasi siap - Filter Teknisi dinamis! Hanya nama yang ada di data yang muncul.');
+        console.log('✅ Aplikasi siap - Pagination 10 data per halaman!');
         console.log('📱 WhatsApp notifications ready. Update TEKNISI_LIST with real phone numbers.');
     </script>
 </body>
